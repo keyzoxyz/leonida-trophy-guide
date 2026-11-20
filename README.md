@@ -1,5 +1,9 @@
 # Leonida Trophy Guide — GTA VI platinum roadmap & tracker
 
+[![make.fun · gta6-trophy-guide-01](https://make.fun/badge/gta6-trophy-guide-01.svg)](https://make.fun/bounty/gta6-trophy-guide-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-guide-01)
+[![rank](https://make.fun/badge/gta6-trophy-guide-01/keyzoxyz/leonida-trophy-guide/rank.svg)](https://make.fun/bounty/gta6-trophy-guide-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-guide-01)
+[![reward](https://make.fun/badge/gta6-trophy-guide-01/keyzoxyz/leonida-trophy-guide/reward.svg)](https://make.fun/bounty/gta6-trophy-guide-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-trophy-guide-01)
+
 An offline, single-page guide and progress tracker for all 55 Grand Theft Auto VI PlayStation 5
 trophies. It ships the official names, descriptions and grades, an original guide and a one-sentence
 "why it is hard or cheap" note for every trophy, a ten-stage roadmap to the platinum, missable flags,
