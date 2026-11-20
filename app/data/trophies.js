@@ -3,6 +3,7 @@
 // opened from disk needs no fetch at run time.
 export const GAME = "Grand Theft Auto VI";
 export const PLATFORM = "PlayStation 5";
+export const VERIFIED_AT = "2026-11-21";
 export const STAGES = [
 {
 "id": 0,
@@ -321,7 +322,6 @@ export const TROPHIES = [
 "stage": 4,
 "missable": false,
 "hidden": false,
-"count": 250,
 "guide": "Complete 250 stunts. A pure volume trophy and the one that most rewards planning: stunts are the jumps, rolls and trick lines scattered across Leonida, and the game counts 250 of them, so repeating one does not advance the counter. Find a vehicle that handles the type of stunt comfortably and work region by region so that a completed area can be forgotten. It is not missable and not time-limited, which makes it good filler between missions.",
 "steps": [
 "Identify the stunt type the counter accepts (the game names it in the activity list).",
@@ -330,7 +330,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 250
 },
 {
 "id": 16,
@@ -475,7 +476,7 @@ export const TROPHIES = [
 "stage": 5,
 "missable": true,
 "hidden": false,
-"guide": "Complete the final mission for Kenton. Same shape as Andy's: a named companion's strand, played to its end. Kenton's missions are available in a window rather than forever, so treat the strand as time-sensitive and finish it in the chapter where it opens.",
+"guide": "Complete the final mission for Kenton, in the same shape as Andy's strand: a named companion's missions played through to the end rather than sampled. Kenton's missions are available in a window rather than forever, so treat the strand as time-sensitive and finish it in the chapter where it opens.",
 "steps": [
 "Start Kenton's strand.",
 "Play the strand through to its final mission.",
@@ -494,7 +495,7 @@ export const TROPHIES = [
 "stage": 5,
 "missable": true,
 "hidden": false,
-"guide": "Complete the final mission for Billy. As with Andy and Kenton, the requirement is the end of a named strand, not a single mission. Billy's is the one most often left half-finished because its middle missions are spread out; the trophy only cares about the last one, so track the strand's progress in the mission log.",
+"guide": "Complete the final mission for Billy, the last of the Andy, Kenton and Billy strands: each one wants the end of a named mission line, not a single mission. Billy's is the one most often left half-finished because its middle missions are spread out; the trophy only cares about the last one, so track the strand's progress in the mission log.",
 "steps": [
 "Start Billy's strand.",
 "Complete every mission in it.",
@@ -513,7 +514,6 @@ export const TROPHIES = [
 "stage": 5,
 "missable": false,
 "hidden": false,
-"count": 8,
 "guide": "Complete 8 mission strands for strangers across the state of Leonida. The breadth trophy for stranger content: eight separate strands, each finished. Strangers appear as map markers and their strands vary in length, so eight is a matter of picking eight markers and seeing each through rather than a fixed route. Not missable as a whole — plenty of strands exist — but individual strands can close.",
 "steps": [
 "Collect stranger markers as they appear.",
@@ -522,7 +522,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 8
 },
 {
 "id": 26,
@@ -609,7 +610,6 @@ export const TROPHIES = [
 "stage": 6,
 "missable": false,
 "hidden": false,
-"count": 3,
 "guide": "Complete 3 Collectible Card sets. The state's card sets are grouped collections; the trophy counts completed sets, not individual cards, so three sets finished in full is the target. Cards come from shops and pickups across the map, and finishing a set usually means buying the last few — budget for that, and finish one set at a time rather than spreading pickups across all of them.",
 "steps": [
 "List the card sets and their card counts.",
@@ -618,7 +618,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 3
 },
 {
 "id": 31,
@@ -629,7 +630,6 @@ export const TROPHIES = [
 "stage": 6,
 "missable": false,
 "hidden": false,
-"count": 100,
 "guide": "WAiNK It at 100 locations. A location-count collectible: the WAiNK action has to be performed at one hundred distinct places, and repeats do not count. The count is large enough that a route matters — sweep district by district and mark each location as used, because the game will not tell you which one you missed.",
 "steps": [
 "Map the districts that hold WAiNK locations.",
@@ -638,7 +638,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 100
 },
 {
 "id": 32,
@@ -649,7 +650,6 @@ export const TROPHIES = [
 "stage": 4,
 "missable": false,
 "hidden": false,
-"count": 50,
 "guide": "Complete 50 Challenges. Challenges are the game's rotating objectives — timed runs, kill counts, delivery jobs — and the trophy wants fifty completions from that pool, not fifty distinct types. They appear as the map is played in, so this fills naturally while the other trophies are being chased; it is the one grind that does not need a dedicated session.",
 "steps": [
 "Accept challenges as they appear while playing other content.",
@@ -658,7 +658,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 50
 },
 {
 "id": 33,
@@ -707,7 +708,6 @@ export const TROPHIES = [
 "stage": 6,
 "missable": false,
 "hidden": false,
-"count": 100,
 "guide": "Discover 100 vehicles. A discovery count rather than a purchase count: the game registers a vehicle the first time it is seen or driven, so the trophy is about variety of exposure. Driving different traffic, visiting dealerships and the garage properties all feed it. It arrives naturally during the other trophies, and pairing it with the garage-property trophy means the same trips count twice.",
 "steps": [
 "Drive and inspect a wide spread of vehicles rather than one favourite.",
@@ -716,7 +716,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 100
 },
 {
 "id": 36,
@@ -803,7 +804,6 @@ export const TROPHIES = [
 "stage": 7,
 "missable": false,
 "hidden": false,
-"count": 5,
 "guide": "Rob 5 Bank Vaults and escape. Five separate vaults, each ending in an escape — the escape is part of the requirement, so a vault robbed and then died on does not count. Bank vaults are the largest robberies in the game and each needs an approach; treat them as five set-pieces rather than a chain.",
 "steps": [
 "Identify the five bank vaults.",
@@ -812,7 +812,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 5
 },
 {
 "id": 41,
@@ -1029,7 +1030,6 @@ export const TROPHIES = [
 "stage": 8,
 "missable": false,
 "hidden": false,
-"count": 250000,
 "guide": "Earn $250,000 laundering Marked Bills through your contacts. The money is earned through the laundering loop rather than picked up: Marked Bills are the game's dirty cash, and the contacts convert them. The threshold is cumulative, so the trophy is about running the loop enough times rather than one big score.",
 "steps": [
 "Collect Marked Bills from robberies and jobs.",
@@ -1038,7 +1038,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 250000
 },
 {
 "id": 53,
@@ -1049,7 +1050,6 @@ export const TROPHIES = [
 "stage": 8,
 "missable": false,
 "hidden": false,
-"count": 100000,
 "guide": "Spend $100,000 across all shops. Cumulative spending, counted across every shop the game has: clothes, weapons, food, vehicle mods. Nothing needs to be bought twice, and nothing needs to be useful — the trophy counts the total, so spreading purchases is as good as one large one.",
 "steps": [
 "Buy from shops of every kind as the map is played.",
@@ -1058,7 +1058,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 100000
 },
 {
 "id": 54,
@@ -1089,7 +1090,6 @@ export const TROPHIES = [
 "stage": 8,
 "missable": false,
 "hidden": false,
-"count": 10,
 "guide": "Register 10 vehicles to the Scooter Bros app. A small in-game app task: ten vehicles registered through it, one at a time. Registration is free or cheap, so the requirement is just to remember the app exists — pair it with vehicle discovery so the same vehicles count for both.",
 "steps": [
 "Open the Scooter Bros app in the in-game phone.",
@@ -1098,7 +1098,8 @@ export const TROPHIES = [
 ],
 "sources": [
 "PlayStation trophy description (official)"
-]
+],
+"count": 10
 }
 ];
 export default TROPHIES;

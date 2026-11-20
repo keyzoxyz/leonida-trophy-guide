@@ -557,6 +557,15 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
 
 #foot p { margin: 0; }
 
+#foot .updated { margin-top: var(--s2); }
+
+#foot .updated time {
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+
 .empty {
   padding: var(--s7) var(--s5);
   text-align: center;
@@ -584,3 +593,147 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
 .grade-chip.g-gold { color: var(--gold); }
 .grade-chip.g-silver { color: var(--silver); }
 .grade-chip.g-bronze { color: var(--bronze); }
+
+/* ── print: a paper checklist ────────────────────────────────────────── */
+
+/* On paper the page is one job: the trophy list, readable in black on white. The dark theme's gradients,
+   shadows and low-contrast greys are inverted out, the roadmap (a sticky, scrollable panel — useless on a
+   fixed page) is dropped, and every check button, filter and sheet is hidden so nothing prints that cannot
+   be used with a pen. */
+@media print {
+  :root { color-scheme: light; }
+
+  html,
+  body {
+    background: #fff !important;
+    background-image: none !important;
+    color: #000 !important;
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  #topbar,
+  #filters,
+  #roadmapPanel,
+  #detailSheet,
+  #closeDetail,
+  .controls-block,
+  .tcheck,
+  .grade-chips {
+    display: none !important;
+  }
+
+  #topbar { position: static; }
+
+  #layout {
+    display: block;
+    padding: 0;
+    margin: 0;
+    gap: 0;
+  }
+
+  #trophyPanel { margin: 0; }
+
+  #trophyList { display: block; }
+
+  .tcard {
+    display: block;
+    position: relative;
+    padding: 4pt 0 4pt 34pt;
+    margin: 0 0 6pt;
+    background: #fff !important;
+    border: 0;
+    border-bottom: 0.5pt solid #bbb;
+    border-radius: 0;
+    box-shadow: none !important;
+    color: #000 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* a pen-friendly box in place of the on-screen check button */
+  .tcard::before {
+    content: "";
+    position: absolute;
+    left: 2pt;
+    top: 5pt;
+    width: 10pt;
+    height: 10pt;
+    border: 1pt solid #000;
+    border-radius: 1pt;
+  }
+
+  .tcard.earned::before { content: "✓"; font-size: 9pt; line-height: 10pt; text-align: center; }
+
+  .tgrade {
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: none !important;
+    display: inline;
+    font-size: 8.5pt;
+    color: #000 !important;
+    letter-spacing: 0.08em;
+  }
+
+  .tgrade::after { content: " · "; }
+
+  .tname {
+    display: inline;
+    font-size: 10.5pt;
+    color: #000 !important;
+    text-decoration: none;
+    white-space: normal;
+  }
+
+  .tdesc,
+  .tbadges {
+    display: block;
+    color: #000 !important;
+    font-size: 9pt;
+    white-space: normal;
+    text-decoration: none;
+  }
+
+  .tbadges { margin-top: 1pt; }
+
+  .badge {
+    border: 0;
+    background: none !important;
+    color: #000 !important;
+    padding: 0 6pt 0 0;
+    font-size: 8pt;
+  }
+
+  .tcard.earned .tname { text-decoration: line-through; color: #000 !important; }
+
+  /* spoiler-safe mode blurs text with a text-shadow; on paper that is just a grey smear, so print the
+     words or print the placeholder, never the glow */
+  body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname,
+  body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+
+  .empty {
+    border: 0;
+    color: #000 !important;
+    padding: 12pt 0;
+  }
+
+  #foot {
+    border-top: 0.5pt solid #bbb;
+    padding: 8pt 0 0;
+    margin-top: 10pt;
+    max-width: none;
+    color: #000 !important;
+    font-size: 8.5pt;
+  }
+
+  #foot .updated time { color: #000 !important; text-decoration: none; }
+
+  a { color: #000 !important; text-decoration: underline; }
+
+  @page { margin: 14mm; }
+}

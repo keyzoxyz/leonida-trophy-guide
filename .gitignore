@@ -1,1 +1,7 @@
+# build output written by main.ts (MAKEFUN_OUTPUT_DIR=out)
 out/
+
+# local tooling noise — nothing here is part of the entry
+node_modules/
+.DS_Store
+*.log

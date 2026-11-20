@@ -97,7 +97,11 @@ function matches(t) {
   if (state.activeStage !== null && t.stage !== state.activeStage) return false;
   if (state.query) {
     const q = state.query.toLowerCase();
-    if (!t.name.toLowerCase().includes(q) && !t.guide.toLowerCase().includes(q)) return false;
+    // Sources are searched too: "PSNProfiles" or "PowerPyx" is how a reader looks for a fact they only
+    // half-remember, and a citation that cannot be found by typing its name is a citation they have to
+    // scroll every card to find. Name and guide keep the exact behaviour they had.
+    const hay = [t.name, t.guide, ...(t.sources ?? [])];
+    if (!hay.some((s) => String(s).toLowerCase().includes(q))) return false;
   }
   return true;
 }
@@ -469,7 +473,22 @@ function wire() {
     if (ev.target === $('#detailSheet')) closeDetail();
   });
   document.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Escape') closeDetail();
+    if (ev.key !== 'Escape') return;
+    // Escape unwinds one layer at a time, narrowest first: the search text goes before the sheet does, so a
+    // reader who searched, opened a result and hit Escape is not dropped back onto a list still filtered by
+    // a query they can no longer see (the box sits under the sticky bar, not in the sheet).
+    const search = $('#search');
+    const hadQuery = state.query !== '';
+    if (hadQuery) {
+      search.value = '';
+      state.query = '';
+      renderList();
+    }
+    if (!$('#detailSheet').hidden) {
+      closeDetail();
+      return;
+    }
+    if (hadQuery) search.focus();
   });
 }
 

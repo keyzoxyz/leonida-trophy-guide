@@ -1,6 +1,7 @@
 {
  "game": "Grand Theft Auto VI",
  "platform": "PlayStation 5",
+ "verifiedAt": "2026-11-21",
  "stages": [
   {
    "id": 0,
@@ -473,7 +474,7 @@
    "stage": 5,
    "missable": true,
    "hidden": false,
-   "guide": "Complete the final mission for Kenton. Same shape as Andy's: a named companion's strand, played to its end. Kenton's missions are available in a window rather than forever, so treat the strand as time-sensitive and finish it in the chapter where it opens.",
+   "guide": "Complete the final mission for Kenton, in the same shape as Andy's strand: a named companion's missions played through to the end rather than sampled. Kenton's missions are available in a window rather than forever, so treat the strand as time-sensitive and finish it in the chapter where it opens.",
    "steps": [
     "Start Kenton's strand.",
     "Play the strand through to its final mission.",
@@ -492,7 +493,7 @@
    "stage": 5,
    "missable": true,
    "hidden": false,
-   "guide": "Complete the final mission for Billy. As with Andy and Kenton, the requirement is the end of a named strand, not a single mission. Billy's is the one most often left half-finished because its middle missions are spread out; the trophy only cares about the last one, so track the strand's progress in the mission log.",
+   "guide": "Complete the final mission for Billy, the last of the Andy, Kenton and Billy strands: each one wants the end of a named mission line, not a single mission. Billy's is the one most often left half-finished because its middle missions are spread out; the trophy only cares about the last one, so track the strand's progress in the mission log.",
    "steps": [
     "Start Billy's strand.",
     "Complete every mission in it.",
