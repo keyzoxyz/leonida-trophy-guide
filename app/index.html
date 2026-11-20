@@ -33,14 +33,14 @@
 <nav id="filters" aria-label="Trophy filters">
   <div class="filter-row">
     <span class="filter-label">Kind</span>
-    <button class="chip kind-chip on" data-kind="all" type="button">All</button>
-    <button class="chip kind-chip" data-kind="story" type="button">Story</button>
-    <button class="chip kind-chip" data-kind="side" type="button">Strands</button>
-    <button class="chip kind-chip" data-kind="activity" type="button">Activities</button>
-    <button class="chip kind-chip" data-kind="collectible" type="button">Collectibles</button>
-    <button class="chip kind-chip" data-kind="heist" type="button">Heists</button>
-    <button class="chip kind-chip" data-kind="economy" type="button">Economy</button>
-    <button class="chip kind-chip" data-kind="meta" type="button">Meta</button>
+    <button class="chip kind-chip on" data-kind="all" type="button" aria-pressed="true">All</button>
+    <button class="chip kind-chip" data-kind="story" type="button" aria-pressed="false">Story</button>
+    <button class="chip kind-chip" data-kind="side" type="button" aria-pressed="false">Strands</button>
+    <button class="chip kind-chip" data-kind="activity" type="button" aria-pressed="false">Activities</button>
+    <button class="chip kind-chip" data-kind="collectible" type="button" aria-pressed="false">Collectibles</button>
+    <button class="chip kind-chip" data-kind="heist" type="button" aria-pressed="false">Heists</button>
+    <button class="chip kind-chip" data-kind="economy" type="button" aria-pressed="false">Economy</button>
+    <button class="chip kind-chip" data-kind="meta" type="button" aria-pressed="false">Meta</button>
   </div>
   <div class="filter-row">
     <span class="filter-label">Show</span>
@@ -75,20 +75,20 @@
 </section>
 
 <footer id="foot">
-  <p>Trophy names and descriptions are shown exactly as PlayStation publishes them. Every guide is
-  original text written for this entry, and each trophy names its sources beside it. Progress is saved
-  in your browser with localStorage and never leaves your machine.</p>
-  <p class="updated">Data verified <time id="verifiedAt" datetime="2026-11-21">2026-11-21</time> — every
-  trophy checked against the official PlayStation list. Press Ctrl/Cmd+P for a paper checklist: the print
+  <p>Trophy names and descriptions are reproduced as PlayStation publishes them. Every guide here is
+  original text written for this entry, and each trophy lists its sources beside the steps. Your progress
+  lives in this browser's localStorage and is never sent anywhere.</p>
+  <p class="updated">Data verified <time id="verifiedAt" datetime="2026-11-21">2026-11-21</time> — all 55
+  trophies checked against the official PlayStation list. Press Ctrl/Cmd+P for a paper checklist: the print
   stylesheet drops the dark theme and every control, and keeps one bordered trophy per row in black on
   white.</p>
 </footer>
 
 <script type="module" src="app.js"></script>
 <script type="module">
-  // The footer date comes from the data module, not from a hand-typed string, so the page cannot
-  // claim a fresher check than the trophy list it ships. The <time> element's ISO text and datetime
-  // attribute are the no-script fallback; with scripts on, the date is localised in place.
+  // The footer's date is read from the data module, never typed into this page by hand, so the page
+  // cannot advertise a fresher check than the trophy list it ships. The <time> element's ISO text and
+  // datetime attribute above are the no-script fallback; with scripts on, the date is localised in place.
   import { VERIFIED_AT } from './data/trophies.js';
   const slot = document.getElementById('verifiedAt');
   if (slot && /^\d{4}-\d{2}-\d{2}$/.test(VERIFIED_AT)) {

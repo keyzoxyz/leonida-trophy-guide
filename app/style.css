@@ -1,6 +1,7 @@
-/* Leonida Trophy Guide — Vice City dusk. Deep navy, magenta and teal, with gold kept for platinum.
-   One 4px spacing scale, one type scale, no webfont and no network request. The print stylesheet is
-   the last block in the file: the same trophy list as a black-on-white paper checklist. */
+/* Leonida Trophy Guide — Vice City dusk: deep navy panels, magenta accent, teal for live state, gold
+   reserved for platinum and money. Everything is sized from one 4px scale, no webfont is fetched and
+   nothing leaves the machine. The @media print block at the very bottom turns the same list into a
+   black-on-white checklist you can carry to the couch. */
 
 :root {
   --bg: #0d0f1a;
@@ -153,13 +154,15 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); }
 
-.filter-label {
-  min-width: 46px;
+.filter-label,
+.search-label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--ink-faint);
 }
+
+.filter-label { min-width: 46px; }
 
 .chip { padding: 5px var(--s3); font-size: 12px; }
 
@@ -177,13 +180,6 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 }
 
 .spacer { flex: 1 1 auto; }
-
-.search-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-faint);
-}
 
 #search {
   min-width: 240px;
@@ -219,8 +215,8 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 #roadmapPanel {
   position: sticky;
   top: 128px;
-  /* Ten stages with notes are taller than a laptop viewport, so the panel scrolls inside itself
-     instead of pushing its last rows below the fold where they cannot be clicked. */
+  /* Ten stages with their notes run taller than a laptop window, so the panel scrolls inside itself;
+     otherwise the last stages sit under the fold where they cannot be clicked. */
   max-height: calc(100vh - 128px - var(--s4));
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -238,7 +234,7 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   color: var(--gold);
 }
 
-/* missable callout: the count that decides whether the platinum is still winnable */
+/* the callout: the one number that decides whether the platinum is still winnable */
 .mcallout {
   margin: 0 0 var(--s3);
   padding: var(--s3);
@@ -445,6 +441,15 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .tcheck:hover { border-color: var(--teal); }
 .tcard.earned .tcheck { border-color: var(--ok); background: var(--ok); color: #04150c; }
 
+.empty {
+  padding: var(--s7) var(--s5);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  font-size: 13px;
+  text-align: center;
+  color: var(--ink-faint);
+}
+
 /* ── detail sheet ────────────────────────────────────────────────────── */
 
 #detailSheet {
@@ -460,6 +465,10 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 #detailSheet[hidden] { display: none; }
 
+/* the page behind the sheet stays put: scrolling it while a modal is up moves the card the reader
+   will return to */
+body.sheet-open { overflow: hidden; }
+
 #detailBody {
   width: min(760px, 100%);
   max-height: min(86vh, 900px);
@@ -472,8 +481,8 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 }
 
 #closeDetail {
-  /* clamped inside the viewport: a fixed offset put the only visible way out above the top edge on
-     short windows */
+  /* clamped inside the viewport: a plain fixed offset pushed the only visible way out above the top
+     edge on short windows */
   position: fixed;
   top: clamp(var(--s4), calc(50% - min(43vh, 450px) - 52px), calc(100vh - 52px));
   right: clamp(var(--s4), calc(50% - 380px - 52px), calc(100vw - 52px));
@@ -543,8 +552,8 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   font-weight: 650;
 }
 
-/* spoiler-safe mode: the identity of an unearned story trophy is blurred rather than removed, so the
-   layout does not jump when the setting is toggled */
+/* spoiler-safe mode blurs an unearned story trophy rather than removing it, so the list does not jump
+   when the setting is toggled */
 body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname,
 body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
   color: transparent;
@@ -572,15 +581,6 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
   text-underline-offset: 2px;
 }
 
-.empty {
-  padding: var(--s7) var(--s5);
-  border: 1px dashed var(--line);
-  border-radius: var(--radius);
-  font-size: 13px;
-  text-align: center;
-  color: var(--ink-faint);
-}
-
 /* grade chips: per-grade earned counters that double as filters */
 .grade-chips { display: flex; gap: var(--s1); margin-top: var(--s2); }
 
@@ -604,9 +604,9 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
 /* ── print: the same list as a paper checklist ───────────────────────── */
 
 /* Paper has no hover, no sticky panel and no dark mode, so this block strips the theme back to black
-   on white. The top bar, the filters, the roadmap panel and the detail sheet are controls and are
-   dropped entirely; what remains is the trophy list, one trophy per row inside a thin border, with
-   the on-screen check button replaced by a box that can be ticked with a pen. */
+   on white. The top bar, filters, roadmap panel and detail sheet exist only for a mouse and are dropped;
+   what remains is the trophy list, one trophy per row in a thin border, with the on-screen check button
+   replaced by an empty box you can tick with a pen. */
 @media print {
   :root { color-scheme: light; }
 
@@ -717,7 +717,7 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
 
   .tcard.earned .tname { color: #000 !important; text-decoration: line-through; }
 
-  /* the screen blur is a text-shadow; on paper that prints as a grey smear, so print the words */
+  /* the screen blur is a text-shadow; on paper it prints as a grey smear, so print the words instead */
   body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname,
   body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
     color: #000 !important;
