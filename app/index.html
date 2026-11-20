@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leonida Trophy Guide — GTA VI platinum roadmap &amp; tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">
+    <h1>LEONIDA <span>TROPHY GUIDE</span></h1>
+    <p class="tagline">Grand Theft Auto VI · PlayStation 5 · 55 trophies · 100% completion roadmap</p>
+  </div>
+  <div class="progress-block" id="progressBlock">
+    <div class="progress-numbers"><span id="earnedCount">0</span>/<span id="totalCount">55</span>
+      <span class="pct" id="earnedPct">0%</span></div>
+    <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+  </div>
+  <div class="controls-block">
+    <label class="spoiler-toggle"><input type="checkbox" id="spoilerMode"> Spoiler-safe mode</label>
+    <button id="exportBtn" type="button">Export progress</button>
+    <button id="importBtn" type="button">Import</button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+  </div>
+</header>
+
+<nav id="filters">
+  <div class="filter-row">
+    <span class="filter-label">Kind</span>
+    <button class="chip kind-chip on" data-kind="all" type="button">All</button>
+    <button class="chip kind-chip" data-kind="story" type="button">Story</button>
+    <button class="chip kind-chip" data-kind="side" type="button">Strands</button>
+    <button class="chip kind-chip" data-kind="activity" type="button">Activities</button>
+    <button class="chip kind-chip" data-kind="collectible" type="button">Collectibles</button>
+    <button class="chip kind-chip" data-kind="heist" type="button">Heists</button>
+    <button class="chip kind-chip" data-kind="economy" type="button">Economy</button>
+    <button class="chip kind-chip" data-kind="meta" type="button">Meta</button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Show</span>
+    <button class="chip flag-chip on" data-flag="missable" type="button">Missable only</button>
+    <button class="chip flag-chip on" data-flag="earned" type="button">Hide earned</button>
+    <button class="chip flag-chip" data-flag="unearned-only" type="button">Unearned only</button>
+    <span class="spacer"></span>
+    <input id="search" type="search" placeholder="Search name or guide…" autocomplete="off">
+  </div>
+</nav>
+
+<main id="layout">
+  <section id="roadmapPanel">
+    <h2>Roadmap to the platinum</h2>
+    <ol id="roadmapList"></ol>
+  </section>
+
+  <section id="trophyPanel">
+    <div id="trophyList" role="list"></div>
+  </section>
+</main>
+
+<section id="detailSheet" hidden aria-live="polite">
+  <button id="closeDetail" type="button" aria-label="Close">✕</button>
+  <div id="detailBody"></div>
+</section>
+
+<footer id="foot">
+  <p>Trophy names and descriptions are shown exactly as PlayStation publishes them. Guides are original
+  text for this entry; each trophy's sources are listed beside it. Progress is saved in your browser
+  (localStorage) and never leaves your machine.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
