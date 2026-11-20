@@ -7,1158 +7,1158 @@ export const PLATFORM = "PlayStation 5";
 export const VERIFIED_AT = "2026-11-21";
 
 export const STAGES = [
- {
-  "id": 0,
-  "title": "Chapter 1-4 story",
-  "note": "The unmissable spine. Play it, and note that Chapter 2 is where the clock starts on everything missable."
- },
- {
-  "id": 1,
-  "title": "The finale",
-  "note": "The final mission. Everything in stages 2-8 belongs before it."
- },
- {
-  "id": 2,
-  "title": "Front-loaded missions",
-  "note": "Single-mission trophies that arrive while the story runs. Unmissable, listed so the roadmap reads in order."
- },
- {
-  "id": 3,
-  "title": "100% completion",
-  "note": "The long gold. Work from the in-game checklist, not from this list."
- },
- {
-  "id": 4,
-  "title": "Activities & skill gates",
-  "note": "The breadth of the state: stunts, ranges, races, meditation, arcade. Grind-friendly, never missable."
- },
- {
-  "id": 5,
-  "title": "Stranger strands",
-  "note": "Companion and stranger strands. These are the missable ones: finish each in the chapter it opens."
- },
- {
-  "id": 6,
-  "title": "Collectibles & coverage",
-  "note": "Card sets, WAiNK locations, vehicles, map coverage. Route them district by district."
- },
- {
-  "id": 7,
-  "title": "Heists & robberies",
-  "note": "Banks, trucks, shops, gangs. The escapes are part of the requirement."
- },
- {
-  "id": 8,
-  "title": "Economy & decisions",
-  "note": "Money loops, property and the hidden decision trophies. Last, because they need cash."
- },
- {
-  "id": 9,
-  "title": "The platinum",
-  "note": "The receipt: it arrives when the other fifty-four do."
- }
+  {
+    "id": 0,
+    "title": "Chapter 1-4 story",
+    "note": "The unmissable spine. Play it, and note that Chapter 2 is where the clock starts on everything missable."
+  },
+  {
+    "id": 1,
+    "title": "The finale",
+    "note": "The final mission. Everything in stages 2-8 belongs before it."
+  },
+  {
+    "id": 2,
+    "title": "Front-loaded missions",
+    "note": "Single-mission trophies that arrive while the story runs. Unmissable, listed so the roadmap reads in order."
+  },
+  {
+    "id": 3,
+    "title": "100% completion",
+    "note": "The long gold. Work from the in-game checklist, not from this list."
+  },
+  {
+    "id": 4,
+    "title": "Activities & skill gates",
+    "note": "The breadth of the state: stunts, ranges, races, meditation, arcade. Grind-friendly, never missable."
+  },
+  {
+    "id": 5,
+    "title": "Stranger strands",
+    "note": "Companion and stranger strands. These are the missable ones: finish each in the chapter it opens."
+  },
+  {
+    "id": 6,
+    "title": "Collectibles & coverage",
+    "note": "Card sets, WAiNK locations, vehicles, map coverage. Route them district by district."
+  },
+  {
+    "id": 7,
+    "title": "Heists & robberies",
+    "note": "Banks, trucks, shops, gangs. The escapes are part of the requirement."
+  },
+  {
+    "id": 8,
+    "title": "Economy & decisions",
+    "note": "Money loops, property and the hidden decision trophies. Last, because they need cash."
+  },
+  {
+    "id": 9,
+    "title": "The platinum",
+    "note": "The receipt: it arrives when the other fifty-four do."
+  }
 ];
 
 export const TROPHIES = [
- {
-  "id": 1,
-  "name": "Vice Got a Price!",
-  "description": "Congratulations! You're a Leonida Legend.",
-  "grade": "platinum",
-  "kind": "meta",
-  "stage": 9,
-  "missable": false,
-  "hidden": false,
-  "guide": "The platinum is a receipt for the rest of the list, so there is no shortcut worth planning around: it arrives on the last of the other fifty-four unlocks, whatever that happens to be. What shapes the run is the pair of golds, because A Long Road demands the full completion checklist and You Gotta Know When to Get Off demands the finale. The set has no online component, so no server can take this away from you, which makes it a patience problem rather than a timing problem. Keep the tracker honest and the trophy takes care of itself.",
-  "why": "Nothing here is hard in itself; the platinum is only as long as the fifty-four trophies underneath it.",
-  "steps": [
-   "Unlock the other 54 trophies.",
-   "The platinum pops on the last one, wherever it happens."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)",
-   "PSNProfiles trophy list"
-  ]
- },
- {
-  "id": 2,
-  "name": "Just Like Paradise",
-  "description": "Complete Gone Fishing.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 0,
-  "missable": false,
-  "hidden": false,
-  "guide": "Gone Fishing is the opening mission, so this trophy is a side effect of starting the game at all. Take the driving and shooting prompts seriously while they are on screen: the same inputs come back in the stunt and Combat Focus challenges, and learning them here saves retries later. Complete the mission and the trophy lands on the results screen.",
-  "why": "Free, because the story hands it over the first time the opening mission plays.",
-  "steps": [
-   "Play the story mission Gone Fishing.",
-   "The trophy pops on the mission-complete screen."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 3,
-  "name": "Paradise Lost",
-  "description": "Complete Chapter 1.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 0,
-  "missable": false,
-  "hidden": false,
-  "guide": "This one lands on the chapter boundary rather than on any single mission, so the plan is simply to finish what Chapter 1 puts in front of you. The usual reason it seems stuck is an epilogue mission that belongs to the chapter but reads like a side job: clear it before moving on. When the chapter's closing scene plays, the trophy follows.",
-  "why": "Pure chapter progress, and the only way to lose it is to put the controller down.",
-  "steps": [
-   "Complete every mission in Chapter 1, epilogue included.",
-   "The trophy pops when the chapter closes."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 4,
-  "name": "T**s Ass Drug Money",
-  "description": "Complete Chapter 2.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 0,
-  "missable": false,
-  "hidden": false,
-  "guide": "Chapter 2 is where Leonida opens up, and the trophy arrives when the chapter closes. Treat the unlock as a warning as much as a reward: the companion and stranger strands that expire are reachable from here, and several of them stop being available once the story moves on. Play the chapter normally, then read the roadmap before starting Chapter 3.",
-  "why": "A chapter gate like the others, except that the same chapter starts the clock on every missable strand.",
-  "steps": [
-   "Complete every mission in Chapter 2.",
-   "The trophy pops when the chapter closes."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 5,
-  "name": "Vice City, Baby!",
-  "description": "Complete Chapter 3.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 0,
-  "missable": false,
-  "hidden": false,
-  "guide": "Finish Chapter 3 and the trophy is yours. By this chapter the game has introduced each family of side activity at least once, which makes it the natural moment to clear Master of None and the shooting range rather than leaving them for the post-story cleanup. There is no optional step to miss.",
-  "why": "Straight story progress, and the point where every activity family has finally been shown to you.",
-  "steps": [
-   "Complete every mission in Chapter 3.",
-   "The trophy pops when the chapter closes."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 6,
-  "name": "Top Of The World, Ma",
-  "description": "Complete Chapter 4.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 0,
-  "missable": false,
-  "hidden": false,
-  "guide": "The last of the four chapter trophies, awarded when Chapter 4 closes. Everything missable in the list expires at or before this point, so if the plan is to rush the story and tidy up afterwards, this is the chapter to slow down in and check the missable counter. Otherwise it is simply the next milestone.",
-  "why": "Another chapter boundary, free as long as the story keeps moving.",
-  "steps": [
-   "Complete every mission in Chapter 4.",
-   "The trophy pops when the chapter closes."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 7,
-  "name": "You Gotta Know When to Get Off",
-  "description": "Complete the final mission.",
-  "grade": "gold",
-  "kind": "story",
-  "stage": 1,
-  "missable": false,
-  "hidden": false,
-  "guide": "The story's endpoint, and one of the two golds. It cannot be failed, but it can be reached too early: several companion and stranger trophies stop being earnable once the finale is behind you, so the roadmap puts everything else first. Clear stages two through eight, then finish the story. The trophy pops with the closing mission.",
-  "why": "Long rather than difficult: it is the final mission, and nothing earlier can lock it out.",
-  "steps": [
-   "Finish every mission the story requires before the finale.",
-   "Complete the final mission."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)",
-   "PSNProfiles trophy list"
-  ]
- },
- {
-  "id": 8,
-  "name": "Trust",
-  "description": "Complete Breakfast Run.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 2,
-  "missable": false,
-  "hidden": false,
-  "guide": "Breakfast Run is a story mission in the front-loaded stretch, and the trophy is attached to finishing it. There is nothing to prepare and no branch to worry about. Play it when the story offers it and move on.",
-  "why": "A single story mission, so it costs only the time Breakfast Run takes.",
-  "steps": [
-   "Play the story mission Breakfast Run.",
-   "The trophy pops on completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 9,
-  "name": "Break the Bank",
-  "description": "Complete The Cartel Heist.",
-  "grade": "bronze",
-  "kind": "heist",
-  "stage": 2,
-  "missable": false,
-  "hidden": false,
-  "guide": "The Cartel Heist is a story heist, so the trophy arrives with the mission rather than with any optional take. Do not relax at the vault: the escape counts as part of the completion, and dying on the way out means repeating the whole job. Finish the mission clean and the trophy is banked.",
-  "why": "Free except for the escape, which is the part of a heist that actually punishes a sloppy run.",
-  "steps": [
-   "Play the story mission The Cartel Heist.",
-   "Complete it, escape included."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 10,
-  "name": "Family Matters",
-  "description": "Complete Child's Play.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 2,
-  "missable": false,
-  "hidden": false,
-  "guide": "Child's Play is one of the front-loaded story missions, and finishing it is the entire requirement. Nothing in the trophy description asks for a rank, a time or a choice. Play it through and the pop follows.",
-  "why": "A single story mission, with no optional condition attached.",
-  "steps": [
-   "Play the story mission Child's Play.",
-   "The trophy pops on completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 11,
-  "name": "DWNFALL",
-  "description": "Complete Headliners.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 2,
-  "missable": false,
-  "hidden": false,
-  "guide": "Headliners carries this trophy, and it arrives on mission completion like the rest of the front-loaded set. There is no collectible or side objective hiding behind the name. Clear it as the story presents it.",
-  "why": "One story mission; the only cost is the mission's own length.",
-  "steps": [
-   "Play the story mission Headliners.",
-   "The trophy pops on completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 12,
-  "name": "Hi-Jacked",
-  "description": "Complete VCIA Takedown.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 2,
-  "missable": false,
-  "hidden": false,
-  "guide": "VCIA Takedown is the mission that awards Hi-Jacked, and the trophy is tied to finishing it rather than to how you finish it. No rank or stealth condition is attached to the description. The trophy lands on the completion screen.",
-  "why": "A story mission with nothing optional in the requirement, so it is free progress.",
-  "steps": [
-   "Play the story mission VCIA Takedown.",
-   "The trophy pops on completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 13,
-  "name": "Snow Storm",
-  "description": "Complete Operation Savage Glory.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 2,
-  "missable": false,
-  "hidden": false,
-  "guide": "Operation Savage Glory closes out this group of single-mission trophies. The requirement is completion, not performance, so a messy firefight costs nothing but time. Push through to the end of the mission and the trophy appears.",
-  "why": "Free story progress, though the mission itself is the longest of the front-loaded batch.",
-  "steps": [
-   "Play the story mission Operation Savage Glory.",
-   "The trophy pops on completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 14,
-  "name": "A Long Road",
-  "description": "Attain 100% Completion.",
-  "grade": "gold",
-  "kind": "meta",
-  "stage": 3,
-  "missable": false,
-  "hidden": false,
-  "guide": "100% completion means clearing every category on the in-game checklist, and the trophy pops the moment the meter reaches the top rather than when the last mission ends. Work from the checklist itself instead of from this list, because the game counts things a guide tends to forget, from race wins to property purchases. The efficient route is to sweep region by region with every category visible, rather than chasing one category across the whole map. Finish with whichever category the checklist still shows short.",
-  "why": "The volume trophy: a hundred small categories, each of which can be left one item short.",
-  "steps": [
-   "Open the in-game completion checklist and note every category at less than its maximum.",
-   "Clear each category, finishing with the one the checklist shows short.",
-   "The trophy pops the moment the meter reads 100%."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)",
-   "PSNProfiles trophy list"
-  ]
- },
- {
-  "id": 15,
-  "name": "Cunning Stunts",
-  "description": "Complete 250 Stunts.",
-  "grade": "silver",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "The counter wants 250 separate stunt completions, so repeating a jump you enjoy will not move it. The game names the stunt type it accepts in the activity list, which is worth reading before grinding the wrong thing. Plan a circuit by region and mark each stunt off as it lands, because a missed jump in a district you have already left is the usual reason the counter stalls at 249. Keep a vehicle you trust and accept the retries.",
-  "why": "Volume with a skill floor: two hundred and fifty distinct stunts, each of which can fail on the last centimetre.",
-  "steps": [
-   "Identify the stunt type the counter accepts (the game names it in the activity list).",
-   "Work region by region so no stunt is repeated.",
-   "Keep going to 250 distinct completions."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 250
- },
- {
-  "id": 16,
-  "name": "Master of None",
-  "description": "Try each type of activity once.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "This one asks you to try each type of activity once, not to master any of them. Read the in-game activity list and count the types before starting, since several only appear after a certain chapter. The trophy fires when the last new type is tried, which may be well before the activities themselves are finished.",
-  "why": "Cheap in hours, but easy to leave half-finished because the trophy counts types, not completions.",
-  "steps": [
-   "Read the in-game activity list and count the types.",
-   "Complete one of each type, ticking them off.",
-   "The trophy pops on the last new type, not on the last completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 17,
-  "name": "The Shootist",
-  "description": "Earn a gold medal in all Shooting Range challenges.",
-  "grade": "silver",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Every Shooting Range challenge has to be taken to gold, and the trophy waits for the last one. Read each challenge's target before firing so you know whether it rewards speed, accuracy or a particular weapon, then retry with the intended gun rather than a favourite. Gold scores are repeatable, so a run that goes badly costs nothing but the reload. The trophy pops when the final gold is banked.",
-  "why": "A skill gate: every challenge needs a gold, and silver scores buy nothing.",
-  "steps": [
-   "Find the Shooting Range activity and list its challenges.",
-   "Earn gold on each challenge, retrying with the intended weapon.",
-   "The trophy pops when the last gold is banked."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)",
-   "PSNProfiles trophy list"
-  ]
- },
- {
-  "id": 18,
-  "name": "Top Fun",
-  "description": "Win a Top Fun Drone Race at every location.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Top Fun drone races sit at several fixed locations, and the trophy wants a win at each. Open the activity map and list them before flying anything, because a site you never visited is invisible in the count. Win once per location and move on; the trophy arrives with the last one.",
-  "why": "Breadth rather than difficulty: one win per location, and every location has to be found first.",
-  "steps": [
-   "Open the activity map and list every Top Fun location.",
-   "Win a race at each one.",
-   "The trophy pops when the last location is won."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 19,
-  "name": "Earn Cash, Not Kudos",
-  "description": "Win 20 different races.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "The description is literal: twenty different race events, won. Re-running the same circuit is comfortable and does nothing for the counter, so open the map and work through events you have not won yet. Wins in any class count, which makes the short street races the fastest route to twenty. The trophy pops on the twentieth distinct win.",
-  "why": "Twenty wins, and the count is of distinct races rather than repeat victories.",
-  "steps": [
-   "List the race events on the map.",
-   "Win twenty distinct ones.",
-   "The trophy pops on the twentieth distinct win."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 20,
-  "name": "Baited My Tackle",
-  "description": "Beat Cal in a fishing challenge.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Cal's fishing challenge is part of a stranger strand, and beating his catch is the whole requirement. Do it in the chapter where the strand opens: once the story moves past it the marker can stop appearing, and no amount of fishing later will bring it back. Take the challenge when it is offered, land the bigger fish, and the trophy is yours.",
-  "why": "A one-time fishing contest with a named character, so it disappears if the strand is left too long.",
-  "steps": [
-   "Reach Cal's stranger strand and accept the fishing challenge.",
-   "Beat his catch.",
-   "The trophy pops on the win."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 21,
-  "name": "Stick Fiddler",
-  "description": "Complete an arcade game.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Find any working arcade cabinet in Leonida and play its game to the end in one sitting. Leaving the cabinet resets the run, which is the only real trap here. The games are short and the difficulty modest, so this is patience rather than skill.",
-  "why": "Cheap, but it wants a full playthrough of an arcade cabinet without walking away.",
-  "steps": [
-   "Find an arcade cabinet.",
-   "Play the game to its end without leaving.",
-   "The trophy pops on completion."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 22,
-  "name": "Road to Rehabilitation",
-  "description": "Complete the final mission for Andy.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Andy's strand is a multi-mission storyline, and the trophy sits on its final mission rather than on the first. Start it as soon as the marker appears and push it through in the same chapter, because the strand expires when the story advances. Count the missions left before moving on, and the last one hands over the trophy.",
-  "why": "A closed storyline: Andy's strand has to be finished in the chapter it opens.",
-  "steps": [
-   "Find Andy's strand and start it.",
-   "Play every mission in the strand.",
-   "The trophy pops on the strand's final mission."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 23,
-  "name": "This Was No Boat Accident",
-  "description": "Complete the final mission for Kenton.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Kenton's strand ends with this trophy, so the work is in starting it early and finishing it before the chapter turns. The strand is easy to postpone because its markers sit away from the main route. Do the whole run in one pass and the final mission awards the trophy.",
-  "why": "Missable storyline progress: Kenton's strand has a window and no second chance.",
-  "steps": [
-   "Start Kenton's strand.",
-   "Play the strand through to its final mission.",
-   "The trophy pops on that final mission."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 24,
-  "name": "The Lone Rider",
-  "description": "Complete the final mission for Billy.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Billy's strand is one of the missable storylines, and the trophy arrives only when the strand's final mission is done. Begin it in the chapter that introduces it and keep going until the marker clears. If the story is rushed past the window, the strand stops being offered.",
-  "why": "Another strand with an expiry date; the trophy is the last mission, not the first.",
-  "steps": [
-   "Start Billy's strand.",
-   "Complete every mission in it.",
-   "The trophy pops on the final mission."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 25,
-  "name": "Strangers & Freaks",
-  "description": "Complete 8 mission strands for strangers across the state of Leonida.",
-  "grade": "silver",
-  "kind": "side",
-  "stage": 5,
-  "missable": false,
-  "hidden": false,
-  "guide": "This asks for eight stranger strands completed in full, not eight missions. Collect the markers as they appear, and track which strands are already closed so a half-finished one is not mistaken for progress. The trophy fires on the eighth completed strand, which makes it a useful check on how many are still open before the story ends.",
-  "why": "Eight whole strands, so it is breadth rather than any single hard mission.",
-  "steps": [
-   "Collect stranger markers as they appear.",
-   "Finish eight whole strands, tracking which are done.",
-   "The trophy pops on the eighth completed strand."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 8
- },
- {
-  "id": 26,
-  "name": "Supply & Demand",
-  "description": "Complete the final mission for Randy.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Randy's strand closes with this trophy, and the strand exists only inside a limited stretch of the story. Start it when the marker shows and finish every mission in it without drifting into other content for too long. The last mission is the one that counts.",
-  "why": "A missable strand, cheap in difficulty but expensive in attention.",
-  "steps": [
-   "Start Randy's strand.",
-   "Complete the strand to its final mission.",
-   "The trophy pops on that mission."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 27,
-  "name": "Spin On This!",
-  "description": "Complete the final mission for Tyrone.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Finish Tyrone's strand to its final mission and the trophy is done. The trap is starting it late: the markers dry up once the story passes the chapter, and the strand cannot be restarted. Work it in one sitting and the final mission delivers the trophy.",
-  "why": "Tyrone's strand is another closed window; the trophy needs the whole run, not a single job.",
-  "steps": [
-   "Start Tyrone's strand.",
-   "Complete it to the final mission.",
-   "The trophy pops on that mission."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 28,
-  "name": "Positive Mental Attitude",
-  "description": "Meditate at every spot across Leonida.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Meditation spots are fixed locations, and the trophy wants all of them. Pull the list from the activity map before starting so you know the count you are chasing, then work district by district. The trophy pops at the last spot, and there is no skill check beyond sitting still.",
-  "why": "Pure coverage: every meditation spot in the state, none of them hard to reach.",
-  "steps": [
-   "Get the meditation spot list from the activity map.",
-   "Meditate at each one.",
-   "The trophy pops at the last spot."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 29,
-  "name": "Fair Game",
-  "description": "Hunt a unique animal for Bret.",
-  "grade": "bronze",
-  "kind": "side",
-  "stage": 5,
-  "missable": true,
-  "hidden": false,
-  "guide": "Bret's request names a specific animal, and the trophy is for killing that one rather than for hunting generally. Take the request in the chapter it appears and track the animal down immediately, because the strand expires with the story. The kill itself is straightforward once the animal is found.",
-  "why": "A one-off hunt tied to Bret, and the window closes with the strand.",
-  "steps": [
-   "Take Bret's hunting request.",
-   "Track and kill the unique animal it names.",
-   "The trophy pops on the kill."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 30,
-  "name": "Don't Touch My Deck",
-  "description": "Complete 3 Collectible Card sets.",
-  "grade": "silver",
-  "kind": "collectible",
-  "stage": 6,
-  "missable": false,
-  "hidden": false,
-  "guide": "Collectible card sets are finite, and the trophy asks for three of them completed. List the sets and their card counts first, then finish the smallest sets rather than spreading finds across all of them. Duplicates and missing singles can usually be bought, so a nearly complete set is worth closing with cash. The trophy pops on the third completed set.",
-  "why": "Three complete sets, which means buying the stragglers rather than only finding them.",
-  "steps": [
-   "List the card sets and their card counts.",
-   "Complete one set at a time, buying the stragglers.",
-   "The trophy pops on the third completed set."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 3
- },
- {
-  "id": 31,
-  "name": "You WAiNKer!",
-  "description": "WAiNK It at 100 locations.",
-  "grade": "silver",
-  "kind": "collectible",
-  "stage": 6,
-  "missable": false,
-  "hidden": false,
-  "guide": "WAiNK has to be performed at 100 different locations, which makes this the longest of the collectible-style trophies. Map the districts that hold the spots and sweep them one district at a time, crossing each off as it registers. Doing it while other collectibles are being cleared saves a second lap of the state. The trophy lands at the hundredth location.",
-  "why": "A hundred locations, so it is a routing problem more than a skill one.",
-  "steps": [
-   "Map the districts that hold WAiNK locations.",
-   "Perform WAiNK at each, district by district, marking them off.",
-   "The trophy pops at the hundredth location."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 100
- },
- {
-  "id": 32,
-  "name": "One Last Thing",
-  "description": "Complete 50 Challenges.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Challenges pop up during other content, and the trophy wants fifty completed. Accept them as they appear rather than finishing your current objective first, since a declined challenge is often gone. They are short by design, so the cost is attention rather than time.",
-  "why": "Fifty challenges that only appear while you are doing something else, so they are easy to ignore.",
-  "steps": [
-   "Accept challenges as they appear while playing other content.",
-   "Complete fifty of them.",
-   "The trophy pops on the fiftieth."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 50
- },
- {
-  "id": 33,
-  "name": "Hot Together",
-  "description": "Lose a 4 star Wanted Level with your partner and escape the heat.",
-  "grade": "bronze",
-  "kind": "heist",
-  "stage": 7,
-  "missable": true,
-  "hidden": false,
-  "guide": "Bring your partner, raise the wanted level to four stars, then lose it completely without dying. Breaking line of sight is the reliable method: side streets, tunnels and car swaps all work better than outrunning the chase. The trophy fires when the level clears, so the escape is the actual test.",
-  "why": "A four-star escape with a partner: fail the escape and the whole setup has to be repeated.",
-  "steps": [
-   "Bring the partner along and raise the wanted level to four stars.",
-   "Break line of sight and let the level decay to zero without dying.",
-   "The trophy pops when the level clears."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 34,
-  "name": "Retail Therapy",
-  "description": "Rob 3 shops back-to-back with your partner without losing your Wanted Level.",
-  "grade": "bronze",
-  "kind": "heist",
-  "stage": 7,
-  "missable": true,
-  "hidden": false,
-  "guide": "Pick three shops close enough together to hit while still wanted, because the wanted level has to survive all three robberies. Rob them in sequence without shaking the police or dying, and the trophy pops on the third. Scouting the route beforehand is the difference between a clean run and a restart.",
-  "why": "Three robberies with no cooldown and no losing the cops in between, so the route matters.",
-  "steps": [
-   "Pick three shops close enough to reach while wanted.",
-   "Rob the first, keep the level, rob the second, then the third.",
-   "The trophy pops on the third robbery with the level still held."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 35,
-  "name": "Whip It Good",
-  "description": "Discover 100 vehicles.",
-  "grade": "bronze",
-  "kind": "collectible",
-  "stage": 6,
-  "missable": false,
-  "hidden": false,
-  "guide": "Vehicle discovery counts distinct models, so driving one favourite everywhere will stall the counter. Visit dealerships and garages to register stocked cars, and swap rides whenever something unfamiliar appears. The count runs alongside other collectibles, so check progress before dedicating a sweep to it.",
-  "why": "A hundred distinct vehicles, most of which are found by driving around rather than by skill.",
-  "steps": [
-   "Drive and inspect a wide spread of vehicles rather than one favourite.",
-   "Visit dealerships and garages to register stocked models.",
-   "The trophy pops at the hundredth distinct vehicle."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 100
- },
- {
-  "id": 36,
-  "name": "Gunslinger",
-  "description": "Take down 5 enemies in a single use of Combat Focus.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Find a group of at least five enemies and trigger Combat Focus with all of them in view. The kills have to happen before the ability ends, so pick targets that are already close and lined up. A failed attempt costs only the cooldown; the trick is choosing the fight rather than forcing the one you are in.",
-  "why": "A skill moment: five kills inside one Combat Focus, in a single activation.",
-  "steps": [
-   "Find a fight with at least five enemies grouped together.",
-   "Activate Combat Focus with them all in view.",
-   "Take all five down before the ability ends."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 37,
-  "name": "Catch Me If You Can",
-  "description": "Make an unscheduled departure at VCIA.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Get to VCIA, reach the apron or a parked aircraft, and take off without using a scheduled departure. Security responds quickly, so the takeoff has to be immediate rather than careful. Clear the airport boundary and the trophy pops.",
-  "why": "Cheap, but it needs an aircraft and a clean exit from a restricted airport.",
-  "steps": [
-   "Go to VCIA and reach the apron or a parked aircraft.",
-   "Take off without using a scheduled departure.",
-   "The trophy pops once airborne and clear of the airport."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 38,
-  "name": "Challenging Tank",
-  "description": "Kinda hot in these Rhinos.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 7,
-  "missable": false,
-  "hidden": false,
-  "guide": "Get hold of the Rhino that the military content provides, then perform the act the description alludes to while driving it. The reference is a line the trophy is quoting, and the trigger is specific rather than a general rampage. Once the vehicle is yours the trophy is a few seconds away.",
-  "why": "A joke trophy: free once the Rhino is in hand, and the only cost is finding it.",
-  "steps": [
-   "Get hold of the Rhino the military content provides.",
-   "Perform the act the description alludes to while driving it.",
-   "The trophy pops on the trigger."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 39,
-  "name": "Sneakthief",
-  "description": "Rob a jewelry store without being detected.",
-  "grade": "bronze",
-  "kind": "heist",
-  "stage": 7,
-  "missable": true,
-  "hidden": false,
-  "guide": "Case the jewelry store before entering: know the entrances, the safe and the guard route. Take the contents without setting off an alarm, which usually means waiting for patrols rather than rushing the safe. The trophy pops on completion, so a loud exit after a quiet theft still counts.",
-  "why": "A stealth run with no combat allowance: one alarm and the attempt is void.",
-  "steps": [
-   "Case the jewelry store's entrances and the safe.",
-   "Enter and take the contents without raising an alarm.",
-   "The trophy pops once the robbery completes undetected."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 40,
-  "name": "Maximum Withdrawal",
-  "description": "Rob 5 Bank Vaults and escape.",
-  "grade": "silver",
-  "kind": "heist",
-  "stage": 7,
-  "missable": false,
-  "hidden": false,
-  "guide": "There are five bank vaults, and each robbery has to end in a clean escape. Plan the way out before starting the job, since the pursuit is what usually undoes the attempt. The trophy arrives on the fifth escape.",
-  "why": "Five vaults, each with an escape, so it is five chances to lose the run at the door.",
-  "steps": [
-   "Identify the five bank vaults.",
-   "Rob each and escape cleanly.",
-   "The trophy pops on the fifth escape."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 5
- },
- {
-  "id": 41,
-  "name": "A Classic Blitz Play",
-  "description": "Rob an Armored Truck and escape.",
-  "grade": "bronze",
-  "kind": "heist",
-  "stage": 7,
-  "missable": false,
-  "hidden": false,
-  "guide": "Intercept an armored truck, take the cargo and get clear of the pursuit. Trucks are slow, so the interception is easy; losing the police afterwards is the real requirement. The trophy pops once you are clear.",
-  "why": "One armored truck: short, but the escape is the part you can fumble.",
-  "steps": [
-   "Intercept an armored truck.",
-   "Take the cargo and escape the pursuit.",
-   "The trophy pops once clear."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 42,
-  "name": "The Goodtime State",
-  "description": "Explore all of Leonida.",
-  "grade": "bronze",
-  "kind": "collectible",
-  "stage": 6,
-  "missable": false,
-  "hidden": false,
-  "guide": "Fog on the map marks regions you have not visited, and the trophy wants all of them uncovered. Drive or fly through each region until the fog lifts, which also makes this a natural companion to the collectible sweeps. The trophy pops when the last region is revealed.",
-  "why": "Coverage rather than difficulty: the map only fills in where you have actually been.",
-  "steps": [
-   "Open the map and look for regions still fogged.",
-   "Drive or fly through each until the fog clears.",
-   "The trophy pops when the last region is uncovered."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 43,
-  "name": "Pest Control",
-  "description": "Rob an Illegal Operation belonging to each gang.",
-  "grade": "bronze",
-  "kind": "heist",
-  "stage": 7,
-  "missable": false,
-  "hidden": false,
-  "guide": "Each gang runs an illegal operation, and the trophy wants one robbery against every gang. Identify the gangs and their operations before starting so you are not re-robbing the same one. Track which gangs are done and finish with the last operation.",
-  "why": "One robbery per gang, so the work is in identifying all of them first.",
-  "steps": [
-   "Identify each gang and the illegal operation it runs.",
-   "Rob one operation per gang, tracking which gangs are done.",
-   "The trophy pops on the last gang's operation."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 44,
-  "name": "In The Beginning…",
-  "description": "Enjoy a cocktail with a view on Ocean Beach.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": true,
-  "hidden": false,
-  "guide": "Go to Ocean Beach and find the bar with the view, then order and finish a cocktail there. The trophy is tied to the drink rather than to the view, so there is no need to linger. Do it while the area is on the story route, since a bar you never visit is the only way to lose this.",
-  "why": "A single drink in a single bar, and it is missable only because the location is easy to postpone.",
-  "steps": [
-   "Go to Ocean Beach and find the bar with the view.",
-   "Order and finish a cocktail there.",
-   "The trophy pops on the drink."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 45,
-  "name": "Capital Offense",
-  "description": "Smash your way out of a vehicle showroom in classic style.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Drive a vehicle into a showroom and leave by smashing through the frontage. The trophy is about the exit, so the entry can be as messy as you like. Break out through the glass and it pops.",
-  "why": "Cheap chaos: a showroom, a car and a window, with no conditions beyond the exit.",
-  "steps": [
-   "Drive a vehicle into a showroom.",
-   "Leave by smashing through the frontage.",
-   "The trophy pops on the break-out."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 46,
-  "name": "Let’s Go Bowling",
-  "description": "Follow-through at the Kolt & Associates' bowling alley.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": true,
-  "hidden": false,
-  "guide": "The Kolt & Associates bowling alley hosts a full game, and the trophy wants the game finished rather than a high score. Bowl all ten frames to the end, however badly, and the trophy lands on the last one. Do it on the pass through the area rather than saving it for a later trip.",
-  "why": "A full game at one alley, missable only in the sense that the venue has to be visited.",
-  "steps": [
-   "Go to the Kolt & Associates bowling alley.",
-   "Bowl a full game to the end.",
-   "The trophy pops on the last frame."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 47,
-  "name": "Personal Best",
-  "description": "A partnership with mass appeal.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 8,
-  "missable": true,
-  "hidden": false,
-  "guide": "This trophy is tied to a particular story beat, and the description deliberately says nothing about which one. Play the story normally and it resolves on its own when the scene arrives. Because it is hidden, check the earned list rather than the map when wondering whether it has fired.",
-  "why": "A hidden story beat: no skill involved, but it sits behind a specific scene.",
-  "steps": [
-   "Play the story.",
-   "The trophy pops on the beat it is tied to."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 48,
-  "name": "Actions Speak Louder",
-  "description": "Choices made (for better or worse).",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 8,
-  "missable": true,
-  "hidden": false,
-  "guide": "The trophy is attached to a story decision, and either branch satisfies it. Play to the choice and commit, because there is no wrong answer as far as the trophy is concerned. The pop happens at the decision itself.",
-  "why": "A decision trophy: both branches count, so the only failure is not reaching the choice.",
-  "steps": [
-   "Play the story to the decision it is tied to.",
-   "Make the choice; either branch counts.",
-   "The trophy pops at the decision."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 49,
-  "name": "Bad Luck, I Guess",
-  "description": "Second time's the charm.",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 8,
-  "missable": true,
-  "hidden": false,
-  "guide": "The description points at a second attempt, and the trophy is awarded when that repeat happens in the story. Play the scene the first time without worrying about the outcome, then follow the story into the second attempt. The trophy lands on the retry.",
-  "why": "A repeat-attempt beat, so it is free unless the story is abandoned before it.",
-  "steps": [
-   "Play the story to the repeat attempt it is tied to.",
-   "The trophy pops on the second attempt."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 50,
-  "name": "The Truth Is Out There",
-  "description": "What the hell just happened?",
-  "grade": "bronze",
-  "kind": "story",
-  "stage": 8,
-  "missable": true,
-  "hidden": false,
-  "guide": "This one is tied to a named story moment, and the description is deliberately blank. Keep playing the story and it resolves when the moment arrives. Since it is hidden, trust the earned list over the map when checking whether it has fired.",
-  "why": "A hidden story moment; the difficulty is entirely in reaching it without spoilers.",
-  "steps": [
-   "Play the story.",
-   "The trophy pops on the moment it names."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 51,
-  "name": "Ten Pin",
-  "description": "Bowl 'em over with a melee drive-by.",
-  "grade": "bronze",
-  "kind": "activity",
-  "stage": 4,
-  "missable": false,
-  "hidden": false,
-  "guide": "Get a vehicle and a melee weapon, then hit a pedestrian with the weapon from the moving car. Speed matters less than contact, so drive past rather than at. The trophy pops on the hit.",
-  "why": "Cheap and quick, but it needs the right weapon and a moving vehicle.",
-  "steps": [
-   "Get a vehicle and a melee weapon.",
-   "Hit a pedestrian with the melee weapon from the moving vehicle.",
-   "The trophy pops on the hit."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ]
- },
- {
-  "id": 52,
-  "name": "Dime on the Dollar",
-  "description": "Earn $250,000 laundering Marked Bills through your contacts.",
-  "grade": "bronze",
-  "kind": "economy",
-  "stage": 8,
-  "missable": false,
-  "hidden": false,
-  "guide": "Marked bills come from robberies and jobs, and they only count once they are laundered through contacts. Treat it as a loop: collect, launder, repeat, and check the running total rather than guessing. The trophy pops when the cumulative $250,000 has been washed.",
-  "why": "A cash grind: a quarter of a million in marked bills, laundered deliberately.",
-  "steps": [
-   "Collect Marked Bills from robberies and jobs.",
-   "Launder them through contacts, repeatedly.",
-   "The trophy pops once $250,000 has been laundered in total."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 250000
- },
- {
-  "id": 53,
-  "name": "Treat Yo Self",
-  "description": "Spend $100,000 across all shops.",
-  "grade": "bronze",
-  "kind": "economy",
-  "stage": 8,
-  "missable": false,
-  "hidden": false,
-  "guide": "The trophy counts cumulative spending across shops, so it is a matter of buying broadly rather than saving. Spend at shops of every kind as the map is played, which also helps with vehicle discovery and property purchases. The purchase that crosses $100,000 awards the trophy.",
-  "why": "A spending target rather than a skill check: $100,000 across shops of every kind.",
-  "steps": [
-   "Buy from shops of every kind as the map is played.",
-   "Keep spending until the cumulative total passes $100,000.",
-   "The trophy pops on the purchase that crosses it."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 100000
- },
- {
-  "id": 54,
-  "name": "Little Boxes",
-  "description": "Purchase all garage properties.",
-  "grade": "bronze",
-  "kind": "economy",
-  "stage": 8,
-  "missable": false,
-  "hidden": false,
-  "guide": "List every garage property for sale and buy them all; the trophy is on the last purchase. Garages are expensive, so leave this for the point where robberies and heists have paid for it. The final purchase awards the trophy.",
-  "why": "A property checklist: every garage for sale, which means a large cash outlay late in the run.",
-  "steps": [
-   "List every garage property for sale.",
-   "Buy them all.",
-   "The trophy pops on the last purchase."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)",
-   "Rockstar Newswire"
-  ]
- },
- {
-  "id": 55,
-  "name": "On the Spot",
-  "description": "Register 10 vehicles to the Scooter Bros app.",
-  "grade": "bronze",
-  "kind": "economy",
-  "stage": 8,
-  "missable": false,
-  "hidden": false,
-  "guide": "Open the Scooter Bros app in the in-game phone and register ten vehicles. Any cars you own count, so a full garage covers the requirement in one pass. The trophy pops on the tenth registration.",
-  "why": "Ten registrations in a phone app: free, and only a matter of remembering it exists.",
-  "steps": [
-   "Open the Scooter Bros app in the in-game phone.",
-   "Register ten vehicles.",
-   "The trophy pops on the tenth registration."
-  ],
-  "sources": [
-   "PlayStation trophy description (official)"
-  ],
-  "count": 10
- }
+  {
+    "id": 1,
+    "name": "Vice Got a Price!",
+    "description": "Congratulations! You're a Leonida Legend.",
+    "grade": "platinum",
+    "kind": "meta",
+    "stage": 9,
+    "missable": false,
+    "hidden": false,
+    "guide": "There is no separate task behind the platinum: it is the receipt for the other fifty-four trophies and unlocks with whichever one you finish last. Plan the run around the two golds instead, because A Long Road needs the full completion checklist and the finale trophy needs the story closed. Nothing here is online, so no server can invalidate the run; the only real enemy is a missable you let slip past its chapter. Leave this one to arrive on its own and keep the tracker honest.",
+    "why": "There is no skill test here; the platinum is only as long as the fifty-four trophies underneath it.",
+    "steps": [
+      "Unlock the other 54 trophies.",
+      "The platinum pops on the last one, wherever it happens."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)",
+      "PSNProfiles trophy list"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Just Like Paradise",
+    "description": "Complete Gone Fishing.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 0,
+    "missable": false,
+    "hidden": false,
+    "guide": "Gone Fishing is an early story mission, so the only requirement is to keep following the main thread until it appears. Treat it as a lesson in how the game's missions flow rather than as a challenge: follow the markers, drive sensibly, and let the scenes play so the completion registers. The trophy lands on the mission-complete screen and there is nothing here to miss.",
+    "why": "A tutorial-grade story mission with no optional objective and nothing that can be missed.",
+    "steps": [
+      "Play the story mission Gone Fishing.",
+      "The trophy pops on the mission-complete screen."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Paradise Lost",
+    "description": "Complete Chapter 1.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 0,
+    "missable": false,
+    "hidden": false,
+    "guide": "Chapter 1 closes after its epilogue, so do not stop at whatever looks like the last job on the board. Play every marker the chapter offers before the map hands you Chapter 2, including the shorter epilogue beat that follows the main arc. The trophy pops when the chapter boundary is crossed, and that same boundary starts the clock on the game's missable content, which makes this a good moment to check the roadmap.",
+    "why": "Cheap in difficulty but expensive in attention: the chapter boundary quietly closes the first missables.",
+    "steps": [
+      "Complete every mission in Chapter 1, epilogue included.",
+      "The trophy pops when the chapter closes."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "T**s Ass Drug Money",
+    "description": "Complete Chapter 2.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 0,
+    "missable": false,
+    "hidden": false,
+    "guide": "Chapter 2 is where the state opens up and where most missable strands begin, so clearing its missions promptly keeps the plot moving without closing side content. Follow every chapter marker to the end, including any mission that only appears after the previous one, and do not enter a new chapter with a strand half-finished. The trophy is automatic at the boundary and asks for nothing else.",
+    "why": "Pure story progress; the only risk is treating the chapter as a place to stop and wander.",
+    "steps": [
+      "Complete every mission in Chapter 2.",
+      "The trophy pops when the chapter closes."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Vice City, Baby!",
+    "description": "Complete Chapter 3.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 0,
+    "missable": false,
+    "hidden": false,
+    "guide": "By Chapter 3 the map is wide and the temptation is to ignore the story for side money, but this trophy only cares about the chapter's mission set. Work the main markers in order, finish the chapter's optional-feeling story jobs, and let the closing scene run to the end. If a strand you started is still open when the chapter ends, this is the point where it can become unwinnable.",
+    "why": "Automatic, but the chapter boundary is where half-finished strands become unwinnable.",
+    "steps": [
+      "Complete every mission in Chapter 3.",
+      "The trophy pops when the chapter closes."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Top Of The World, Ma",
+    "description": "Complete Chapter 4.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 0,
+    "missable": false,
+    "hidden": false,
+    "guide": "Chapter 4 is the last stretch before the finale, so treat it as a checklist pass rather than a race. Clear every story mission, finish any open companion strand, and only then cross the boundary into the endgame. The trophy arrives with the chapter close and the finale becomes available immediately afterward, which is exactly why rushing here is the most common way to lose a missable.",
+    "why": "The last chapter is easy; arriving here with an open strand is what costs the platinum.",
+    "steps": [
+      "Complete every mission in Chapter 4.",
+      "The trophy pops when the chapter closes."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 7,
+    "name": "You Gotta Know When to Get Off",
+    "description": "Complete the final mission.",
+    "grade": "gold",
+    "kind": "story",
+    "stage": 1,
+    "missable": false,
+    "hidden": false,
+    "guide": "The finale is a gold because it ends the story, not because the mission itself is punishing. Before you start it, clear every other story requirement and every strand the roadmap flags as missable, because once the credits roll several of them are gone for this playthrough. Play the final mission to its end without quitting midway, and let the epilogue scenes finish so the completion registers.",
+    "why": "A gold for the story ending rather than the mission: the real fight is clearing the map first.",
+    "steps": [
+      "Finish every mission the story requires before the finale.",
+      "Complete the final mission."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)",
+      "PSNProfiles trophy list"
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Trust",
+    "description": "Complete Breakfast Run.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 2,
+    "missable": false,
+    "hidden": false,
+    "guide": "Breakfast Run is front-loaded story content and appears while the plot is still introducing its cast. Keep following the story markers; the mission needs no special setup and carries no optional objective. The trophy is awarded on completion, so finish it rather than restarting for a cleaner result.",
+    "why": "An early story mission that asks only that you play it.",
+    "steps": [
+      "Play the story mission Breakfast Run.",
+      "The trophy pops on completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Break the Bank",
+    "description": "Complete The Cartel Heist.",
+    "grade": "bronze",
+    "kind": "heist",
+    "stage": 2,
+    "missable": false,
+    "hidden": false,
+    "guide": "The Cartel Heist is story content rather than a free-roam robbery, so it appears on the main chain and cannot be started early. Play the setup missions the story gives you, then finish the heist itself including the escape, because abandoning the job after the score will not count. The trophy pops when the whole job completes.",
+    "why": "Story-gated, so it is a scheduling trophy: you cannot start it early and you cannot skip the escape.",
+    "steps": [
+      "Play the story mission The Cartel Heist.",
+      "Complete it, escape included."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Family Matters",
+    "description": "Complete Child's Play.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 2,
+    "missable": false,
+    "hidden": false,
+    "guide": "Child's Play sits on the story chain and unlocks as the plot advances, so no preparation is needed beyond reaching it. Complete the mission normally, including any chase or escape it ends with, and let the closing scene play. The trophy is unmissable and appears on the completion screen.",
+    "why": "A mid-story mission with no hidden condition.",
+    "steps": [
+      "Play the story mission Child's Play.",
+      "The trophy pops on completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 11,
+    "name": "DWNFALL",
+    "description": "Complete Headliners.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 2,
+    "missable": false,
+    "hidden": false,
+    "guide": "Headliners is one of the mid-story set pieces and appears on the main marker path once the missions before it are done. There is no alternate route or hidden requirement; finish the mission the way the objectives direct. The trophy lands when the mission-complete banner shows, so avoid quitting during the final sequence.",
+    "why": "A set piece on the main chain: spectacle, not difficulty.",
+    "steps": [
+      "Play the story mission Headliners.",
+      "The trophy pops on completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Hi-Jacked",
+    "description": "Complete VCIA Takedown.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 2,
+    "missable": false,
+    "hidden": false,
+    "guide": "VCIA Takedown is a story mission tied to the airport and becomes available as the plot reaches that beat. Play it through the full objective chain, including any section where the game hands you a vehicle or a disguise, and do not restart from a checkpoint after the last objective. The trophy is awarded at completion.",
+    "why": "An airport story mission; the only trap is quitting before the final objective resolves.",
+    "steps": [
+      "Play the story mission VCIA Takedown.",
+      "The trophy pops on completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Snow Storm",
+    "description": "Complete Operation Savage Glory.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 2,
+    "missable": false,
+    "hidden": false,
+    "guide": "Operation Savage Glory is a late story mission and will not appear until the missions before it are finished. Treat it as a set piece: follow the objectives, use the cover the mission provides, and play the ending out rather than skipping the scenes. Completion is all the trophy asks for.",
+    "why": "Late-story spectacle with no missable window inside the mission itself.",
+    "steps": [
+      "Play the story mission Operation Savage Glory.",
+      "The trophy pops on completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 14,
+    "name": "A Long Road",
+    "description": "Attain 100% Completion.",
+    "grade": "gold",
+    "kind": "meta",
+    "stage": 3,
+    "missable": false,
+    "hidden": false,
+    "guide": "Open the in-game completion checklist first and note every category that sits below its maximum, because the trophy measures that list rather than a feeling of having done enough. Work category by category instead of chasing whatever is nearest, since collectibles and activities are far easier when you route them district by district. The last few percent are usually a single straggler in a category you assumed was finished, so re-read the checklist before hunting. The gold pops the moment the meter reads 100%, and no online activity is part of it.",
+    "why": "The long gold: a checklist grind where the last two percent is a straggler, not a challenge.",
+    "steps": [
+      "Open the in-game completion checklist and note every category at less than its maximum.",
+      "Clear each category, finishing with the one the checklist shows short.",
+      "The trophy pops the moment the meter reads 100%."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)",
+      "PSNProfiles trophy list"
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Cunning Stunts",
+    "description": "Complete 250 Stunts.",
+    "grade": "silver",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "The counter only accepts the stunt type the activity list names, so confirm what counts before grinding random jumps. Route the map region by region and keep a written tally, because repeating the same ramp does not add to the total. Two hundred and fifty is a volume test rather than a skill test, so pick stunts you can land reliably and settle into a loop. The trophy arrives on the 250th distinct completion.",
+    "why": "Volume, not skill: 250 repetitions that reward a reliable route over a brave one.",
+    "steps": [
+      "Identify the stunt type the counter accepts (the game names it in the activity list).",
+      "Work region by region so no stunt is repeated.",
+      "Keep going to 250 distinct completions."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 250
+  },
+  {
+    "id": 16,
+    "name": "Master of None",
+    "description": "Try each type of activity once.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Open the activity list and note every distinct type before starting, because the trophy wants breadth rather than repetition. Do one of each type as you encounter it and tick them off, and do not assume two similar activities count as two types. The trophy pops on the last new type you try, not on the last completion.",
+    "why": "Breadth over depth: the trap is mistaking two similar activities for two types.",
+    "steps": [
+      "Read the in-game activity list and count the types.",
+      "Complete one of each type, ticking them off.",
+      "The trophy pops on the last new type, not on the last completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 17,
+    "name": "The Shootist",
+    "description": "Earn a gold medal in all Shooting Range challenges.",
+    "grade": "silver",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "List the range challenges before you start and treat each one as its own small puzzle. Gold usually depends on the intended weapon and on not wasting the opening seconds, so replay a challenge until you know its spawn pattern rather than spraying at everything. The trophy checks gold medals only, which means a single silver blocks the set until you improve it.",
+    "why": "A real skill gate, and one silver in the set blocks the trophy until it is improved.",
+    "steps": [
+      "Find the Shooting Range activity and list its challenges.",
+      "Earn gold on each challenge, retrying with the intended weapon.",
+      "The trophy pops when the last gold is banked."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)",
+      "PSNProfiles trophy list"
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Top Fun",
+    "description": "Win a Top Fun Drone Race at every location.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Find every Top Fun location on the activity map before racing, because the trophy counts locations rather than wins. Drone races reward clean lines and early braking more than raw speed, so learn each course on a losing run if you need to. Win one race at each location, and remember that repeat wins at the same spot do not help.",
+    "why": "A location count, not a win count: a single repeated course earns nothing.",
+    "steps": [
+      "Open the activity map and list every Top Fun location.",
+      "Win a race at each one.",
+      "The trophy pops when the last location is won."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Earn Cash, Not Kudos",
+    "description": "Win 20 different races.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "The keyword is different: twenty wins on the same circuit will not do. List the race events on the map and work through them, noting which ones you have already won. Pick a fast, stable car for road events and learn the first corner of each track, since most losses happen there. The trophy pops on the twentieth distinct win.",
+    "why": "Twenty distinct wins; repetition is the cheap mistake here.",
+    "steps": [
+      "List the race events on the map.",
+      "Win twenty distinct ones.",
+      "The trophy pops on the twentieth distinct win."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 20,
+    "name": "Baited My Tackle",
+    "description": "Beat Cal in a fishing challenge.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Cal's challenge belongs to his stranger strand, so start the strand and play it until he offers the fishing contest. The contest is about patience and lure choice rather than reflexes: cast where the water is marked as holding bigger fish and let the line settle instead of reeling constantly. Beat his catch in a single contest and the trophy is yours. A loss can be retried, so there is no need to panic if the first attempt goes badly.",
+    "why": "A patience contest against a named character, retryable, with no window beyond the strand itself.",
+    "steps": [
+      "Reach Cal's stranger strand and accept the fishing challenge.",
+      "Beat his catch.",
+      "The trophy pops on the win."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 21,
+    "name": "Stick Fiddler",
+    "description": "Complete an arcade game.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Any arcade cabinet will do, because the trophy only asks that you finish one game. Play to the end without leaving the cabinet, since walking away resets your progress. These games are short and pattern-based, so a couple of attempts is usually enough. The trophy pops on the completion screen.",
+    "why": "Cheap: one short pattern-based game, played to the end without leaving the cabinet.",
+    "steps": [
+      "Find an arcade cabinet.",
+      "Play the game to its end without leaving.",
+      "The trophy pops on completion."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 22,
+    "name": "Road to Rehabilitation",
+    "description": "Complete the final mission for Andy.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Andy's strand is companion content, which means it can close if the story moves too far ahead. Start it as soon as the marker appears and play the missions in order rather than sampling other content between them. The trophy lands on the strand's final mission, so a half-finished strand is worth nothing. If the marker has vanished, you have probably crossed the chapter that gates it.",
+    "why": "A missable strand: the difficulty is finishing it before the chapter moves on.",
+    "steps": [
+      "Find Andy's strand and start it.",
+      "Play every mission in the strand.",
+      "The trophy pops on the strand's final mission."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 23,
+    "name": "This Was No Boat Accident",
+    "description": "Complete the final mission for Kenton.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Kenton's missions arrive as a strand and should be finished in the chapter that opens them. Do them back to back where possible, and if a later mission is delayed, use the phone or sleep to advance time rather than leaving the area. The trophy is awarded on the final mission of the strand.",
+    "why": "Missable companion content where the cost of delay is the trophy, not the missions.",
+    "steps": [
+      "Start Kenton's strand.",
+      "Play the strand through to its final mission.",
+      "The trophy pops on that final mission."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 24,
+    "name": "The Lone Rider",
+    "description": "Complete the final mission for Billy.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Billy's strand is one of the missable companion lines, so treat its marker as urgent. Complete each mission as it appears and avoid starting the next chapter with one still outstanding. The final mission awards the trophy, and there is no partial credit for the earlier ones.",
+    "why": "A short strand with a closing window; the only hard part is starting it in time.",
+    "steps": [
+      "Start Billy's strand.",
+      "Complete every mission in it.",
+      "The trophy pops on the final mission."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Strangers & Freaks",
+    "description": "Complete 8 mission strands for strangers across the state of Leonida.",
+    "grade": "silver",
+    "kind": "side",
+    "stage": 5,
+    "missable": false,
+    "hidden": false,
+    "guide": "The requirement is eight complete strands, not eight missions, so every one of them has to reach its final job. Collect stranger markers as they appear and keep a list, because the map does not group them for you. Finish the short strands first to bank progress, then work through the longer companion lines. The trophy pops on the eighth completed strand.",
+    "why": "Eight whole strands is an accounting problem more than a skill one.",
+    "steps": [
+      "Collect stranger markers as they appear.",
+      "Finish eight whole strands, tracking which are done.",
+      "The trophy pops on the eighth completed strand."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 8
+  },
+  {
+    "id": 26,
+    "name": "Supply & Demand",
+    "description": "Complete the final mission for Randy.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Randy's strand is missable, so start it early and finish it in the chapter where it opens. Play the missions in sequence and do not let a main-story job push the chapter forward while Randy's line is still open. The trophy arrives on the strand's final mission.",
+    "why": "A short missable strand; urgency is the whole difficulty.",
+    "steps": [
+      "Start Randy's strand.",
+      "Complete the strand to its final mission.",
+      "The trophy pops on that mission."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 27,
+    "name": "Spin On This!",
+    "description": "Complete the final mission for Tyrone.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Tyrone's line is another companion strand with a closing window. Pick up the marker as soon as it shows, complete each mission as it appears, and use in-game time-skipping if the next one is delayed. The trophy is awarded at the end of the strand.",
+    "why": "Missable strand content with a soft time gate between missions.",
+    "steps": [
+      "Start Tyrone's strand.",
+      "Complete it to the final mission.",
+      "The trophy pops on that mission."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 28,
+    "name": "Positive Mental Attitude",
+    "description": "Meditate at every spot across Leonida.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "The meditation spots are listed as an activity, so open that list and work through it rather than hunting visually. Each spot needs a full meditation, not just a visit, so hold the input until the prompt completes. The trophy pops at the last spot, and none of them can be missed.",
+    "why": "A sightseeing checklist with no fail state.",
+    "steps": [
+      "Get the meditation spot list from the activity map.",
+      "Meditate at each one.",
+      "The trophy pops at the last spot."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 29,
+    "name": "Fair Game",
+    "description": "Hunt a unique animal for Bret.",
+    "grade": "bronze",
+    "kind": "side",
+    "stage": 5,
+    "missable": true,
+    "hidden": false,
+    "guide": "Bret's hunting request names a specific animal, so read the request before heading out. Track it with the hunting sense rather than driving around hoping to spot it, and take a clean shot so the carcass still counts. The trophy pops on the kill, and because the request belongs to a strand, do it when it appears rather than saving it for later.",
+    "why": "A single named animal; the strand window is the only thing that can close it.",
+    "steps": [
+      "Take Bret's hunting request.",
+      "Track and kill the unique animal it names.",
+      "The trophy pops on the kill."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 30,
+    "name": "Don't Touch My Deck",
+    "description": "Complete 3 Collectible Card sets.",
+    "grade": "silver",
+    "kind": "collectible",
+    "stage": 6,
+    "missable": false,
+    "hidden": false,
+    "guide": "Card sets are collection puzzles: each set has a fixed list and the last card is usually the one you have to buy. Complete one set at a time, note the missing cards, and use the in-game shop or vendor for the stragglers. Three complete sets is the requirement, so two finished sets and a nearly finished third earns nothing. The trophy pops on the third completion.",
+    "why": "Collection luck plus shop money: three complete sets, and the last card is usually bought.",
+    "steps": [
+      "List the card sets and their card counts.",
+      "Complete one set at a time, buying the stragglers.",
+      "The trophy pops on the third completed set."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 3
+  },
+  {
+    "id": 31,
+    "name": "You WAiNKer!",
+    "description": "WAiNK It at 100 locations.",
+    "grade": "silver",
+    "kind": "collectible",
+    "stage": 6,
+    "missable": false,
+    "hidden": false,
+    "guide": "WAiNK is a location-based activity, so the efficient route is district by district with the activity map open. Mark each location as you finish it, because the counter wants a hundred distinct spots rather than repeated visits. Spread across the state instead of clearing one neighbourhood, since the last few are usually in districts you skipped. The trophy pops at the hundredth location.",
+    "why": "A hundred locations is a routing grind, not a challenge.",
+    "steps": [
+      "Map the districts that hold WAiNK locations.",
+      "Perform WAiNK at each, district by district, marking them off.",
+      "The trophy pops at the hundredth location."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 100
+  },
+  {
+    "id": 32,
+    "name": "One Last Thing",
+    "description": "Complete 50 Challenges.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Challenges appear while you play other content, so the trick is to accept them instead of driving past. Fifty is a background grind: pick them up during collectible or activity runs rather than making a dedicated session of it. Keep a tally, because the game's counter is not always visible during free roam. The trophy pops on the fiftieth completion.",
+    "why": "Fifty opportunistic completions; the trap is driving past the prompt.",
+    "steps": [
+      "Accept challenges as they appear while playing other content.",
+      "Complete fifty of them.",
+      "The trophy pops on the fiftieth."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 50
+  },
+  {
+    "id": 33,
+    "name": "Hot Together",
+    "description": "Lose a 4 star Wanted Level with your partner and escape the heat.",
+    "grade": "bronze",
+    "kind": "heist",
+    "stage": 7,
+    "missable": true,
+    "hidden": false,
+    "guide": "This one needs a partner and a four-star wanted level, so start it deliberately rather than by accident. Raise the level with your partner nearby, then break line of sight and let it decay to zero without dying or being arrested. Tunnels, garages and the storm drains are the reliable way to drop sight. The trophy pops when the level clears.",
+    "why": "Needs a partner and a clean four-star escape without dying.",
+    "steps": [
+      "Bring the partner along and raise the wanted level to four stars.",
+      "Break line of sight and let the level decay to zero without dying.",
+      "The trophy pops when the level clears."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 34,
+    "name": "Retail Therapy",
+    "description": "Rob 3 shops back-to-back with your partner without losing your Wanted Level.",
+    "grade": "bronze",
+    "kind": "heist",
+    "stage": 7,
+    "missable": true,
+    "hidden": false,
+    "guide": "Pick three shops close together before you start, because the wanted level has to stay up between them. Rob the first, leave the level running, and drive straight to the second and third without shaking the police. Do not stop to fight, since the requirement is the streak rather than the body count. The trophy pops on the third robbery with the level still held.",
+    "why": "A routing test: three shops close enough to rob while the level stays hot.",
+    "steps": [
+      "Pick three shops close enough to reach while wanted.",
+      "Rob the first, keep the level, rob the second, then the third.",
+      "The trophy pops on the third robbery with the level still held."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Whip It Good",
+    "description": "Discover 100 vehicles.",
+    "grade": "bronze",
+    "kind": "collectible",
+    "stage": 6,
+    "missable": false,
+    "hidden": false,
+    "guide": "Discovery counts when you drive or inspect a vehicle, so variety matters more than ownership. Visit dealerships and garages to register stocked models, and swap cars during missions rather than sticking to one favourite. Keep a list by class so you do not re-count the same sedan in a new colour. The trophy pops at the hundredth distinct vehicle.",
+    "why": "Variety grind: a hundred distinct vehicles, dealerships included.",
+    "steps": [
+      "Drive and inspect a wide spread of vehicles rather than one favourite.",
+      "Visit dealerships and garages to register stocked models.",
+      "The trophy pops at the hundredth distinct vehicle."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 100
+  },
+  {
+    "id": 36,
+    "name": "Gunslinger",
+    "description": "Take down 5 enemies in a single use of Combat Focus.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Find a group of at least five enemies and let them cluster before triggering Combat Focus. Activate the ability with all five in view and take them down in one flow, because reloading or losing line of sight usually ends the attempt. A busy gang operation or a story firefight is the natural place to try. The trophy pops when the fifth drops before the meter empties.",
+    "why": "A momentary skill check that needs five enemies clustered and one clean Combat Focus.",
+    "steps": [
+      "Find a fight with at least five enemies grouped together.",
+      "Activate Combat Focus with them all in view.",
+      "Take all five down before the ability ends."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 37,
+    "name": "Catch Me If You Can",
+    "description": "Make an unscheduled departure at VCIA.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Go to VCIA and get airside without following the scheduled departure path, either by taking a parked aircraft or by driving through the service access. Once you are airborne and clear of the airport boundary, the game registers an unscheduled departure. Expect a wanted level, so have a route away from the runway. The trophy pops in the air, not on the ground.",
+    "why": "Cheap and funny: stealing a plane from VCIA, with a wanted level as the receipt.",
+    "steps": [
+      "Go to VCIA and reach the apron or a parked aircraft.",
+      "Take off without using a scheduled departure.",
+      "The trophy pops once airborne and clear of the airport."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 38,
+    "name": "Challenging Tank",
+    "description": "Kinda hot in these Rhinos.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 7,
+    "missable": false,
+    "hidden": false,
+    "guide": "The Rhino comes from the military content, so reach that part of the game or the relevant activity before trying. The trophy is a joke about a specific act with the tank, so read the description literally and perform it while driving. The trophy pops on the trigger, which makes it one of the quickest in the set once you have the vehicle.",
+    "why": "A joke trophy gated only by getting the Rhino.",
+    "steps": [
+      "Get hold of the Rhino the military content provides.",
+      "Perform the act the description alludes to while driving it.",
+      "The trophy pops on the trigger."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 39,
+    "name": "Sneakthief",
+    "description": "Rob a jewelry store without being detected.",
+    "grade": "bronze",
+    "kind": "heist",
+    "stage": 7,
+    "missable": true,
+    "hidden": false,
+    "guide": "Scope the jewelry store before entering: note the back door, the safe, and where the staff stand. Go in quietly, take the contents without triggering an alarm, and leave the way you came rather than shooting your way out. Any alarm voids the attempt, so restart the robbery instead of improvising. The trophy pops when the robbery completes with no detection.",
+    "why": "The only stealth trophy in the set: a single alarm voids the attempt.",
+    "steps": [
+      "Case the jewelry store's entrances and the safe.",
+      "Enter and take the contents without raising an alarm.",
+      "The trophy pops once the robbery completes undetected."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 40,
+    "name": "Maximum Withdrawal",
+    "description": "Rob 5 Bank Vaults and escape.",
+    "grade": "silver",
+    "kind": "heist",
+    "stage": 7,
+    "missable": false,
+    "hidden": false,
+    "guide": "Identify all five bank vaults first and treat each one as its own heist rather than a quick smash-and-grab. Plan the escape before you enter, because the trophy requires you to get away clean after every vault. Do them in separate sessions if the heat is high, since a failed escape only costs you the attempt. The trophy pops on the fifth clean escape.",
+    "why": "Five clean vault escapes; planning the exit matters more than the robbery.",
+    "steps": [
+      "Identify the five bank vaults.",
+      "Rob each and escape cleanly.",
+      "The trophy pops on the fifth escape."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 5
+  },
+  {
+    "id": 41,
+    "name": "A Classic Blitz Play",
+    "description": "Rob an Armored Truck and escape.",
+    "grade": "bronze",
+    "kind": "heist",
+    "stage": 7,
+    "missable": false,
+    "hidden": false,
+    "guide": "Armored trucks move on predictable routes, so wait for one at a junction rather than chasing it down the highway. Block it, take the cargo, and escape the pursuit before the escort regroups. The trophy only needs one successful job, which makes a quiet stretch of road better than a busy one. The trophy pops once you are clear.",
+    "why": "One armored truck and a clean getaway; route knowledge beats firepower.",
+    "steps": [
+      "Intercept an armored truck.",
+      "Take the cargo and escape the pursuit.",
+      "The trophy pops once clear."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 42,
+    "name": "The Goodtime State",
+    "description": "Explore all of Leonida.",
+    "grade": "bronze",
+    "kind": "collectible",
+    "stage": 6,
+    "missable": false,
+    "hidden": false,
+    "guide": "Open the map and look for fogged regions, then drive or fly through each until the fog lifts. Flying is faster for the far corners, but driving fills in the road-level gaps that the map counts. Leave the islands and the edges for last, since they are the easiest to overlook. The trophy pops when the final region is uncovered.",
+    "why": "Map coverage: the fog hides the last few regions rather than any difficulty.",
+    "steps": [
+      "Open the map and look for regions still fogged.",
+      "Drive or fly through each until the fog clears.",
+      "The trophy pops when the last region is uncovered."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 43,
+    "name": "Pest Control",
+    "description": "Rob an Illegal Operation belonging to each gang.",
+    "grade": "bronze",
+    "kind": "heist",
+    "stage": 7,
+    "missable": false,
+    "hidden": false,
+    "guide": "Identify each gang and the illegal operation it runs, because the game tracks them as distinct targets. Hit one operation per gang and keep a list, since robbing the same gang twice does nothing. Stealth is optional, but a quiet approach keeps the escape short. The trophy pops on the last gang's operation.",
+    "why": "One operation per gang; repeating the same gang is the trap.",
+    "steps": [
+      "Identify each gang and the illegal operation it runs.",
+      "Rob one operation per gang, tracking which gangs are done.",
+      "The trophy pops on the last gang's operation."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 44,
+    "name": "In The Beginning…",
+    "description": "Enjoy a cocktail with a view on Ocean Beach.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": true,
+    "hidden": false,
+    "guide": "Go to Ocean Beach and find the bar with the view, which is a specific venue rather than any beach kiosk. Order a cocktail and finish it, because leaving before the drink is done does not count. The beat is tied to the story and can be lost when the venue closes later, so do it while it is open. The trophy pops on the drink.",
+    "why": "A one-time social beat at a specific bar, missable when the story moves on.",
+    "steps": [
+      "Go to Ocean Beach and find the bar with the view.",
+      "Order and finish a cocktail there.",
+      "The trophy pops on the drink."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 45,
+    "name": "Capital Offense",
+    "description": "Smash your way out of a vehicle showroom in classic style.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Drive a vehicle into a showroom and then leave by smashing through the frontage in classic style. The game wants the dramatic exit rather than a quiet reverse out of the door, so line up the window and commit. Expect attention afterward, but the trophy does not care about the wanted level. The trophy pops on the break-out.",
+    "why": "Cheap spectacle: drive in, smash out, no skill required.",
+    "steps": [
+      "Drive a vehicle into a showroom.",
+      "Leave by smashing through the frontage.",
+      "The trophy pops on the break-out."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 46,
+    "name": "Let’s Go Bowling",
+    "description": "Follow-through at the Kolt & Associates' bowling alley.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": true,
+    "hidden": false,
+    "guide": "Go to the Kolt & Associates bowling alley and bowl a full game to the end. Do not quit after a few frames, because the trophy checks the completed game rather than a good score. The lane is a social activity, so bring a companion if the game offers one. The trophy pops on the last frame.",
+    "why": "A full bowling game: cheap, social, and easy to quit too early.",
+    "steps": [
+      "Go to the Kolt & Associates bowling alley.",
+      "Bowl a full game to the end.",
+      "The trophy pops on the last frame."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 47,
+    "name": "Personal Best",
+    "description": "A partnership with mass appeal.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 8,
+    "missable": true,
+    "hidden": false,
+    "guide": "This is a hidden story trophy tied to a partnership beat, so it cannot be chased directly. Play the story and make the choice the scene presents, because the trophy sits on the beat rather than on a skill check. It is tied to a decision and can be missed on the other branch, so keep a manual save before the mission. The trophy pops at the beat.",
+    "why": "A hidden decision trophy: the branch you take decides whether it exists.",
+    "steps": [
+      "Play the story.",
+      "The trophy pops on the beat it is tied to."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 48,
+    "name": "Actions Speak Louder",
+    "description": "Choices made (for better or worse).",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 8,
+    "missable": true,
+    "hidden": false,
+    "guide": "Another decision trophy: the description points at choices made, and either branch counts. Play to the scene, make the call rather than backing out, and let the consequences play. Keep a manual save beforehand if you are also chasing the other decision trophies. The trophy pops at the decision.",
+    "why": "Either branch counts, so the only cost is making the choice rather than backing out.",
+    "steps": [
+      "Play the story to the decision it is tied to.",
+      "Make the choice; either branch counts.",
+      "The trophy pops at the decision."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 49,
+    "name": "Bad Luck, I Guess",
+    "description": "Second time's the charm.",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 8,
+    "missable": true,
+    "hidden": false,
+    "guide": "The description's line about a second time being the charm is literal: the trophy is tied to a repeat attempt. Play the story to that beat and retry as the scene intends rather than reloading to avoid the failure. The trophy pops on the second attempt, so a save before the sequence is worth keeping. It is a hidden story trophy and cannot be missed once the beat is reached.",
+    "why": "Tied to a deliberate second attempt, which is easy to skip by reloading.",
+    "steps": [
+      "Play the story to the repeat attempt it is tied to.",
+      "The trophy pops on the second attempt."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 50,
+    "name": "The Truth Is Out There",
+    "description": "What the hell just happened?",
+    "grade": "bronze",
+    "kind": "story",
+    "stage": 8,
+    "missable": true,
+    "hidden": false,
+    "guide": "This hidden trophy is tied to a specific story moment rather than a task, so the only route is to play the story to that point. Let the scene play out and do not skip the sequence it names. Because it is hidden, the trophy list will not tell you what it is until it pops. The trophy is awarded at the moment itself.",
+    "why": "A hidden story beat with no task attached; you either reach it or you do not.",
+    "steps": [
+      "Play the story.",
+      "The trophy pops on the moment it names."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Ten Pin",
+    "description": "Bowl 'em over with a melee drive-by.",
+    "grade": "bronze",
+    "kind": "activity",
+    "stage": 4,
+    "missable": false,
+    "hidden": false,
+    "guide": "Get a vehicle and a melee weapon, then hit a pedestrian from the moving car. The timing is the whole challenge: the weapon has to connect while the vehicle is moving, not from a standstill. A quiet street with a slow approach works better than heavy traffic. The trophy pops on the hit.",
+    "why": "A timing gag: the melee hit has to land from a moving car.",
+    "steps": [
+      "Get a vehicle and a melee weapon.",
+      "Hit a pedestrian with the melee weapon from the moving vehicle.",
+      "The trophy pops on the hit."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ]
+  },
+  {
+    "id": 52,
+    "name": "Dime on the Dollar",
+    "description": "Earn $250,000 laundering Marked Bills through your contacts.",
+    "grade": "bronze",
+    "kind": "economy",
+    "stage": 8,
+    "missable": false,
+    "hidden": false,
+    "guide": "Marked Bills come from robberies and jobs, and they only count once laundered through your contacts. Launder in batches rather than hoarding, because the trophy measures the total passed through the contact rather than the cash in your pocket. Repeat the money loop as it becomes available and keep a note of the running total. The trophy pops when $250,000 has been laundered.",
+    "why": "A money loop, not a skill test: $250,000 laundered through contacts.",
+    "steps": [
+      "Collect Marked Bills from robberies and jobs.",
+      "Launder them through contacts, repeatedly.",
+      "The trophy pops once $250,000 has been laundered in total."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 250000
+  },
+  {
+    "id": 53,
+    "name": "Treat Yo Self",
+    "description": "Spend $100,000 across all shops.",
+    "grade": "bronze",
+    "kind": "economy",
+    "stage": 8,
+    "missable": false,
+    "hidden": false,
+    "guide": "This is a cumulative spending trophy, so every purchase at every shop counts toward it. Buy useful things as you play rather than saving for one big splash, and use shops across the map so you are not waiting for stock. Clothing, weapons and vehicle upgrades all contribute. The trophy pops on the purchase that crosses $100,000.",
+    "why": "Cumulative shopping; the only difficulty is remembering that every purchase counts.",
+    "steps": [
+      "Buy from shops of every kind as the map is played.",
+      "Keep spending until the cumulative total passes $100,000.",
+      "The trophy pops on the purchase that crosses it."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 100000
+  },
+  {
+    "id": 54,
+    "name": "Little Boxes",
+    "description": "Purchase all garage properties.",
+    "grade": "bronze",
+    "kind": "economy",
+    "stage": 8,
+    "missable": false,
+    "hidden": false,
+    "guide": "List every garage property for sale before buying, because the trophy checks the whole set and the last one is easy to miss. Garages are expensive, so treat this as an end-game purchase funded by heists and the money loops. Buy the cheap ones early to spread the cost. The trophy pops on the final purchase.",
+    "why": "The most expensive checklist item: every garage property, funded by heists.",
+    "steps": [
+      "List every garage property for sale.",
+      "Buy them all.",
+      "The trophy pops on the last purchase."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)",
+      "Rockstar Newswire"
+    ]
+  },
+  {
+    "id": 55,
+    "name": "On the Spot",
+    "description": "Register 10 vehicles to the Scooter Bros app.",
+    "grade": "bronze",
+    "kind": "economy",
+    "stage": 8,
+    "missable": false,
+    "hidden": false,
+    "guide": "Open the Scooter Bros app in the in-game phone and register ten vehicles. Any vehicle you own counts, so a full garage covers the requirement in one sitting. The app is easy to forget, which is the only real obstacle. The trophy pops on the tenth registration.",
+    "why": "Ten app registrations: free, and only a matter of remembering the app exists.",
+    "steps": [
+      "Open the Scooter Bros app in the in-game phone.",
+      "Register ten vehicles.",
+      "The trophy pops on the tenth registration."
+    ],
+    "sources": [
+      "PlayStation trophy description (official)"
+    ],
+    "count": 10
+  }
 ];
 
 export default TROPHIES;

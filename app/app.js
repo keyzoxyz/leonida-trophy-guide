@@ -1,26 +1,27 @@
-// Leonida Trophy Guide — the page's only script. One module with four jobs: render the list and the
-// roadmap, remember progress in localStorage with export/import, keep the spoiler setting honest, and
-// keep search and the detail sheet behaving like layers that unwind one at a time.
-// No framework, no network: the data module beside it is the whole backend.
+// Leonida Trophy Guide — the page's only script. It renders the trophy list and the roadmap, keeps
+// progress in localStorage with export/import, enforces the spoiler setting, and treats search and the
+// detail sheet as layers that unwind one at a time. No framework, no network request: the data module
+// beside it is the whole backend.
 
 import { TROPHIES, STAGES } from './data/trophies.js';
 
 const $ = (sel) => document.querySelector(sel);
 
 const state = {
-  earned: new Set(),     // trophy ids marked done
-  grade: null,           // null = every grade, else 'platinum' | 'gold' | 'silver' | 'bronze'
+  earned: new Set(),      // trophy ids marked done
+  grade: null,            // null = every grade, else platinum | gold | silver | bronze
   kind: 'all',
   missableOnly: false,
   hideEarned: true,
   unearnedOnly: false,
   activeStage: null,
   query: '',
-  spoiler: false,        // hide the identity of unearned story trophies
+  spoiler: false,         // hide the identity of unearned story trophies
 };
 
 const STORAGE_KEY = 'leonida-guide-progress-v1';
-let returnFocus = null;  // whatever opened the sheet, so closing it can hand focus back
+let returnFocus = null;   // whatever opened the sheet, so closing it can hand focus back
+let searchTimer = null;
 
 /* ── persistence ─────────────────────────────────────────────────────── */
 
@@ -29,7 +30,9 @@ function loadProgress() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const saved = JSON.parse(raw);
-    if (Array.isArray(saved.earned)) state.earned = new Set(saved.earned.filter(Number.isInteger));
+    if (Array.isArray(saved.earned)) {
+      state.earned = new Set(saved.earned.filter(Number.isInteger));
+    }
     if (typeof saved.spoiler === 'boolean') state.spoiler = saved.spoiler;
   } catch {
     // a corrupt save must never take the page down; start clean instead
@@ -56,7 +59,7 @@ function exportProgress() {
     spoilerMode: state.spoiler,
     earned: [...state.earned].sort((a, b) => a - b),
   };
-  const url = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 1)], { type: 'application/json' }));
+  const url = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 2)], { type: 'application/json' }));
   const a = document.createElement('a');
   a.href = url;
   a.download = 'leonida-progress.json';
@@ -84,14 +87,14 @@ function importProgress(file) {
 /* ── filtering ───────────────────────────────────────────────────────── */
 
 function isSpoiler(t) {
-  // Stage is not the test: an early collectible is not a story spoiler, and a decision mission late in
-  // the story still is. Only story beats (and explicitly hidden entries) get masked, and only until earned.
+  // Stage is not the test: an early collectible is not a story spoiler, and a late decision mission
+  // still is. Only story beats (and explicitly hidden entries) are masked, and only until earned.
   return state.spoiler && !state.earned.has(t.id) && (t.kind === 'story' || t.hidden === true);
 }
 
 function haystack(t) {
   // Name, guide and sources, joined into one lowercase string. Joining first means a query can never
-  // match across the seam between two fields, and searching "PSNProfiles" finds every trophy that cites it.
+  // match across the seam between two fields, and searching "PSNProfiles" finds every trophy citing it.
   const sources = Array.isArray(t.sources) ? t.sources.join(' ') : '';
   return `${t.name} ${t.guide} ${sources}`.toLowerCase();
 }
@@ -101,10 +104,13 @@ function matches(t) {
   if (state.kind !== 'all' && t.kind !== state.kind) return false;
   if (state.missableOnly && !t.missable) return false;
   if (state.activeStage !== null && t.stage !== state.activeStage) return false;
+
   const done = state.earned.has(t.id);
   if (state.hideEarned && done) return false;
   if (state.unearnedOnly && done) return false;
-  if (state.query && !haystack(t).includes(state.query.toLowerCase())) return false;
+
+  const q = state.query.trim().toLowerCase();
+  if (q && !haystack(t).includes(q)) return false;
   return true;
 }
 
@@ -133,7 +139,8 @@ function renderList() {
   list.textContent = '';
 
   if (!rows.length) {
-    list.append(el('div', 'empty', 'Nothing matches these filters.'));
+    const empty = el('div', 'empty', 'Nothing matches these filters.');
+    list.append(empty);
     return;
   }
 
@@ -149,14 +156,17 @@ function renderList() {
     card.append(el('div', 'tgrade ' + t.grade, gradeLabel(t.grade)));
 
     const main = el('div', 'tmain');
-    const name = el('h3', 'tname', masked ? '??? hidden until earned' : t.name);
-    const desc = el('p', 'tdesc', masked ? 'story trophy — description hidden in spoiler-safe mode' : t.description);
+    main.append(
+      el('h3', 'tname', masked ? '??? hidden until earned' : t.name),
+      el('p', 'tdesc', masked ? 'story trophy — description hidden in spoiler-safe mode' : t.description),
+    );
+
     const badges = el('div', 'tbadges');
     if (t.missable) badges.append(badge('miss', 'missable'));
     badges.append(badge('stage', `stage ${t.stage + 1}`));
     if (t.count) badges.append(badge('count', String(t.count)));
     if (t.kind === 'meta') badges.append(badge('', 'meta'));
-    main.append(name, desc, badges);
+    main.append(badges);
 
     const check = el('button', 'tcheck', '✓');
     check.type = 'button';
@@ -167,6 +177,9 @@ function renderList() {
     check.addEventListener('click', (ev) => {
       ev.stopPropagation();
       toggleEarned(t.id);
+      // renderAll rebuilds every card, so put focus back on this trophy's new check button.
+      const again = document.querySelector(`.tcard[data-id="${t.id}"] .tcheck`);
+      if (again) again.focus({ preventScroll: true });
     });
 
     card.append(main, check);
@@ -194,7 +207,9 @@ function renderRoadmap() {
     li.dataset.stage = String(st.id);
     li.tabIndex = 0;
     if (state.activeStage === st.id) li.setAttribute('aria-current', 'true');
-    if (traps) li.setAttribute('aria-label', `${st.title}, ${done} of ${rows.length} earned, ${traps} missable still open`);
+    if (traps) {
+      li.setAttribute('aria-label', `${st.title}, ${done} of ${rows.length} earned, ${traps} missable still open`);
+    }
 
     li.append(
       el('span', 'stage-n', String(st.id + 1).padStart(2, '0')),
@@ -206,8 +221,8 @@ function renderRoadmap() {
     const toggle = () => {
       state.activeStage = state.activeStage === st.id ? null : st.id;
       renderAll();
-      // renderAll replaces every row, so the row the keyboard user just pressed would otherwise take the
-      // focus with it and the next Enter would land on the page body.
+      // renderAll replaces every row, so the row the keyboard user just pressed would otherwise take
+      // the focus with it and the next Enter would land on the page body.
       const again = ol.querySelector(`li[data-stage="${st.id}"]`);
       if (again) again.focus({ preventScroll: true });
     };
@@ -275,7 +290,8 @@ function renderGradeChips() {
     const chip = el('button', 'grade-chip g-' + grade + (state.grade === grade ? ' on' : ''),
       `${gradeLabel(grade)} ${got}/${ofGrade.length}`);
     chip.type = 'button';
-    chip.setAttribute('aria-label', 'Filter to ' + grade + ' trophies');
+    chip.setAttribute('aria-label', `Filter to ${grade} trophies`);
+    chip.setAttribute('aria-pressed', state.grade === grade ? 'true' : 'false');
     chip.addEventListener('click', () => {
       state.grade = state.grade === grade ? null : grade;
       renderAll();
@@ -292,13 +308,20 @@ function renderProgress() {
   $('#totalCount').textContent = String(TROPHIES.length);
   $('#earnedPct').textContent = `${pct}%`;
   $('#progressFill').style.width = `${pct}%`;
+  const bar = $('#progressBar');
+  if (bar) {
+    bar.setAttribute('aria-valuenow', String(done));
+    bar.setAttribute('aria-valuemax', String(TROPHIES.length));
+  }
 }
 
 /* Chips and state can drift (an import, the initial markup, a flag set from code), so the UI is redrawn
    from the state rather than trusted to stay in step with it. */
 function syncChips() {
   for (const chip of document.querySelectorAll('.kind-chip')) {
-    chip.classList.toggle('on', chip.dataset.kind === state.kind);
+    const on = chip.dataset.kind === state.kind;
+    chip.classList.toggle('on', on);
+    chip.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
   for (const chip of document.querySelectorAll('.flag-chip')) {
     const on = chip.dataset.flag === 'missable' ? state.missableOnly
@@ -308,6 +331,8 @@ function syncChips() {
     chip.classList.toggle('on', on);
     chip.setAttribute('aria-pressed', on ? 'true' : 'false');
   }
+  const search = $('#search');
+  if (search && search.value !== state.query) search.value = state.query;
 }
 
 function renderAll() {
@@ -340,8 +365,10 @@ function openDetail(id) {
   const head = el('div', 'dhead');
   head.append(el('div', 'tgrade ' + t.grade, gradeLabel(t.grade)));
   const meta = el('div');
+  const title = el('h2', '', masked ? 'Hidden story trophy' : t.name);
+  title.id = 'detailTitle';
   meta.append(
-    el('h2', '', masked ? 'Hidden story trophy' : t.name),
+    title,
     el('div', 'dgrade-line',
       `${t.grade} · ${t.kind}${t.missable ? ' · missable' : ''}${t.count ? ` · ${t.count}` : ''}`),
   );
@@ -386,6 +413,7 @@ function openDetail(id) {
 
   returnFocus = document.activeElement;
   $('#detailSheet').hidden = false;
+  document.body.classList.add('sheet-open');
   $('#closeDetail').focus();
 }
 
@@ -393,6 +421,7 @@ function closeDetail() {
   const sheet = $('#detailSheet');
   if (sheet.hidden) return;
   sheet.hidden = true;
+  document.body.classList.remove('sheet-open');
   if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
   returnFocus = null;
 }
@@ -400,20 +429,19 @@ function closeDetail() {
 /* ── wiring ─────────────────────────────────────────────────────────── */
 
 function wire() {
-  for (const chip of document.querySelectorAll('.kind-chip')) {
-    chip.addEventListener('click', () => {
-      state.kind = chip.dataset.kind;
-      // a stage picked from the roadmap is a narrower view of one kind; letting it survive a kind switch
-      // is how a filter ends up showing an empty list with nothing on screen explaining why
+  // One delegated handler for both chip rows: a kind switch is a different view, so it drops the
+  // stage picked from the roadmap; letting it survive is how a filter ends up showing an empty list.
+  $('#filters').addEventListener('click', (ev) => {
+    const kindChip = ev.target.closest('.kind-chip');
+    if (kindChip) {
+      state.kind = kindChip.dataset.kind;
       state.activeStage = null;
       renderAll();
-    });
-  }
-
-  $('#filters').addEventListener('click', (ev) => {
-    const chip = ev.target.closest('.flag-chip');
-    if (!chip) return;
-    const flag = chip.dataset.flag;
+      return;
+    }
+    const flagChip = ev.target.closest('.flag-chip');
+    if (!flagChip) return;
+    const flag = flagChip.dataset.flag;
     if (flag === 'missable') state.missableOnly = !state.missableOnly;
     else if (flag === 'earned') state.hideEarned = !state.hideEarned;
     else if (flag === 'unearned-only') state.unearnedOnly = !state.unearnedOnly;
@@ -423,8 +451,10 @@ function wire() {
   });
 
   $('#search').addEventListener('input', (ev) => {
-    state.query = ev.target.value.trim();
-    renderList();
+    state.query = ev.target.value;
+    // Debounced so typing does not rebuild 55 cards per keystroke.
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(renderList, 60);
   });
 
   $('#spoilerMode').addEventListener('change', (ev) => {
@@ -449,12 +479,11 @@ function wire() {
   document.addEventListener('keydown', (ev) => {
     if (ev.key !== 'Escape') return;
     // Escape unwinds one layer at a time, narrowest first. A non-empty search box is the narrower
-    // layer: clear it, re-render the list, leave the sheet open — the reader arrived from a search
-    // result and should not lose both the search and the trophy to one key. Only with the box already
-    // empty does Escape close the detail sheet.
+    // layer: clear it, re-render the list, leave the sheet open. Only with the box already empty does
+    // Escape close the detail sheet.
     const search = $('#search');
-    if (state.query !== '' || (search && search.value !== '')) {
-      if (search) search.value = '';
+    if (search && search.value !== '') {
+      search.value = '';
       state.query = '';
       renderList();
       return;

@@ -1,7 +1,7 @@
-# build output written by main.ts (MAKEFUN_OUTPUT_DIR=out)
+# Build output written by main.ts (MAKEFUN_OUTPUT_DIR=out).
 out/
 
-# local tooling noise — none of it belongs to the entry
+# Local tooling noise — none of it belongs to the entry.
 node_modules/
 .DS_Store
 *.log

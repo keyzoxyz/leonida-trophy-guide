@@ -1,6 +1,6 @@
-/* Leonida Trophy Guide — Vice City dusk. Deep navy base, magenta and teal accents, gold reserved for
-   platinum. One 4px spacing scale, one type scale, no external font and no network request. The last
-   block in the file is the print stylesheet: the same list, as a black-on-white paper checklist. */
+/* Leonida Trophy Guide — Vice City dusk. Deep navy, magenta and teal, with gold kept for platinum.
+   One 4px spacing scale, one type scale, no webfont and no network request. The print stylesheet is
+   the last block in the file: the same trophy list as a black-on-white paper checklist. */
 
 :root {
   --bg: #0d0f1a;
@@ -34,6 +34,7 @@ html { background: var(--bg); }
 
 body {
   margin: 0;
+  min-height: 100vh;
   font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 15px;
   line-height: 1.55;
@@ -42,7 +43,6 @@ body {
     radial-gradient(1100px 460px at 82% -8%, rgba(255, 46, 136, 0.20), transparent 62%),
     radial-gradient(900px 420px at 8% 4%, rgba(41, 224, 200, 0.13), transparent 60%),
     var(--bg);
-  min-height: 100vh;
 }
 
 /* ── top bar ─────────────────────────────────────────────────────────── */
@@ -57,7 +57,7 @@ body {
   align-items: center;
   padding: var(--s5) var(--s6);
   border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(26, 31, 51, 0.92), rgba(13, 15, 26, 0.72));
+  background: linear-gradient(180deg, rgba(26, 31, 51, 0.94), rgba(13, 15, 26, 0.74));
   backdrop-filter: blur(8px);
 }
 
@@ -68,14 +68,9 @@ body {
   font-size: 26px;
   font-weight: 800;
   letter-spacing: 0.14em;
-  color: var(--ink);
 }
 
-.brand h1 span {
-  color: var(--magenta);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-}
+.brand h1 span { color: var(--magenta); font-weight: 700; letter-spacing: 0.12em; }
 
 .tagline {
   margin: var(--s1) 0 0;
@@ -183,8 +178,15 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 .spacer { flex: 1 1 auto; }
 
+.search-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-faint);
+}
+
 #search {
-  min-width: 220px;
+  min-width: 240px;
   padding: var(--s2) var(--s4);
   border: 1px solid var(--line);
   border-radius: 99px;
@@ -217,8 +219,8 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 #roadmapPanel {
   position: sticky;
   top: 128px;
-  /* Ten stages with notes are taller than a laptop viewport, so the panel scrolls inside itself rather
-     than pushing its last rows below the fold where they could never be clicked. */
+  /* Ten stages with notes are taller than a laptop viewport, so the panel scrolls inside itself
+     instead of pushing its last rows below the fold where they cannot be clicked. */
   max-height: calc(100vh - 128px - var(--s4));
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -236,7 +238,7 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   color: var(--gold);
 }
 
-/* missable callout — the count that decides whether the platinum is still winnable */
+/* missable callout: the count that decides whether the platinum is still winnable */
 .mcallout {
   margin: 0 0 var(--s3);
   padding: var(--s3);
@@ -252,7 +254,6 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   margin: 0;
   font-size: 12.5px;
   font-variant-numeric: tabular-nums;
-  color: var(--ink);
 }
 
 .mcallout-count strong {
@@ -322,7 +323,6 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 #roadmapList li.active { border-color: var(--magenta); background: rgba(255, 46, 136, 0.10); }
 #roadmapList li:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
 
-/* a stage that still holds an unearned missable, flagged in the list and counted above */
 #roadmapList li.has-missable { background: rgba(255, 90, 90, 0.07); box-shadow: inset 3px 0 0 var(--danger); }
 #roadmapList li.has-missable .stage-n,
 #roadmapList li.has-missable .stage-count { color: var(--danger); }
@@ -496,10 +496,9 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   border-radius: 0 8px 8px 0;
   background: var(--bg-2);
   font-size: 13.5px;
-  color: var(--ink);
 }
 
-/* the one-line "hard or cheap" note that ships with every trophy in the data */
+/* the one-sentence "hard or cheap" note that ships with every trophy in the data */
 .dwhy {
   margin: 0 0 var(--s4);
   padding-left: var(--s3);
@@ -509,7 +508,7 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   color: var(--ink-dim);
 }
 
-.dguide { margin: 0 0 var(--s4); font-size: 14px; color: var(--ink); }
+.dguide { margin: 0 0 var(--s4); font-size: 14px; }
 
 .dsection { margin-top: var(--s4); }
 
@@ -544,8 +543,8 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   font-weight: 650;
 }
 
-/* spoiler-safe mode: the identity of an unearned story trophy is blurred, not removed, so the layout
-   does not jump when the setting is toggled */
+/* spoiler-safe mode: the identity of an unearned story trophy is blurred rather than removed, so the
+   layout does not jump when the setting is toggled */
 body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname,
 body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
   color: transparent;
@@ -606,8 +605,8 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
 
 /* Paper has no hover, no sticky panel and no dark mode, so this block strips the theme back to black
    on white. The top bar, the filters, the roadmap panel and the detail sheet are controls and are
-   dropped entirely; what stays is the trophy list, one trophy per row in a thin 1px border, with the
-   on-screen check button replaced by a box that can be ticked with a pen. */
+   dropped entirely; what remains is the trophy list, one trophy per row inside a thin border, with
+   the on-screen check button replaced by a box that can be ticked with a pen. */
 @media print {
   :root { color-scheme: light; }
 

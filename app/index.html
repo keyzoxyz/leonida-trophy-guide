@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leonida Trophy Guide — GTA VI platinum roadmap &amp; tracker</title>
+<meta name="description" content="An offline guide and progress tracker for all 55 Grand Theft Auto VI PlayStation 5 trophies, with a ten-stage platinum roadmap and a printable checklist.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff2e88'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%230d0f1a'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -16,7 +17,9 @@
   <div class="progress-block" id="progressBlock">
     <div class="progress-numbers"><span id="earnedCount">0</span>/<span id="totalCount">55</span>
       <span class="pct" id="earnedPct">0%</span></div>
-    <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+    <div class="bar" role="progressbar" aria-label="Trophies earned" aria-valuemin="0" aria-valuemax="55" aria-valuenow="0" id="progressBar">
+      <div class="bar-fill" id="progressFill"></div>
+    </div>
     <div class="grade-chips" id="gradeChips" role="group" aria-label="Filter by trophy grade"></div>
   </div>
   <div class="controls-block">
@@ -27,7 +30,7 @@
   </div>
 </header>
 
-<nav id="filters">
+<nav id="filters" aria-label="Trophy filters">
   <div class="filter-row">
     <span class="filter-label">Kind</span>
     <button class="chip kind-chip on" data-kind="all" type="button">All</button>
@@ -41,17 +44,18 @@
   </div>
   <div class="filter-row">
     <span class="filter-label">Show</span>
-    <button class="chip flag-chip" data-flag="missable" type="button">Missable only</button>
-    <button class="chip flag-chip on" data-flag="earned" type="button">Hide earned</button>
-    <button class="chip flag-chip" data-flag="unearned-only" type="button">Unearned only</button>
+    <button class="chip flag-chip" data-flag="missable" type="button" aria-pressed="false">Missable only</button>
+    <button class="chip flag-chip on" data-flag="earned" type="button" aria-pressed="true">Hide earned</button>
+    <button class="chip flag-chip" data-flag="unearned-only" type="button" aria-pressed="false">Unearned only</button>
     <span class="spacer"></span>
+    <label class="search-label" for="search">Search</label>
     <input id="search" type="search" placeholder="Search name, guide or source…" aria-label="Search trophies by name, guide text or cited source. Escape clears the search." autocomplete="off">
   </div>
 </nav>
 
 <main id="layout">
-  <section id="roadmapPanel">
-    <h2>Roadmap to the platinum</h2>
+  <section id="roadmapPanel" aria-labelledby="roadmapHeading">
+    <h2 id="roadmapHeading">Roadmap to the platinum</h2>
     <aside id="missableCallout" class="mcallout" aria-live="polite">
       <p class="mcallout-count"><strong id="missableCount">0</strong> <span id="missableLabel">missable still open</span></p>
       <p class="mcallout-note" id="missableNote"></p>
@@ -60,32 +64,35 @@
     <ol id="roadmapList"></ol>
   </section>
 
-  <section id="trophyPanel">
+  <section id="trophyPanel" aria-label="Trophy list">
     <div id="trophyList" role="list"></div>
   </section>
 </main>
 
-<section id="detailSheet" hidden role="dialog" aria-modal="true" aria-label="Trophy details">
+<section id="detailSheet" hidden role="dialog" aria-modal="true" aria-labelledby="detailTitle">
   <button id="closeDetail" type="button" aria-label="Close trophy details">✕</button>
   <div id="detailBody"></div>
 </section>
 
 <footer id="foot">
-  <p>Trophy names and descriptions are shown exactly as PlayStation publishes them. Guides are original
-  text written for this entry, and each trophy lists its sources beside it. Progress is saved in your
-  browser (localStorage) and never leaves your machine.</p>
-  <p class="updated">Data verified <span id="verifiedAt">2026-11-21</span> — every trophy checked against
-  the official PlayStation list. Press Ctrl/Cmd+P for a paper checklist: the print stylesheet drops the
-  dark theme and every control, and keeps the trophy list black on white, one trophy per bordered row.</p>
+  <p>Trophy names and descriptions are shown exactly as PlayStation publishes them. Every guide is
+  original text written for this entry, and each trophy names its sources beside it. Progress is saved
+  in your browser with localStorage and never leaves your machine.</p>
+  <p class="updated">Data verified <time id="verifiedAt" datetime="2026-11-21">2026-11-21</time> — every
+  trophy checked against the official PlayStation list. Press Ctrl/Cmd+P for a paper checklist: the print
+  stylesheet drops the dark theme and every control, and keeps one bordered trophy per row in black on
+  white.</p>
 </footer>
 
 <script type="module" src="app.js"></script>
 <script type="module">
-  // The verified date is read from the data, not typed into this page, so the footer cannot claim a
-  // fresher check than the trophy list it ships. The span holds the raw ISO date as a no-script fallback.
+  // The footer date comes from the data module, not from a hand-typed string, so the page cannot
+  // claim a fresher check than the trophy list it ships. The <time> element's ISO text and datetime
+  // attribute are the no-script fallback; with scripts on, the date is localised in place.
   import { VERIFIED_AT } from './data/trophies.js';
   const slot = document.getElementById('verifiedAt');
   if (slot && /^\d{4}-\d{2}-\d{2}$/.test(VERIFIED_AT)) {
+    slot.dateTime = VERIFIED_AT;
     slot.textContent = new Date(VERIFIED_AT + 'T00:00:00Z').toLocaleDateString(undefined, {
       year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
     });
