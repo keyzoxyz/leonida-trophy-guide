@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Produce the four screenshots that ship beside the Leonida Trophy Guide.
+"""Capture the four screenshots that ship beside the Leonida Trophy Guide.
 
-The app is plain static files, so this script only has to: serve app/ over loopback on
-127.0.0.1:8099, let headless Chromium open it with Playwright, and capture four 1280x1080
-PNGs into screenshots/. Each shot gets a fresh browser context so one shot's localStorage
-progress never leaks into the next.
+The app is plain static files, so this script only has to serve app/ over loopback on
+127.0.0.1:8099, let headless Chromium open it through Playwright, and save four 1280x1080
+PNGs into screenshots/. Every shot gets a fresh browser context, so one shot's ticks never
+leak into the next, and every shot is checked for size before the script exits.
 
 Run from anywhere:  python3 scripts/shoot.py
 """
@@ -31,7 +31,7 @@ MAX_BYTES = 256 * 1024
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
-    """SimpleHTTPRequestHandler without the per-request chatter on stderr."""
+    """SimpleHTTPRequestHandler without the request chatter on stderr."""
 
     def log_message(self, format, *args):  # noqa: A002 - signature copied from the base class
         pass
@@ -39,7 +39,7 @@ class QuietHandler(http.server.SimpleHTTPRequestHandler):
 
 @contextlib.contextmanager
 def served_app():
-    """Serve app/ on the loopback address for the duration of the block."""
+    """Serve app/ on loopback for the duration of the block."""
     handler = partial(QuietHandler, directory=str(APP_DIR))
     server = http.server.ThreadingHTTPServer((HOST, PORT), handler)
     worker = threading.Thread(target=server.serve_forever, daemon=True)
@@ -59,22 +59,21 @@ def open_page(browser, url):
     page.goto(url, wait_until="load")
     page.wait_for_selector(".tcard", state="visible")
     page.evaluate("window.scrollTo(0, 0)")
+    page.wait_for_timeout(150)
     return context, page
 
 
-def capture(page, name):
-    target = SHOT_DIR / name
-    page.screenshot(path=str(target), type="png", full_page=False)
-    tighten(target)
-    return target
+def settle(page, ms=250):
+    """Give the render a beat to paint after a click rebuilds the list."""
+    page.wait_for_timeout(ms)
 
 
-def tighten(path):
+def tighten(path: Path) -> None:
     """Keep a shot under the 256 KiB hand-in cap.
 
-    A flat dark UI survives an adaptive 256-colour palette with no visible change, and the
-    palette keeps text edges that JPEG would smear, so this is the fallback rather than a
-    lossy re-encode. Most shots land well under the cap untouched.
+    A flat dark UI survives an adaptive 256-colour palette with no visible damage, and the
+    palette keeps text edges that a JPEG re-encode would smear, so quantising is the fallback
+    rather than a lossy format change. Most shots land under the cap untouched.
     """
     if path.stat().st_size <= MAX_BYTES:
         return
@@ -88,20 +87,22 @@ def tighten(path):
         reduced.save(path, format="PNG", optimize=True)
 
 
-def settle(page, ms=250):
-    """Give the render a beat to paint after a click rebuilds the list."""
-    page.wait_for_timeout(ms)
+def capture(page, name: str) -> Path:
+    target = SHOT_DIR / name
+    page.screenshot(path=str(target), type="png", full_page=False)
+    tighten(target)
+    return target
 
 
 def shoot_checklist(browser, url):
-    """About a third of the list ticked, then earned rows revealed, so the bar reads 18/55."""
+    """A third of the list ticked, with the earned rows left in frame so the bar reads 18/55."""
     context, page = open_page(browser, url)
     try:
         for _ in range(18):
             page.locator(".tcheck").first.click()
             page.wait_for_timeout(40)
-        # Hide earned defaults to on; switch it off so the ticked cards stay in frame.
-        page.locator('.flag-chip[data-flag="earned"]').click()
+        # "Earned only" hides everything else; clear flags keeps the ticked cards visible.
+        page.locator('.flag-chip[data-flag="clear"]').click()
         page.evaluate("window.scrollTo(0, 0)")
         settle(page)
         return capture(page, "1-checklist.png")
@@ -110,7 +111,7 @@ def shoot_checklist(browser, url):
 
 
 def shoot_guide(browser, url):
-    """A missable side-strand trophy with its guide, steps and sources on the sheet."""
+    """A missable side-strand trophy with its guide, steps and sources open on the sheet."""
     context, page = open_page(browser, url)
     try:
         page.locator('.tcard[data-id="20"] .tname').click()
@@ -124,7 +125,7 @@ def shoot_guide(browser, url):
 
 
 def shoot_roadmap(browser, url):
-    """Missable-only filter on: the callout, stages and the short list of traps."""
+    """Missable-only filter on: the callout, the stages and the short list of traps."""
     context, page = open_page(browser, url)
     try:
         page.locator('.flag-chip[data-flag="missable"]').click()
@@ -139,7 +140,7 @@ def shoot_spoiler(browser, url):
     """Spoiler-safe mode with the Story filter: names and guides withheld until earned."""
     context, page = open_page(browser, url)
     try:
-        page.locator("#spoilerMode").check()
+        page.locator("#spoilerBtn").click()
         page.locator('.kind-chip[data-kind="story"]').click()
         page.evaluate("window.scrollTo(0, 0)")
         settle(page)
@@ -148,8 +149,8 @@ def shoot_spoiler(browser, url):
         context.close()
 
 
-def png_size(path):
-    """Width and height straight out of the IHDR chunk, no image library required."""
+def png_size(path: Path):
+    """Width and height straight out of the IHDR chunk, no image library needed."""
     with path.open("rb") as handle:
         header = handle.read(24)
     if header[:8] != b"\x89PNG\r\n\x1a\n":

@@ -1,7 +1,1 @@
-# main.ts writes the hand-in here when run as MAKEFUN_OUTPUT_DIR=out.
 out/
-
-# Editor and OS leftovers — nothing here belongs to the entry.
-.DS_Store
-*.log
-node_modules/

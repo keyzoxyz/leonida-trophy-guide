@@ -3,99 +3,141 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leonida Trophy Guide — GTA VI platinum roadmap &amp; tracker</title>
-<meta name="description" content="An offline guide and progress tracker for all 55 Grand Theft Auto VI PlayStation 5 trophies, with a ten-stage platinum roadmap and a printable checklist.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23ff2e88'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%230d0f1a'/%3E%3C/svg%3E">
+<title>Leonida Trophy Guide — GTA VI platinum tracker</title>
+<meta name="description" content="An offline GTA VI trophy guide and tracker for PlayStation 5: all 55 trophies, the missable traps, a roadmap that runs in story order, and progress saved in your browser.">
+<meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header id="topbar">
-  <div class="brand">
-    <h1>LEONIDA <span>TROPHY GUIDE</span></h1>
-    <p class="tagline">Grand Theft Auto VI · PlayStation 5 · 55 trophies · 100% completion roadmap</p>
-  </div>
-  <div class="progress-block" id="progressBlock">
-    <div class="progress-numbers"><span id="earnedCount">0</span>/<span id="totalCount">55</span>
-      <span class="pct" id="earnedPct">0%</span></div>
-    <div class="bar" role="progressbar" aria-label="Trophies earned" aria-valuemin="0" aria-valuemax="55" aria-valuenow="0" id="progressBar">
-      <div class="bar-fill" id="progressFill"></div>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <p class="kicker">GTA VI · PlayStation 5</p>
+      <h1>Leonida Trophy Guide</h1>
+      <p class="tagline">All 55 trophies, the 16 that can vanish, and a roadmap that keeps the platinum reachable.</p>
     </div>
-    <div class="grade-chips" id="gradeChips" role="group" aria-label="Filter by trophy grade"></div>
+    <div class="score" aria-live="polite">
+      <p class="score-count"><strong id="earnedCount">0</strong><span>/ <span id="totalCount">55</span> earned</span></p>
+      <div class="bar" role="progressbar" aria-labelledby="earnedCount" aria-valuemin="0" aria-valuemax="55" aria-valuenow="0" id="progressBar">
+        <span class="bar-fill" id="barFill"></span>
+      </div>
+      <p class="score-note" id="scoreNote">Nothing banked yet. Tick a trophy when the notification lands.</p>
+    </div>
   </div>
-  <div class="controls-block">
-    <label class="spoiler-toggle"><input type="checkbox" id="spoilerMode"> Spoiler-safe mode</label>
-    <button id="exportBtn" type="button">Export progress</button>
-    <button id="importBtn" type="button">Import</button>
-    <input type="file" id="importFile" accept="application/json" hidden>
-  </div>
+  <div class="wrap gradebar" id="gradeChips" aria-label="Trophies by grade"></div>
 </header>
 
-<nav id="filters" aria-label="Trophy filters">
-  <div class="filter-row">
-    <span class="filter-label">Kind</span>
-    <button class="chip kind-chip on" data-kind="all" type="button" aria-pressed="true">All</button>
-    <button class="chip kind-chip" data-kind="story" type="button" aria-pressed="false">Story</button>
-    <button class="chip kind-chip" data-kind="side" type="button" aria-pressed="false">Strands</button>
-    <button class="chip kind-chip" data-kind="activity" type="button" aria-pressed="false">Activities</button>
-    <button class="chip kind-chip" data-kind="collectible" type="button" aria-pressed="false">Collectibles</button>
-    <button class="chip kind-chip" data-kind="heist" type="button" aria-pressed="false">Heists</button>
-    <button class="chip kind-chip" data-kind="economy" type="button" aria-pressed="false">Economy</button>
-    <button class="chip kind-chip" data-kind="meta" type="button" aria-pressed="false">Meta</button>
+<div class="controls wrap">
+  <button type="button" class="ctrl" id="spoilerBtn" aria-pressed="false" title="Mask names and guides for story trophies you have not earned">
+    <span class="ctrl-dot" aria-hidden="true"></span>
+    Spoiler-safe: off
+  </button>
+  <div class="ctrl-group" role="group" aria-label="Progress file">
+    <button type="button" class="ctrl" id="exportBtn">Export progress</button>
+    <button type="button" class="ctrl" id="importBtn">Import progress</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
   </div>
-  <div class="filter-row">
-    <span class="filter-label">Show</span>
-    <button class="chip flag-chip" data-flag="missable" type="button" aria-pressed="false">Missable only</button>
-    <button class="chip flag-chip on" data-flag="earned" type="button" aria-pressed="true">Hide earned</button>
-    <button class="chip flag-chip" data-flag="unearned-only" type="button" aria-pressed="false">Unearned only</button>
-    <span class="spacer"></span>
-    <label class="search-label" for="search">Search</label>
-    <input id="search" type="search" placeholder="Search name, guide or source…" aria-label="Search trophies by name, guide text or cited source. Escape clears the search." autocomplete="off">
+  <p class="ctrl-status" id="ctrlStatus" role="status"></p>
+</div>
+
+<div class="wrap filters">
+  <div class="chips" id="kindChips" role="group" aria-label="Filter by kind">
+    <button type="button" class="kind-chip is-on" data-kind="all" aria-pressed="true">All kinds</button>
+    <button type="button" class="kind-chip" data-kind="story" aria-pressed="false">Story</button>
+    <button type="button" class="kind-chip" data-kind="side" aria-pressed="false">Strangers</button>
+    <button type="button" class="kind-chip" data-kind="heist" aria-pressed="false">Heists</button>
+    <button type="button" class="kind-chip" data-kind="activity" aria-pressed="false">Activities</button>
+    <button type="button" class="kind-chip" data-kind="collectible" aria-pressed="false">Collectibles</button>
+    <button type="button" class="kind-chip" data-kind="economy" aria-pressed="false">Economy</button>
+    <button type="button" class="kind-chip" data-kind="meta" aria-pressed="false">Meta</button>
   </div>
-</nav>
+  <div class="chips" id="showChips" role="group" aria-label="Filter by flag">
+    <button type="button" class="flag-chip" data-flag="missable" aria-pressed="false">Missable only</button>
+    <button type="button" class="flag-chip" data-flag="unearned" aria-pressed="false">Unearned only</button>
+    <button type="button" class="flag-chip" data-flag="earned" aria-pressed="false">Earned only</button>
+    <button type="button" class="flag-chip" data-flag="clear" aria-pressed="false">Clear flags</button>
+  </div>
+  <label class="search">
+    <span class="search-label">Search</span>
+    <input type="search" id="searchInput" placeholder="Name, guide text, or source…" autocomplete="off" spellcheck="false">
+  </label>
+</div>
 
-<main id="layout">
-  <section id="roadmapPanel" aria-labelledby="roadmapHeading">
-    <h2 id="roadmapHeading">Roadmap to the platinum</h2>
-    <aside id="missableCallout" class="mcallout" aria-live="polite">
-      <p class="mcallout-count"><strong id="missableCount">0</strong> <span id="missableLabel">missable still open</span></p>
-      <p class="mcallout-note" id="missableNote"></p>
-      <div class="mcallout-stages" id="missableStages"></div>
-    </aside>
-    <ol id="roadmapList"></ol>
-  </section>
+<main class="wrap layout">
+  <aside class="roadmap" id="roadmap" aria-labelledby="roadmapTitle">
+    <h2 id="roadmapTitle">The roadmap</h2>
+    <p class="roadmap-intro">Ten stages, in the order that keeps every missable window open. Work down the list, not across the map.</p>
 
-  <section id="trophyPanel" aria-label="Trophy list">
-    <div id="trophyList" role="list"></div>
+    <div class="callout">
+      <p class="callout-head"><span class="callout-count" id="missableCount">16</span> trophies can be lost</p>
+      <p class="callout-body">Strands, one-time social beats, a stealth job and four decisions close when the story advances. Finish the line you opened before you touch the next chapter mission.</p>
+    </div>
+
+    <ol class="stages" id="stageList"></ol>
+
+    <div class="roadmap-foot">
+      <p>Built from the trophy list verified on <time id="verifiedStamp" datetime="2026-11-21">2026-11-21</time>. Offline, no account, no network calls.</p>
+      <button type="button" class="ctrl ctrl-sm" id="printBtn">Print this page</button>
+    </div>
+  </aside>
+
+  <section class="list" aria-labelledby="listTitle">
+    <div class="list-head">
+      <h2 id="listTitle">Trophies</h2>
+      <p class="list-meta" id="listMeta" aria-live="polite"></p>
+    </div>
+    <p class="empty" id="emptyState" hidden>No trophy matches that combination. Clear a flag or widen the search.</p>
+    <ol class="cards" id="cardList"></ol>
+    <p class="list-end">Every guide here is written from the trophy list itself; the sources line names what was checked.</p>
   </section>
 </main>
 
-<section id="detailSheet" hidden role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-  <button id="closeDetail" type="button" aria-label="Close trophy details">✕</button>
-  <div id="detailBody"></div>
-</section>
-
-<footer id="foot">
-  <p>Trophy names and descriptions are reproduced as PlayStation publishes them. Every guide here is
-  original text written for this entry, and each trophy lists its sources beside the steps. Your progress
-  lives in this browser's localStorage and is never sent anywhere.</p>
-  <p class="updated">Data verified <time id="verifiedAt" datetime="2026-11-21">2026-11-21</time> — all 55
-  trophies checked against the official PlayStation list. Press Ctrl/Cmd+P for a paper checklist: the print
-  stylesheet drops the dark theme and every control, and keeps one bordered trophy per row in black on
-  white.</p>
+<footer class="wrap foot">
+  <p class="foot-verified">Trophy data verified <time id="footVerified" datetime="2026-11-21">2026-11-21</time> · Grand Theft Auto VI on PlayStation 5</p>
+  <p class="foot-note">Unofficial fan guide. No affiliation with Rockstar Games or Sony. Progress lives in this browser's localStorage; export it if you switch machines.</p>
 </footer>
+
+<div class="sheet-backdrop" id="sheetBackdrop" hidden></div>
+<section class="sheet" id="detailSheet" role="dialog" aria-modal="true" aria-labelledby="sheetName" hidden>
+  <div class="sheet-top">
+    <p class="sheet-grade" id="sheetGrade"></p>
+    <button type="button" class="sheet-close" id="sheetClose" aria-label="Close trophy details">Close</button>
+  </div>
+  <h2 id="sheetName"></h2>
+  <p class="sheet-desc" id="sheetDesc"></p>
+  <div class="sheet-flags" id="sheetFlags"></div>
+  <div class="sheet-body">
+    <h3>The guide</h3>
+    <p id="sheetGuide"></p>
+    <h3>Why it is here</h3>
+    <p class="sheet-why" id="sheetWhy"></p>
+    <h3>Steps</h3>
+    <ol class="dsteps" id="sheetSteps"></ol>
+    <h3>Sources</h3>
+    <div class="dsources" id="sheetSources"></div>
+  </div>
+  <div class="sheet-foot">
+    <button type="button" class="ctrl" id="sheetToggle">Mark earned</button>
+    <p class="sheet-hint">Esc closes · Esc with a search first clears the search</p>
+  </div>
+</section>
 
 <script type="module" src="app.js"></script>
 <script type="module">
-  // The footer's date is read from the data module, never typed into this page by hand, so the page
-  // cannot advertise a fresher check than the trophy list it ships. The <time> element's ISO text and
-  // datetime attribute above are the no-script fallback; with scripts on, the date is localised in place.
+  // Stamp the verified date from the data module, with the plain ISO date already in the
+  // markup as the fallback if this script or the module fails to load.
   import { VERIFIED_AT } from './data/trophies.js';
-  const slot = document.getElementById('verifiedAt');
-  if (slot && /^\d{4}-\d{2}-\d{2}$/.test(VERIFIED_AT)) {
-    slot.dateTime = VERIFIED_AT;
-    slot.textContent = new Date(VERIFIED_AT + 'T00:00:00Z').toLocaleDateString(undefined, {
-      year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
+  if (/^\d{4}-\d{2}-\d{2}$/.test(VERIFIED_AT)) {
+    for (const el of document.querySelectorAll('#verifiedStamp, #footVerified')) {
+      el.textContent = VERIFIED_AT;
+      el.setAttribute('datetime', VERIFIED_AT);
+    }
+    const human = new Date(VERIFIED_AT + 'T12:00:00Z').toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
     });
+    const foot = document.querySelector('#footVerified');
+    if (foot) foot.textContent = human;
   }
 </script>
 </body>
