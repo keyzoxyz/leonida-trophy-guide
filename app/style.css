@@ -565,3 +565,22 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
   border: 1px dashed var(--line);
   border-radius: var(--radius);
 }
+/* grade chips: per-grade earned counters that double as filters */
+.grade-chips { display: flex; gap: var(--s1); margin-top: var(--s2); }
+
+.grade-chip {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.grade-chip.on { color: var(--ink); border-color: var(--teal); background: rgba(41, 224, 200, 0.12); }
+.grade-chip.g-platinum { color: var(--gold); border-color: rgba(255, 196, 71, 0.45); }
+.grade-chip.g-gold { color: var(--gold); }
+.grade-chip.g-silver { color: var(--silver); }
+.grade-chip.g-bronze { color: var(--bronze); }

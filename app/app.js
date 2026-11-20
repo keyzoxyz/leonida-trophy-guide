@@ -8,6 +8,7 @@ const $ = (sel) => document.querySelector(sel);
 
 const state = {
   earned: new Set(),          // trophy ids marked done
+  grade: null,                // null = all grades, else 'platinum' | 'gold' | 'silver' | 'bronze'
   spoiler: false,             // hide unearned story trophies' identity
   kind: 'all',
   missableOnly: false,
@@ -87,6 +88,7 @@ function isSpoiler(t) {
 }
 
 function matches(t) {
+  if (state.grade && t.grade !== state.grade) return false;
   if (state.kind !== 'all' && t.kind !== state.kind) return false;
   if (state.missableOnly && !t.missable) return false;
   const done = state.earned.has(t.id);
@@ -259,7 +261,29 @@ function renderMissableCallout() {
   }
 }
 
+function renderGradeChips() {
+  const wrap = document.querySelector('#gradeChips');
+  if (!wrap) return;
+  const grades = [['platinum', 'Pt'], ['gold', 'G'], ['silver', 'S'], ['bronze', 'B']];
+  wrap.textContent = '';
+  for (const [g, label] of grades) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    const ofGrade = TROPHIES.filter((t) => t.grade === g);
+    const got = ofGrade.filter((t) => state.earned.has(t.id)).length;
+    b.className = 'grade-chip g-' + g + (state.grade === g ? ' on' : '');
+    b.textContent = `${label} ${got}/${ofGrade.length}`;
+    b.setAttribute('aria-label', 'Filter to ' + g + ' trophies');
+    b.addEventListener('click', () => {
+      state.grade = state.grade === g ? null : g;
+      renderAll();
+    });
+    wrap.append(b);
+  }
+}
+
 function renderProgress() {
+  renderGradeChips();
   const done = TROPHIES.filter((t) => state.earned.has(t.id)).length;
   $('#earnedCount').textContent = String(done);
   $('#totalCount').textContent = String(TROPHIES.length);
