@@ -18,6 +18,7 @@ const state = {
 };
 
 const STORAGE_KEY = 'leonida-guide-progress-v1';
+let lastFocus = null; // the element that opened the detail sheet, so Escape can hand focus back
 
 function loadProgress() {
   try {
@@ -80,7 +81,9 @@ function gradeClass(grade) {
 }
 
 function isSpoiler(t) {
-  return state.spoiler && !state.earned.has(t.id) && (t.kind === 'story' || t.name.length > 0 && t.stage <= 1);
+  // Only story beats are spoilers. Stage alone must not hide a trophy: an early-stage collectible is not a
+  // story spoiler, and a story trophy that lands in a later stage (the chapter-8 decision missions) still is.
+  return state.spoiler && !state.earned.has(t.id) && (t.kind === 'story' || t.hidden === true);
 }
 
 function matches(t) {
@@ -110,10 +113,11 @@ function renderList() {
   }
   for (const t of rows) {
     const earned = state.earned.has(t.id);
+    const hidden = isSpoiler(t);
     const card = document.createElement('article');
     card.className = 'tcard' + (earned ? ' earned' : '') + (t.missable ? ' missable' : '');
     card.dataset.id = String(t.id);
-    card.dataset.spoiler = isSpoiler(t) ? '1' : '0';
+    card.dataset.spoiler = hidden ? '1' : '0';
     card.setAttribute('role', 'listitem');
 
     const grade = document.createElement('div');
@@ -124,10 +128,10 @@ function renderList() {
     main.className = 'tmain';
     const name = document.createElement('h3');
     name.className = 'tname';
-    name.textContent = isSpoiler(t) ? '??? hidden until earned' : t.name;
+    name.textContent = hidden ? '??? hidden until earned' : t.name;
     const desc = document.createElement('p');
     desc.className = 'tdesc';
-    desc.textContent = isSpoiler(t) ? 'story trophy — description hidden in spoiler-safe mode' : t.description;
+    desc.textContent = hidden ? 'story trophy — description hidden in spoiler-safe mode' : t.description;
     main.append(name, desc);
 
     const badges = document.createElement('div');
@@ -141,7 +145,10 @@ function renderList() {
     const check = document.createElement('button');
     check.className = 'tcheck';
     check.type = 'button';
-    check.setAttribute('aria-label', `Mark ${t.name} ${earned ? 'unearned' : 'earned'}`);
+    // A screen reader must never read out the name the card is hiding, so the label follows the same rule.
+    const spoken = hidden ? 'this story trophy' : t.name;
+    check.setAttribute('aria-label', earned ? `Mark ${spoken} as not earned` : `Mark ${spoken} as earned`);
+    check.setAttribute('aria-pressed', earned ? 'true' : 'false');
     check.textContent = '✓';
     check.addEventListener('click', (ev) => {
       ev.stopPropagation();
@@ -167,9 +174,15 @@ function renderRoadmap() {
   for (const st of STAGES) {
     const rows = TROPHIES.filter((t) => t.stage === st.id);
     const done = rows.filter((t) => state.earned.has(t.id)).length;
+    const traps = rows.filter((t) => t.missable && !state.earned.has(t.id)).length;
     const li = document.createElement('li');
-    li.className = (state.activeStage === st.id ? 'active ' : '') + (done === rows.length && rows.length ? 'done' : '');
+    li.className = (state.activeStage === st.id ? 'active ' : '') +
+      (done === rows.length && rows.length ? 'done ' : '') +
+      (traps ? 'has-missable' : '');
     li.dataset.stage = String(st.id);
+    li.tabIndex = 0;
+    if (state.activeStage === st.id) li.setAttribute('aria-current', 'true');
+    if (traps) li.setAttribute('aria-label', `${st.title}, ${done} of ${rows.length} earned, ${traps} missable still open`);
 
     const n = document.createElement('span');
     n.className = 'stage-n';
@@ -188,12 +201,61 @@ function renderRoadmap() {
     note.textContent = st.note;
 
     li.append(n, title, count, note);
-    li.addEventListener('click', () => {
+    const activate = () => {
       state.activeStage = state.activeStage === st.id ? null : st.id;
-      renderRoadmap();
-      renderList();
+      renderAll();
+      // renderAll replaces every row; without this the row a keyboard user just pressed disappears with the
+      // focus, so the next Enter goes to the page body and the filter cannot be toggled back off.
+      const again = ol.querySelector(`li[data-stage="${st.id}"]`);
+      if (again) again.focus({ preventScroll: true });
+    };
+    li.addEventListener('click', activate);
+    li.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        activate();
+      }
     });
     ol.append(li);
+  }
+}
+
+/* The roadmap callout: the one number that can cost a platinum. Counts the missable trophies that are not
+   earned yet and points at the stages they sit in, so the list and the roadmap agree at a glance. */
+function renderMissableCallout() {
+  const box = $('#missableCallout');
+  const stages = $('#missableStages');
+  const open = TROPHIES.filter((t) => t.missable && !state.earned.has(t.id));
+  const total = TROPHIES.filter((t) => t.missable).length;
+
+  box.hidden = false;
+  box.classList.toggle('clear', open.length === 0);
+  $('#missableCount').textContent = String(open.length);
+  $('#missableLabel').textContent = open.length === 0 ? 'missable left'
+    : open.length === 1 ? 'missable still open' : 'missables still open';
+  $('#missableNote').textContent = open.length === 0
+    ? `All ${total} missable trophies are earned — the platinum can no longer slip away.`
+    : `${total - open.length} of ${total} done. Finish each strand in the chapter it opens.`;
+
+  stages.textContent = '';
+  if (open.length === 0) return;
+  const byStage = new Map();
+  for (const t of open) byStage.set(t.stage, (byStage.get(t.stage) ?? 0) + 1);
+  for (const st of STAGES) {
+    const n = byStage.get(st.id);
+    if (!n) continue;
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'mcallout-stage' + (state.activeStage === st.id ? ' on' : '');
+    chip.dataset.stage = String(st.id);
+    chip.textContent = `${st.title} · ${n}`;
+    chip.setAttribute('aria-label', `Show the ${n} missable troph${n === 1 ? 'y' : 'ies'} in ${st.title}`);
+    chip.addEventListener('click', () => {
+      state.activeStage = state.activeStage === st.id ? null : st.id;
+      state.missableOnly = true;
+      renderAll();
+    });
+    stages.append(chip);
   }
 }
 
@@ -206,10 +268,28 @@ function renderProgress() {
   $('#progressFill').style.width = `${pct}%`;
 }
 
+/* The chips and the state can drift (an import, a flag toggled from code, the initial markup); the UI is
+   redrawn from the state rather than trusted to stay in step with it. */
+function syncChips() {
+  for (const chip of document.querySelectorAll('.kind-chip')) {
+    chip.classList.toggle('on', chip.dataset.kind === state.kind);
+  }
+  for (const chip of document.querySelectorAll('.flag-chip')) {
+    const on = chip.dataset.flag === 'missable' ? state.missableOnly
+      : chip.dataset.flag === 'earned' ? state.hideEarned
+        : chip.dataset.flag === 'unearned-only' ? state.unearnedOnly
+          : false;
+    chip.classList.toggle('on', on);
+    chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+}
+
 function renderAll() {
   renderList();
   renderRoadmap();
+  renderMissableCallout();
   renderProgress();
+  syncChips();
   document.body.classList.toggle('spoiler', state.spoiler);
   $('#spoilerMode').checked = state.spoiler;
 }
@@ -248,13 +328,17 @@ function openDetail(id) {
   desc.className = 'ddesc';
   desc.textContent = spoiler ? 'Earn this trophy to reveal its official description.' : `“${t.description}”`;
 
+  // The card hides the name, so the sheet must not hand the spoiler back through the guide: the guide and the
+  // steps name the mission and the beat ("Play Breakfast Run"), which is exactly what spoiler-safe mode hides.
   const guide = document.createElement('p');
   guide.className = 'dguide';
-  guide.textContent = t.guide;
+  guide.textContent = spoiler
+    ? 'Guide hidden in spoiler-safe mode — the steps name the mission and the story beat it belongs to.'
+    : t.guide;
 
   body.append(head, desc, guide);
 
-  if (Array.isArray(t.steps) && t.steps.length) {
+  if (!spoiler && Array.isArray(t.steps) && t.steps.length) {
     const sec = document.createElement('div');
     sec.className = 'dsection';
     const h3 = document.createElement('h3');
@@ -299,11 +383,17 @@ function openDetail(id) {
   actions.append(markBtn);
   body.append(actions);
 
+  lastFocus = document.activeElement;
   $('#detailSheet').hidden = false;
+  $('#closeDetail').focus();
 }
 
 function closeDetail() {
-  $('#detailSheet').hidden = true;
+  const sheet = $('#detailSheet');
+  if (sheet.hidden) return;
+  sheet.hidden = true;
+  if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+  lastFocus = null;
 }
 
 /* ── wiring ──────────────────────────────────────────────────────────── */
@@ -311,9 +401,11 @@ function closeDetail() {
 function wire() {
   for (const chip of document.querySelectorAll('.kind-chip')) {
     chip.addEventListener('click', () => {
-      for (const c of document.querySelectorAll('.kind-chip')) c.classList.toggle('on', c === chip);
       state.kind = chip.dataset.kind;
-      renderList();
+      // A stage picked from the roadmap is a narrower view of one kind; letting it survive a kind switch is how
+      // a filter ends up showing an empty list with nothing on screen explaining why.
+      state.activeStage = null;
+      renderAll();
     });
   }
   $('#filters').addEventListener('click', (ev) => {
@@ -322,14 +414,14 @@ function wire() {
     const flag = chip.dataset.flag;
     if (flag === 'missable') {
       state.missableOnly = !state.missableOnly;
-      chip.classList.toggle('on', state.missableOnly);
     } else if (flag === 'earned') {
       state.hideEarned = !state.hideEarned;
-      chip.classList.toggle('on', state.hideEarned);
     } else if (flag === 'unearned-only') {
       state.unearnedOnly = !state.unearnedOnly;
-      chip.classList.toggle('on', state.unearnedOnly);
+    } else {
+      return;
     }
+    syncChips();
     renderList();
   });
   $('#search').addEventListener('input', (ev) => {
