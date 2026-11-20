@@ -34,11 +34,15 @@ function loadProgress() {
 }
 
 function saveProgress() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify({
-    earned: [...state.earned],
-    spoiler: state.spoiler,
-    savedAt: new Date().toISOString(),
-  }));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      earned: [...state.earned],
+      spoiler: state.spoiler,
+      savedAt: new Date().toISOString(),
+    }));
+  } catch {
+    /* private mode or a full quota: the session still works, it just does not persist */
+  }
 }
 
 function exportProgress() {
@@ -97,11 +101,12 @@ function matches(t) {
   if (state.activeStage !== null && t.stage !== state.activeStage) return false;
   if (state.query) {
     const q = state.query.toLowerCase();
-    // Sources are searched too: "PSNProfiles" or "PowerPyx" is how a reader looks for a fact they only
-    // half-remember, and a citation that cannot be found by typing its name is a citation they have to
-    // scroll every card to find. Name and guide keep the exact behaviour they had.
-    const hay = [t.name, t.guide, ...(t.sources ?? [])];
-    if (!hay.some((s) => String(s).toLowerCase().includes(q))) return false;
+    // Sources are searched as one join()ed string, not as a list of separate fields: a reader who remembers
+    // "PSNProfiles" or "PowerPyx" but not the trophy should get every entry that leans on that reference, and
+    // joining keeps the haystack a single lowercase blob so a query can never accidentally match across the
+    // boundary between two citations. Name and guide behave exactly as they always did.
+    const hay = [t.name, t.guide, (t.sources ?? []).join(' ')].join(' ').toLowerCase();
+    if (!hay.includes(q)) return false;
   }
   return true;
 }
@@ -356,6 +361,17 @@ function openDetail(id) {
   desc.className = 'ddesc';
   desc.textContent = spoiler ? 'Earn this trophy to reveal its official description.' : `“${t.description}”`;
 
+  body.append(head, desc);
+
+  // The one-line difficulty note is prose like the guide, so it is hidden with it: "the final mission" is
+  // exactly the kind of phrase spoiler-safe mode exists to keep off the screen.
+  if (!spoiler && t.why) {
+    const why = document.createElement('p');
+    why.className = 'dwhy';
+    why.textContent = t.why;
+    body.append(why);
+  }
+
   // The card hides the name, so the sheet must not hand the spoiler back through the guide: the guide and the
   // steps name the mission and the beat ("Play Breakfast Run"), which is exactly what spoiler-safe mode hides.
   const guide = document.createElement('p');
@@ -363,8 +379,7 @@ function openDetail(id) {
   guide.textContent = spoiler
     ? 'Guide hidden in spoiler-safe mode — the steps name the mission and the story beat it belongs to.'
     : t.guide;
-
-  body.append(head, desc, guide);
+  body.append(guide);
 
   if (!spoiler && Array.isArray(t.steps) && t.steps.length) {
     const sec = document.createElement('div');
@@ -474,21 +489,18 @@ function wire() {
   });
   document.addEventListener('keydown', (ev) => {
     if (ev.key !== 'Escape') return;
-    // Escape unwinds one layer at a time, narrowest first: the search text goes before the sheet does, so a
-    // reader who searched, opened a result and hit Escape is not dropped back onto a list still filtered by
-    // a query they can no longer see (the box sits under the sticky bar, not in the sheet).
+    // Escape unwinds one layer at a time, narrowest first. A non-empty search box is the narrower layer: it
+    // is cleared, the list is re-rendered, and the sheet stays open — the reader came from a search result
+    // and dropping them out of the trophy as well would undo two actions with one key. Only a second
+    // Escape, with the box already empty, closes the detail sheet.
     const search = $('#search');
-    const hadQuery = state.query !== '';
-    if (hadQuery) {
-      search.value = '';
+    if (state.query !== '' || (search && search.value !== '')) {
+      if (search) search.value = '';
       state.query = '';
       renderList();
-    }
-    if (!$('#detailSheet').hidden) {
-      closeDetail();
       return;
     }
-    if (hadQuery) search.focus();
+    if (!$('#detailSheet').hidden) closeDetail();
   });
 }
 
