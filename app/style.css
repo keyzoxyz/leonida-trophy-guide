@@ -1,6 +1,6 @@
-/* Leonida Trophy Guide — Vice City dusk: deep navy base, magenta and teal accents, gold for platinum.
-   One 4px spacing scale, one type scale; every colour means something. No external font, no network.
-   The last block in this file is the print stylesheet: the same list, as a black-on-white checklist. */
+/* Leonida Trophy Guide — Vice City dusk. Deep navy base, magenta and teal accents, gold reserved for
+   platinum. One 4px spacing scale, one type scale, no external font and no network request. The last
+   block in the file is the print stylesheet: the same list, as a black-on-white paper checklist. */
 
 :root {
   --bg: #0d0f1a;
@@ -48,6 +48,9 @@ body {
 /* ── top bar ─────────────────────────────────────────────────────────── */
 
 #topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   flex-wrap: wrap;
   gap: var(--s5);
@@ -56,9 +59,6 @@ body {
   border-bottom: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(26, 31, 51, 0.92), rgba(13, 15, 26, 0.72));
   backdrop-filter: blur(8px);
-  position: sticky;
-  top: 0;
-  z-index: 40;
 }
 
 .brand { flex: 1 1 320px; min-width: 260px; }
@@ -66,8 +66,8 @@ body {
 .brand h1 {
   margin: 0;
   font-size: 26px;
-  letter-spacing: 0.14em;
   font-weight: 800;
+  letter-spacing: 0.14em;
   color: var(--ink);
 }
 
@@ -80,56 +80,50 @@ body {
 .tagline {
   margin: var(--s1) 0 0;
   font-size: 12.5px;
-  color: var(--ink-dim);
   letter-spacing: 0.02em;
+  color: var(--ink-dim);
 }
 
 .progress-block { flex: 0 1 260px; min-width: 200px; }
 
 .progress-numbers {
-  font-variant-numeric: tabular-nums;
-  font-size: 13px;
-  color: var(--ink-dim);
   margin-bottom: var(--s1);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-dim);
 }
 
-.progress-numbers #earnedCount { color: var(--teal); font-weight: 700; font-size: 17px; }
-
+.progress-numbers #earnedCount { font-size: 17px; font-weight: 700; color: var(--teal); }
 .progress-numbers .pct { margin-left: var(--s2); color: var(--ink-faint); }
 
 .bar {
   height: 8px;
-  border-radius: 99px;
-  background: var(--panel-2);
   overflow: hidden;
   border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--panel-2);
 }
 
 .bar-fill {
-  height: 100%;
   width: 0;
+  height: 100%;
   border-radius: 99px;
   background: linear-gradient(90deg, var(--teal), var(--gold));
   transition: width 220ms ease;
 }
 
-.controls-block {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
-  align-items: center;
-}
+.controls-block { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: center; }
 
 .spoiler-toggle {
   display: flex;
   align-items: center;
   gap: var(--s2);
-  font-size: 12.5px;
-  color: var(--ink-dim);
   padding: var(--s2) var(--s3);
   border: 1px solid var(--line);
   border-radius: 99px;
   background: var(--panel);
+  font-size: 12.5px;
+  color: var(--ink-dim);
   cursor: pointer;
   user-select: none;
 }
@@ -137,13 +131,13 @@ body {
 .spoiler-toggle input { accent-color: var(--magenta); }
 
 button {
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--panel);
   font: inherit;
   font-size: 12.5px;
   color: var(--ink);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  padding: var(--s2) var(--s3);
   cursor: pointer;
   transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
@@ -154,54 +148,54 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 /* ── filters ─────────────────────────────────────────────────────────── */
 
 #filters {
-  padding: var(--s3) var(--s6);
-  border-bottom: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   gap: var(--s2);
+  padding: var(--s3) var(--s6);
+  border-bottom: 1px solid var(--line);
   background: rgba(20, 24, 39, 0.6);
 }
 
 .filter-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); }
 
 .filter-label {
+  min-width: 46px;
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--ink-faint);
-  min-width: 46px;
 }
 
-.chip { font-size: 12px; padding: 5px var(--s3); }
+.chip { padding: 5px var(--s3); font-size: 12px; }
 
 .chip.on {
-  background: rgba(41, 224, 200, 0.14);
   border-color: var(--teal);
+  background: rgba(41, 224, 200, 0.14);
   color: var(--teal);
   font-weight: 600;
 }
 
 .flag-chip[data-flag="missable"].on {
-  background: rgba(255, 90, 90, 0.14);
   border-color: var(--danger);
+  background: rgba(255, 90, 90, 0.14);
   color: var(--danger);
 }
 
 .spacer { flex: 1 1 auto; }
 
 #search {
+  min-width: 220px;
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--panel);
   font: inherit;
   font-size: 12.5px;
   color: var(--ink);
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 99px;
-  padding: var(--s2) var(--s4);
-  min-width: 220px;
 }
 
 #search::placeholder { color: var(--ink-faint); }
-#search:focus { outline: none; border-color: var(--teal); }
+#search:focus { border-color: var(--teal); outline: none; }
 
 /* ── layout ──────────────────────────────────────────────────────────── */
 
@@ -209,8 +203,8 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   display: grid;
   grid-template-columns: 300px minmax(0, 1fr);
   gap: var(--s5);
-  padding: var(--s5) var(--s6) var(--s7);
   align-items: start;
+  padding: var(--s5) var(--s6) var(--s7);
 }
 
 @media (max-width: 900px) {
@@ -223,15 +217,15 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 #roadmapPanel {
   position: sticky;
   top: 128px;
-  /* The panel is taller than a 1280px-wide laptop viewport once ten stages carry notes: sticky at top:128px
-     the last rows sat below the fold at every scroll position and could never be clicked. Scroll it inside. */
+  /* Ten stages with notes are taller than a laptop viewport, so the panel scrolls inside itself rather
+     than pushing its last rows below the fold where they could never be clicked. */
   max-height: calc(100vh - 128px - var(--s4));
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--panel);
+  padding: var(--s4);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: var(--s4);
+  background: var(--panel);
 }
 
 #roadmapPanel h2 {
@@ -242,8 +236,7 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   color: var(--gold);
 }
 
-/* missable callout: the count that decides whether the platinum is still winnable */
-
+/* missable callout — the count that decides whether the platinum is still winnable */
 .mcallout {
   margin: 0 0 var(--s3);
   padding: var(--s3);
@@ -258,16 +251,16 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .mcallout-count {
   margin: 0;
   font-size: 12.5px;
-  color: var(--ink);
   font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
 
 .mcallout-count strong {
+  margin-right: 2px;
   font-size: 18px;
   font-weight: 800;
-  color: var(--danger);
-  margin-right: 2px;
   line-height: 1;
+  color: var(--danger);
 }
 
 .mcallout-note {
@@ -280,19 +273,19 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .mcallout-stages { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s2); }
 
 .mcallout-stage {
-  font-size: 10.5px;
   padding: 2px var(--s2);
+  border: 1px solid rgba(255, 90, 90, 0.45);
   border-radius: 99px;
   background: var(--bg-2);
-  border: 1px solid rgba(255, 90, 90, 0.45);
+  font-size: 10.5px;
   color: var(--danger);
 }
 
-.mcallout-stage:hover { background: rgba(255, 90, 90, 0.16); border-color: var(--danger); }
+.mcallout-stage:hover { border-color: var(--danger); background: rgba(255, 90, 90, 0.16); }
 
 .mcallout-stage.on {
-  background: var(--danger);
   border-color: var(--danger);
+  background: var(--danger);
   color: var(--bg);
   font-weight: 700;
 }
@@ -305,7 +298,14 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
 .mcallout.clear .mcallout-count strong { color: var(--ok); }
 
-#roadmapList { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--s1); }
+#roadmapList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 
 #roadmapList li {
   display: grid;
@@ -313,38 +313,38 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   gap: var(--s2);
   align-items: baseline;
   padding: var(--s2);
+  border: 1px solid transparent;
   border-radius: 8px;
   cursor: pointer;
-  border: 1px solid transparent;
 }
 
-#roadmapList li:hover { background: var(--panel-2); border-color: var(--line); }
-#roadmapList li.active { background: rgba(255, 46, 136, 0.10); border-color: var(--magenta); }
+#roadmapList li:hover { border-color: var(--line); background: var(--panel-2); }
+#roadmapList li.active { border-color: var(--magenta); background: rgba(255, 46, 136, 0.10); }
 #roadmapList li:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; }
 
-/* a stage that still holds an unearned missable: flagged in the list and countable in the callout above */
+/* a stage that still holds an unearned missable, flagged in the list and counted above */
 #roadmapList li.has-missable { background: rgba(255, 90, 90, 0.07); box-shadow: inset 3px 0 0 var(--danger); }
 #roadmapList li.has-missable .stage-n,
 #roadmapList li.has-missable .stage-count { color: var(--danger); }
-#roadmapList li.has-missable.done { box-shadow: none; background: transparent; }
+#roadmapList li.has-missable.done { background: transparent; box-shadow: none; }
 
 #roadmapList .stage-n {
-  font-variant-numeric: tabular-nums;
   font-size: 11px;
-  color: var(--ink-faint);
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
 }
 
 #roadmapList .stage-title { font-size: 12.5px; color: var(--ink); }
-#roadmapList .stage-count { font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+#roadmapList .stage-count { font-size: 11px; font-variant-numeric: tabular-nums; color: var(--ink-faint); }
 #roadmapList li.done .stage-title { color: var(--ink-faint); text-decoration: line-through; }
 
 #roadmapList .stage-note {
   grid-column: 2 / -1;
-  font-size: 11px;
-  color: var(--ink-faint);
-  line-height: 1.4;
   margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--ink-faint);
 }
 
 /* ── trophy list ─────────────────────────────────────────────────────── */
@@ -357,55 +357,55 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   gap: var(--s3);
   align-items: center;
   padding: var(--s3) var(--s4);
-  background: var(--panel);
   border: 1px solid var(--line);
   border-left: 3px solid var(--line);
   border-radius: var(--radius);
+  background: var(--panel);
   cursor: pointer;
   transition: border-color 140ms ease, background 140ms ease, transform 100ms ease;
 }
 
-.tcard:hover { background: var(--panel-2); border-color: var(--ink-faint); }
+.tcard:hover { border-color: var(--ink-faint); background: var(--panel-2); }
 .tcard:active { transform: scale(0.997); }
 .tcard.earned { border-left-color: var(--ok); background: rgba(61, 220, 132, 0.06); }
 .tcard.earned .tname { color: var(--ink-dim); text-decoration: line-through; }
 .tcard.missable { border-left-color: var(--danger); }
 
 .tgrade {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   display: grid;
   place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid;
+  border-radius: 50%;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  border: 2px solid;
 }
 
-.tgrade.platinum { color: var(--gold); border-color: var(--gold); background: rgba(255, 196, 71, 0.12); }
-.tgrade.gold { color: var(--gold); border-color: var(--gold); }
-.tgrade.silver { color: var(--silver); border-color: var(--silver); }
-.tgrade.bronze { color: var(--bronze); border-color: var(--bronze); }
+.tgrade.platinum { border-color: var(--gold); background: rgba(255, 196, 71, 0.12); color: var(--gold); }
+.tgrade.gold { border-color: var(--gold); color: var(--gold); }
+.tgrade.silver { border-color: var(--silver); color: var(--silver); }
+.tgrade.bronze { border-color: var(--bronze); color: var(--bronze); }
 
 .tmain { min-width: 0; }
 
 .tname {
+  margin: 0;
+  overflow: hidden;
   font-size: 14.5px;
   font-weight: 650;
   color: var(--ink);
-  margin: 0;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .tdesc {
   margin: 2px 0 0;
+  overflow: hidden;
   font-size: 12px;
   color: var(--ink-dim);
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -413,37 +413,37 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .tbadges { display: flex; flex-wrap: wrap; gap: var(--s1); margin-top: var(--s1); }
 
 .badge {
+  padding: 1px var(--s2);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-2);
   font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 1px var(--s2);
-  border-radius: 4px;
-  border: 1px solid var(--line);
   color: var(--ink-faint);
-  background: var(--bg-2);
-  font-weight: 600;
 }
 
-.badge.miss { color: var(--danger); border-color: rgba(255, 90, 90, 0.5); }
-.badge.stage { color: var(--teal); border-color: rgba(41, 224, 200, 0.4); }
-.badge.count { color: var(--gold); border-color: rgba(255, 196, 71, 0.4); }
+.badge.miss { border-color: rgba(255, 90, 90, 0.5); color: var(--danger); }
+.badge.stage { border-color: rgba(41, 224, 200, 0.4); color: var(--teal); }
+.badge.count { border-color: rgba(255, 196, 71, 0.4); color: var(--gold); }
 
 .tcheck {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: 8px;
   border: 1.5px solid var(--line);
+  border-radius: 8px;
   background: var(--bg-2);
-  display: grid;
-  place-items: center;
   font-size: 15px;
   color: transparent;
   cursor: pointer;
-  flex: 0 0 auto;
 }
 
 .tcheck:hover { border-color: var(--teal); }
-.tcard.earned .tcheck { background: var(--ok); border-color: var(--ok); color: #04150c; }
+.tcard.earned .tcheck { border-color: var(--ok); background: var(--ok); color: #04150c; }
 
 /* ── detail sheet ────────────────────────────────────────────────────── */
 
@@ -464,53 +464,52 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
   width: min(760px, 100%);
   max-height: min(86vh, 900px);
   overflow: auto;
-  background: var(--panel);
+  padding: var(--s6);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: var(--s6);
+  background: var(--panel);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
 }
 
 #closeDetail {
+  /* clamped inside the viewport: a fixed offset put the only visible way out above the top edge on
+     short windows */
   position: fixed;
-  /* Short windows pushed the old fixed offset above the viewport (top was -1px at 1280x700), leaving the only
-     visible way out of the sheet clipped off-screen. Clamp it inside the viewport instead. */
   top: clamp(var(--s4), calc(50% - min(43vh, 450px) - 52px), calc(100vh - 52px));
   right: clamp(var(--s4), calc(50% - 380px - 52px), calc(100vw - 52px));
+  z-index: 61;
   width: 36px;
   height: 36px;
   border-radius: 50%;
   font-size: 15px;
-  z-index: 61;
 }
 
 .dhead { display: flex; gap: var(--s4); align-items: flex-start; margin-bottom: var(--s4); }
-
 .dhead h2 { margin: 0 0 var(--s1); font-size: 21px; line-height: 1.3; }
 
-.dgrade-line { font-size: 12px; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+.dgrade-line { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-dim); }
 
 .ddesc {
   margin: var(--s3) 0 var(--s4);
   padding: var(--s3) var(--s4);
   border-left: 3px solid var(--magenta);
-  background: var(--bg-2);
   border-radius: 0 8px 8px 0;
+  background: var(--bg-2);
   font-size: 13.5px;
   color: var(--ink);
 }
 
-/* the one-line "why this is hard or easy" note that ships with every trophy in the data */
+/* the one-line "hard or cheap" note that ships with every trophy in the data */
 .dwhy {
   margin: 0 0 var(--s4);
-  font-size: 13px;
-  color: var(--ink-dim);
-  border-left: 2px solid var(--teal);
   padding-left: var(--s3);
+  border-left: 2px solid var(--teal);
+  font-size: 13px;
   font-style: italic;
+  color: var(--ink-dim);
 }
 
-.dguide { font-size: 14px; color: var(--ink); margin: 0 0 var(--s4); }
+.dguide { margin: 0 0 var(--s4); font-size: 14px; color: var(--ink); }
 
 .dsection { margin-top: var(--s4); }
 
@@ -528,24 +527,25 @@ button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 .dsources { display: flex; flex-wrap: wrap; gap: var(--s2); }
 
 .dsources span {
-  font-size: 11.5px;
   padding: 3px var(--s3);
-  border-radius: 99px;
   border: 1px solid var(--line);
+  border-radius: 99px;
   background: var(--bg-2);
+  font-size: 11.5px;
   color: var(--ink-dim);
 }
 
 .dactions { display: flex; gap: var(--s2); margin-top: var(--s5); }
 
 .dactions button.primary {
-  background: rgba(41, 224, 200, 0.16);
   border-color: var(--teal);
+  background: rgba(41, 224, 200, 0.16);
   color: var(--teal);
   font-weight: 650;
 }
 
-/* spoiler-safe mode: hides the story trophies' identity until earned */
+/* spoiler-safe mode: the identity of an unearned story trophy is blurred, not removed, so the layout
+   does not jump when the setting is toggled */
 body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname,
 body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
   color: transparent;
@@ -553,66 +553,61 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
   user-select: none;
 }
 
-body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname::after,
-body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; }
-
 /* ── footer ──────────────────────────────────────────────────────────── */
 
 #foot {
+  max-width: 900px;
   padding: var(--s5) var(--s6) var(--s7);
   border-top: 1px solid var(--line);
-  color: var(--ink-faint);
   font-size: 11.5px;
-  max-width: 900px;
+  color: var(--ink-faint);
 }
 
 #foot p { margin: 0; }
-
 #foot .updated { margin-top: var(--s2); }
 
 #foot .updated #verifiedAt {
-  color: var(--ink-dim);
   font-variant-numeric: tabular-nums;
+  color: var(--ink-dim);
   text-decoration: underline dotted;
   text-underline-offset: 2px;
 }
 
 .empty {
   padding: var(--s7) var(--s5);
-  text-align: center;
-  color: var(--ink-faint);
-  font-size: 13px;
   border: 1px dashed var(--line);
   border-radius: var(--radius);
+  font-size: 13px;
+  text-align: center;
+  color: var(--ink-faint);
 }
 
 /* grade chips: per-grade earned counters that double as filters */
 .grade-chips { display: flex; gap: var(--s1); margin-top: var(--s2); }
 
 .grade-chip {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-2);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--line);
-  background: var(--bg-2);
   color: var(--ink-dim);
   cursor: pointer;
 }
 
-.grade-chip.on { color: var(--ink); border-color: var(--teal); background: rgba(41, 224, 200, 0.12); }
-.grade-chip.g-platinum { color: var(--gold); border-color: rgba(255, 196, 71, 0.45); }
+.grade-chip.on { border-color: var(--teal); background: rgba(41, 224, 200, 0.12); color: var(--ink); }
+.grade-chip.g-platinum { border-color: rgba(255, 196, 71, 0.45); color: var(--gold); }
 .grade-chip.g-gold { color: var(--gold); }
 .grade-chip.g-silver { color: var(--silver); }
 .grade-chip.g-bronze { color: var(--bronze); }
 
 /* ── print: the same list as a paper checklist ───────────────────────── */
 
-/* Printing is the one job the screen theme gets in the way of. On paper there is no hover, no sticky panel
-   and no dark mode, so this block strips the theme back to black on white: no gradients, no box-shadows,
-   no rounded panels. The roadmap panel, the filter bar, the top bar and the detail sheet are dropped
-   entirely — they are controls, and a printed page cannot be clicked. What stays is the trophy list, one
-   card per row in a plain 1px box, with the check button replaced by a box you can tick with a pen. */
+/* Paper has no hover, no sticky panel and no dark mode, so this block strips the theme back to black
+   on white. The top bar, the filters, the roadmap panel and the detail sheet are controls and are
+   dropped entirely; what stays is the trophy list, one trophy per row in a thin 1px border, with the
+   on-screen check button replaced by a box that can be ticked with a pen. */
 @media print {
   :root { color-scheme: light; }
 
@@ -636,38 +631,32 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
   #detailSheet,
   #closeDetail,
   .controls-block,
-  .tcheck,
-  .grade-chips {
+  .grade-chips,
+  .tcheck {
     display: none !important;
   }
 
-  #layout {
-    display: block;
-    padding: 0;
-    margin: 0;
-    gap: 0;
-  }
-
+  #layout { display: block; margin: 0; padding: 0; gap: 0; }
   #trophyPanel { margin: 0; }
 
-  /* one trophy per row, each in its own 1px box */
+  /* one trophy per row, each in its own thin box */
   #trophyList { display: block; }
 
   .tcard {
-    display: block;
     position: relative;
+    display: block;
     width: 100%;
-    padding: 4pt 6pt 4pt 30pt;
     margin: 0 0 5pt;
-    background: #fff !important;
-    color: #000 !important;
+    padding: 4pt 6pt 4pt 30pt;
     border: 1px solid #000 !important;
     border-radius: 0;
+    background: #fff !important;
+    color: #000 !important;
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
-  /* a pen-friendly box in place of the on-screen check button */
+  /* a pen-friendly box where the on-screen check button used to be */
   .tcard::before {
     content: "";
     position: absolute;
@@ -679,18 +668,23 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
     border-radius: 0;
   }
 
-  .tcard.earned::before { content: "✓"; font-size: 9pt; line-height: 9pt; text-align: center; }
+  .tcard.earned::before {
+    content: "✓";
+    font-size: 9pt;
+    line-height: 9pt;
+    text-align: center;
+  }
 
   .tgrade {
+    display: inline;
     width: auto;
     height: auto;
     border: 0;
     border-radius: 0;
     background: none !important;
-    display: inline;
     font-size: 8.5pt;
-    color: #000 !important;
     letter-spacing: 0.08em;
+    color: #000 !important;
   }
 
   .tgrade::after { content: " · "; }
@@ -698,34 +692,33 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
   .tname {
     display: inline;
     font-size: 10.5pt;
+    white-space: normal;
     color: #000 !important;
     text-decoration: none;
-    white-space: normal;
   }
 
   .tdesc,
   .tbadges {
     display: block;
-    color: #000 !important;
     font-size: 9pt;
     white-space: normal;
+    color: #000 !important;
     text-decoration: none;
   }
 
   .tbadges { margin-top: 1pt; }
 
   .badge {
+    padding: 0 6pt 0 0;
     border: 0;
     background: none !important;
-    color: #000 !important;
-    padding: 0 6pt 0 0;
     font-size: 8pt;
+    color: #000 !important;
   }
 
-  .tcard.earned .tname { text-decoration: line-through; color: #000 !important; }
+  .tcard.earned .tname { color: #000 !important; text-decoration: line-through; }
 
-  /* spoiler-safe mode blurs text with a text-shadow; on paper that is just a grey smear, so print the
-     words or print the placeholder, never the glow */
+  /* the screen blur is a text-shadow; on paper that prints as a grey smear, so print the words */
   body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tname,
   body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc {
     color: #000 !important;
@@ -733,18 +726,18 @@ body.spoiler .tcard[data-spoiler="1"]:not(.earned) .tdesc::after { content: ""; 
   }
 
   .empty {
+    padding: 12pt 0;
     border: 1px solid #000;
     color: #000 !important;
-    padding: 12pt 0;
   }
 
   #foot {
-    border-top: 1px solid #000;
-    padding: 8pt 0 0;
-    margin-top: 10pt;
     max-width: none;
-    color: #000 !important;
+    margin-top: 10pt;
+    padding: 8pt 0 0;
+    border-top: 1px solid #000;
     font-size: 8.5pt;
+    color: #000 !important;
   }
 
   #foot .updated #verifiedAt { color: #000 !important; text-decoration: none; }

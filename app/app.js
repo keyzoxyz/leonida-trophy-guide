@@ -1,35 +1,38 @@
-// Leonida Trophy Guide — the app. One module, four jobs: load the data, render the list and the
-// roadmap, track progress in localStorage with export/import, and keep the spoiler setting honest.
-// No framework, no network: everything the page needs is beside it.
+// Leonida Trophy Guide — the page's only script. One module with four jobs: render the list and the
+// roadmap, remember progress in localStorage with export/import, keep the spoiler setting honest, and
+// keep search and the detail sheet behaving like layers that unwind one at a time.
+// No framework, no network: the data module beside it is the whole backend.
 
 import { TROPHIES, STAGES } from './data/trophies.js';
 
 const $ = (sel) => document.querySelector(sel);
 
 const state = {
-  earned: new Set(),          // trophy ids marked done
-  grade: null,                // null = all grades, else 'platinum' | 'gold' | 'silver' | 'bronze'
-  spoiler: false,             // hide unearned story trophies' identity
+  earned: new Set(),     // trophy ids marked done
+  grade: null,           // null = every grade, else 'platinum' | 'gold' | 'silver' | 'bronze'
   kind: 'all',
   missableOnly: false,
   hideEarned: true,
   unearnedOnly: false,
-  query: '',
   activeStage: null,
+  query: '',
+  spoiler: false,        // hide the identity of unearned story trophies
 };
 
 const STORAGE_KEY = 'leonida-guide-progress-v1';
-let lastFocus = null; // the element that opened the detail sheet, so Escape can hand focus back
+let returnFocus = null;  // whatever opened the sheet, so closing it can hand focus back
+
+/* ── persistence ─────────────────────────────────────────────────────── */
 
 function loadProgress() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
-    const doc = JSON.parse(raw);
-    if (Array.isArray(doc.earned)) state.earned = new Set(doc.earned);
-    if (typeof doc.spoiler === 'boolean') state.spoiler = doc.spoiler;
+    const saved = JSON.parse(raw);
+    if (Array.isArray(saved.earned)) state.earned = new Set(saved.earned.filter(Number.isInteger));
+    if (typeof saved.spoiler === 'boolean') state.spoiler = saved.spoiler;
   } catch {
-    /* a broken save must not take the page down; start fresh */
+    // a corrupt save must never take the page down; start clean instead
   }
 }
 
@@ -41,7 +44,7 @@ function saveProgress() {
       savedAt: new Date().toISOString(),
     }));
   } catch {
-    /* private mode or a full quota: the session still works, it just does not persist */
+    // private mode or a full quota: the session works, it just will not survive a reload
   }
 }
 
@@ -53,8 +56,7 @@ function exportProgress() {
     spoilerMode: state.spoiler,
     earned: [...state.earned].sort((a, b) => a - b),
   };
-  const blob = new Blob([JSON.stringify(doc, null, 1)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+  const url = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 1)], { type: 'application/json' }));
   const a = document.createElement('a');
   a.href = url;
   a.download = 'leonida-progress.json';
@@ -67,7 +69,7 @@ function importProgress(file) {
   reader.onload = () => {
     try {
       const doc = JSON.parse(String(reader.result));
-      const ids = Array.isArray(doc.earned) ? doc.earned.filter((n) => Number.isInteger(n)) : [];
+      const ids = Array.isArray(doc.earned) ? doc.earned.filter(Number.isInteger) : [];
       state.earned = new Set(ids);
       if (typeof doc.spoilerMode === 'boolean') state.spoiler = doc.spoilerMode;
       saveProgress();
@@ -79,165 +81,154 @@ function importProgress(file) {
   reader.readAsText(file);
 }
 
-/* ── rendering ───────────────────────────────────────────────────────── */
-
-function gradeClass(grade) {
-  return grade === 'platinum' ? 'platinum' : grade; // platinum also gets its own tint
-}
+/* ── filtering ───────────────────────────────────────────────────────── */
 
 function isSpoiler(t) {
-  // Only story beats are spoilers. Stage alone must not hide a trophy: an early-stage collectible is not a
-  // story spoiler, and a story trophy that lands in a later stage (the chapter-8 decision missions) still is.
+  // Stage is not the test: an early collectible is not a story spoiler, and a decision mission late in
+  // the story still is. Only story beats (and explicitly hidden entries) get masked, and only until earned.
   return state.spoiler && !state.earned.has(t.id) && (t.kind === 'story' || t.hidden === true);
+}
+
+function haystack(t) {
+  // Name, guide and sources, joined into one lowercase string. Joining first means a query can never
+  // match across the seam between two fields, and searching "PSNProfiles" finds every trophy that cites it.
+  const sources = Array.isArray(t.sources) ? t.sources.join(' ') : '';
+  return `${t.name} ${t.guide} ${sources}`.toLowerCase();
 }
 
 function matches(t) {
   if (state.grade && t.grade !== state.grade) return false;
   if (state.kind !== 'all' && t.kind !== state.kind) return false;
   if (state.missableOnly && !t.missable) return false;
+  if (state.activeStage !== null && t.stage !== state.activeStage) return false;
   const done = state.earned.has(t.id);
   if (state.hideEarned && done) return false;
   if (state.unearnedOnly && done) return false;
-  if (state.activeStage !== null && t.stage !== state.activeStage) return false;
-  if (state.query) {
-    const q = state.query.toLowerCase();
-    // Sources are searched as one join()ed string, not as a list of separate fields: a reader who remembers
-    // "PSNProfiles" or "PowerPyx" but not the trophy should get every entry that leans on that reference, and
-    // joining keeps the haystack a single lowercase blob so a query can never accidentally match across the
-    // boundary between two citations. Name and guide behave exactly as they always did.
-    const hay = [t.name, t.guide, (t.sources ?? []).join(' ')].join(' ').toLowerCase();
-    if (!hay.includes(q)) return false;
-  }
+  if (state.query && !haystack(t).includes(state.query.toLowerCase())) return false;
   return true;
 }
+
+/* ── small builders ─────────────────────────────────────────────────── */
+
+function gradeLabel(grade) {
+  return grade === 'platinum' ? 'Pt' : grade[0].toUpperCase();
+}
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function badge(kind, text) {
+  return el('span', 'badge' + (kind ? ' ' + kind : ''), text);
+}
+
+/* ── the trophy list ────────────────────────────────────────────────── */
 
 function renderList() {
   const list = $('#trophyList');
   const rows = TROPHIES.filter(matches);
   list.textContent = '';
-  if (rows.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'empty';
-    empty.textContent = 'Nothing matches these filters.';
-    list.append(empty);
+
+  if (!rows.length) {
+    list.append(el('div', 'empty', 'Nothing matches these filters.'));
     return;
   }
+
   for (const t of rows) {
     const earned = state.earned.has(t.id);
-    const hidden = isSpoiler(t);
-    const card = document.createElement('article');
-    card.className = 'tcard' + (earned ? ' earned' : '') + (t.missable ? ' missable' : '');
+    const masked = isSpoiler(t);
+
+    const card = el('article', 'tcard' + (earned ? ' earned' : '') + (t.missable ? ' missable' : ''));
     card.dataset.id = String(t.id);
-    card.dataset.spoiler = hidden ? '1' : '0';
+    card.dataset.spoiler = masked ? '1' : '0';
     card.setAttribute('role', 'listitem');
 
-    const grade = document.createElement('div');
-    grade.className = `tgrade ${gradeClass(t.grade)}`;
-    grade.textContent = t.grade === 'platinum' ? 'Pt' : t.grade[0].toUpperCase();
+    card.append(el('div', 'tgrade ' + t.grade, gradeLabel(t.grade)));
 
-    const main = document.createElement('div');
-    main.className = 'tmain';
-    const name = document.createElement('h3');
-    name.className = 'tname';
-    name.textContent = hidden ? '??? hidden until earned' : t.name;
-    const desc = document.createElement('p');
-    desc.className = 'tdesc';
-    desc.textContent = hidden ? 'story trophy — description hidden in spoiler-safe mode' : t.description;
-    main.append(name, desc);
-
-    const badges = document.createElement('div');
-    badges.className = 'tbadges';
+    const main = el('div', 'tmain');
+    const name = el('h3', 'tname', masked ? '??? hidden until earned' : t.name);
+    const desc = el('p', 'tdesc', masked ? 'story trophy — description hidden in spoiler-safe mode' : t.description);
+    const badges = el('div', 'tbadges');
     if (t.missable) badges.append(badge('miss', 'missable'));
     badges.append(badge('stage', `stage ${t.stage + 1}`));
     if (t.count) badges.append(badge('count', String(t.count)));
     if (t.kind === 'meta') badges.append(badge('', 'meta'));
-    main.append(badges);
+    main.append(name, desc, badges);
 
-    const check = document.createElement('button');
-    check.className = 'tcheck';
+    const check = el('button', 'tcheck', '✓');
     check.type = 'button';
-    // A screen reader must never read out the name the card is hiding, so the label follows the same rule.
-    const spoken = hidden ? 'this story trophy' : t.name;
+    // A screen reader must not read out what the card is hiding, so the label follows the same rule.
+    const spoken = masked ? 'this story trophy' : t.name;
     check.setAttribute('aria-label', earned ? `Mark ${spoken} as not earned` : `Mark ${spoken} as earned`);
     check.setAttribute('aria-pressed', earned ? 'true' : 'false');
-    check.textContent = '✓';
     check.addEventListener('click', (ev) => {
       ev.stopPropagation();
       toggleEarned(t.id);
     });
 
+    card.append(main, check);
     card.addEventListener('click', () => openDetail(t.id));
-    card.append(grade, main, check);
     list.append(card);
   }
 }
 
-function badge(cls, text) {
-  const el = document.createElement('span');
-  el.className = 'badge' + (cls ? ` ${cls}` : '');
-  el.textContent = text;
-  return el;
-}
+/* ── the roadmap ────────────────────────────────────────────────────── */
 
 function renderRoadmap() {
   const ol = $('#roadmapList');
   ol.textContent = '';
+
   for (const st of STAGES) {
     const rows = TROPHIES.filter((t) => t.stage === st.id);
     const done = rows.filter((t) => state.earned.has(t.id)).length;
     const traps = rows.filter((t) => t.missable && !state.earned.has(t.id)).length;
-    const li = document.createElement('li');
-    li.className = (state.activeStage === st.id ? 'active ' : '') +
-      (done === rows.length && rows.length ? 'done ' : '') +
-      (traps ? 'has-missable' : '');
+
+    const li = el('li', [
+      state.activeStage === st.id ? 'active' : '',
+      rows.length && done === rows.length ? 'done' : '',
+      traps ? 'has-missable' : '',
+    ].filter(Boolean).join(' '));
     li.dataset.stage = String(st.id);
     li.tabIndex = 0;
     if (state.activeStage === st.id) li.setAttribute('aria-current', 'true');
     if (traps) li.setAttribute('aria-label', `${st.title}, ${done} of ${rows.length} earned, ${traps} missable still open`);
 
-    const n = document.createElement('span');
-    n.className = 'stage-n';
-    n.textContent = String(st.id + 1).padStart(2, '0');
+    li.append(
+      el('span', 'stage-n', String(st.id + 1).padStart(2, '0')),
+      el('span', 'stage-title', st.title),
+      el('span', 'stage-count', `${done}/${rows.length}`),
+      el('span', 'stage-note', st.note),
+    );
 
-    const title = document.createElement('span');
-    title.className = 'stage-title';
-    title.textContent = st.title;
-
-    const count = document.createElement('span');
-    count.className = 'stage-count';
-    count.textContent = `${done}/${rows.length}`;
-
-    const note = document.createElement('span');
-    note.className = 'stage-note';
-    note.textContent = st.note;
-
-    li.append(n, title, count, note);
-    const activate = () => {
+    const toggle = () => {
       state.activeStage = state.activeStage === st.id ? null : st.id;
       renderAll();
-      // renderAll replaces every row; without this the row a keyboard user just pressed disappears with the
-      // focus, so the next Enter goes to the page body and the filter cannot be toggled back off.
+      // renderAll replaces every row, so the row the keyboard user just pressed would otherwise take the
+      // focus with it and the next Enter would land on the page body.
       const again = ol.querySelector(`li[data-stage="${st.id}"]`);
       if (again) again.focus({ preventScroll: true });
     };
-    li.addEventListener('click', activate);
+
+    li.addEventListener('click', toggle);
     li.addEventListener('keydown', (ev) => {
       if (ev.key === 'Enter' || ev.key === ' ') {
         ev.preventDefault();
-        activate();
+        toggle();
       }
     });
     ol.append(li);
   }
 }
 
-/* The roadmap callout: the one number that can cost a platinum. Counts the missable trophies that are not
-   earned yet and points at the stages they sit in, so the list and the roadmap agree at a glance. */
+/* The callout: the one number that can cost a platinum. Counts unearned missables and points at the
+   stages holding them, so the list and the roadmap cannot disagree. */
 function renderMissableCallout() {
   const box = $('#missableCallout');
-  const stages = $('#missableStages');
-  const open = TROPHIES.filter((t) => t.missable && !state.earned.has(t.id));
   const total = TROPHIES.filter((t) => t.missable).length;
+  const open = TROPHIES.filter((t) => t.missable && !state.earned.has(t.id));
 
   box.hidden = false;
   box.classList.toggle('clear', open.length === 0);
@@ -248,18 +239,20 @@ function renderMissableCallout() {
     ? `All ${total} missable trophies are earned — the platinum can no longer slip away.`
     : `${total - open.length} of ${total} done. Finish each strand in the chapter it opens.`;
 
+  const stages = $('#missableStages');
   stages.textContent = '';
-  if (open.length === 0) return;
+  if (!open.length) return;
+
   const byStage = new Map();
   for (const t of open) byStage.set(t.stage, (byStage.get(t.stage) ?? 0) + 1);
+
   for (const st of STAGES) {
     const n = byStage.get(st.id);
     if (!n) continue;
-    const chip = document.createElement('button');
+    const chip = el('button', 'mcallout-stage' + (state.activeStage === st.id ? ' on' : ''),
+      `${st.title} · ${n}`);
     chip.type = 'button';
-    chip.className = 'mcallout-stage' + (state.activeStage === st.id ? ' on' : '');
     chip.dataset.stage = String(st.id);
-    chip.textContent = `${st.title} · ${n}`;
     chip.setAttribute('aria-label', `Show the ${n} missable troph${n === 1 ? 'y' : 'ies'} in ${st.title}`);
     chip.addEventListener('click', () => {
       state.activeStage = state.activeStage === st.id ? null : st.id;
@@ -270,39 +263,39 @@ function renderMissableCallout() {
   }
 }
 
+/* ── counters ───────────────────────────────────────────────────────── */
+
 function renderGradeChips() {
-  const wrap = document.querySelector('#gradeChips');
+  const wrap = $('#gradeChips');
   if (!wrap) return;
-  const grades = [['platinum', 'Pt'], ['gold', 'G'], ['silver', 'S'], ['bronze', 'B']];
   wrap.textContent = '';
-  for (const [g, label] of grades) {
-    const b = document.createElement('button');
-    b.type = 'button';
-    const ofGrade = TROPHIES.filter((t) => t.grade === g);
+  for (const grade of ['platinum', 'gold', 'silver', 'bronze']) {
+    const ofGrade = TROPHIES.filter((t) => t.grade === grade);
     const got = ofGrade.filter((t) => state.earned.has(t.id)).length;
-    b.className = 'grade-chip g-' + g + (state.grade === g ? ' on' : '');
-    b.textContent = `${label} ${got}/${ofGrade.length}`;
-    b.setAttribute('aria-label', 'Filter to ' + g + ' trophies');
-    b.addEventListener('click', () => {
-      state.grade = state.grade === g ? null : g;
+    const chip = el('button', 'grade-chip g-' + grade + (state.grade === grade ? ' on' : ''),
+      `${gradeLabel(grade)} ${got}/${ofGrade.length}`);
+    chip.type = 'button';
+    chip.setAttribute('aria-label', 'Filter to ' + grade + ' trophies');
+    chip.addEventListener('click', () => {
+      state.grade = state.grade === grade ? null : grade;
       renderAll();
     });
-    wrap.append(b);
+    wrap.append(chip);
   }
 }
 
 function renderProgress() {
   renderGradeChips();
   const done = TROPHIES.filter((t) => state.earned.has(t.id)).length;
+  const pct = Math.round((done / TROPHIES.length) * 100);
   $('#earnedCount').textContent = String(done);
   $('#totalCount').textContent = String(TROPHIES.length);
-  const pct = Math.round((done / TROPHIES.length) * 100);
   $('#earnedPct').textContent = `${pct}%`;
   $('#progressFill').style.width = `${pct}%`;
 }
 
-/* The chips and the state can drift (an import, a flag toggled from code, the initial markup); the UI is
-   redrawn from the state rather than trusted to stay in step with it. */
+/* Chips and state can drift (an import, the initial markup, a flag set from code), so the UI is redrawn
+   from the state rather than trusted to stay in step with it. */
 function syncChips() {
   for (const chip of document.querySelectorAll('.kind-chip')) {
     chip.classList.toggle('on', chip.dataset.kind === state.kind);
@@ -334,99 +327,64 @@ function toggleEarned(id) {
   renderAll();
 }
 
-/* ── detail sheet ────────────────────────────────────────────────────── */
+/* ── the detail sheet ───────────────────────────────────────────────── */
 
 function openDetail(id) {
-  const t = TROPHIES.find((x) => x.id === id);
+  const t = TROPHIES.find((trophy) => trophy.id === id);
   if (!t) return;
+
+  const masked = isSpoiler(t);
   const body = $('#detailBody');
   body.textContent = '';
 
-  const head = document.createElement('div');
-  head.className = 'dhead';
-  const grade = document.createElement('div');
-  grade.className = `tgrade ${gradeClass(t.grade)}`;
-  grade.textContent = t.grade === 'platinum' ? 'Pt' : t.grade[0].toUpperCase();
-  const hwrap = document.createElement('div');
-  const h = document.createElement('h2');
-  const spoiler = isSpoiler(t);
-  h.textContent = spoiler ? 'Hidden story trophy' : t.name;
-  const gline = document.createElement('div');
-  gline.className = 'dgrade-line';
-  gline.textContent = `${t.grade} · ${t.kind}${t.missable ? ' · missable' : ''}${t.count ? ` · ${t.count}` : ''}`;
-  hwrap.append(h, gline);
-  head.append(grade, hwrap);
+  const head = el('div', 'dhead');
+  head.append(el('div', 'tgrade ' + t.grade, gradeLabel(t.grade)));
+  const meta = el('div');
+  meta.append(
+    el('h2', '', masked ? 'Hidden story trophy' : t.name),
+    el('div', 'dgrade-line',
+      `${t.grade} · ${t.kind}${t.missable ? ' · missable' : ''}${t.count ? ` · ${t.count}` : ''}`),
+  );
+  head.append(meta);
+  body.append(head);
 
-  const desc = document.createElement('blockquote');
-  desc.className = 'ddesc';
-  desc.textContent = spoiler ? 'Earn this trophy to reveal its official description.' : `“${t.description}”`;
+  body.append(el('blockquote', 'ddesc',
+    masked ? 'Earn this trophy to reveal its official description.' : `“${t.description}”`));
 
-  body.append(head, desc);
+  // The why line is prose like the guide, and it often names the story beat, so spoiler-safe mode hides
+  // it with the guide rather than beside it.
+  if (!masked && t.why) body.append(el('p', 'dwhy', t.why));
 
-  // The one-line difficulty note is prose like the guide, so it is hidden with it: "the final mission" is
-  // exactly the kind of phrase spoiler-safe mode exists to keep off the screen.
-  if (!spoiler && t.why) {
-    const why = document.createElement('p');
-    why.className = 'dwhy';
-    why.textContent = t.why;
-    body.append(why);
-  }
-
-  // The card hides the name, so the sheet must not hand the spoiler back through the guide: the guide and the
-  // steps name the mission and the beat ("Play Breakfast Run"), which is exactly what spoiler-safe mode hides.
-  const guide = document.createElement('p');
-  guide.className = 'dguide';
-  guide.textContent = spoiler
+  body.append(el('p', 'dguide', masked
     ? 'Guide hidden in spoiler-safe mode — the steps name the mission and the story beat it belongs to.'
-    : t.guide;
-  body.append(guide);
+    : t.guide));
 
-  if (!spoiler && Array.isArray(t.steps) && t.steps.length) {
-    const sec = document.createElement('div');
-    sec.className = 'dsection';
-    const h3 = document.createElement('h3');
-    h3.textContent = 'How to earn it';
-    const ol = document.createElement('ol');
-    ol.className = 'dsteps';
-    for (const s of t.steps) {
-      const li = document.createElement('li');
-      li.textContent = s;
-      ol.append(li);
-    }
-    sec.append(h3, ol);
+  if (!masked && Array.isArray(t.steps) && t.steps.length) {
+    const sec = el('div', 'dsection');
+    const ol = el('ol', 'dsteps');
+    for (const step of t.steps) ol.append(el('li', '', step));
+    sec.append(el('h3', '', 'How to earn it'), ol);
     body.append(sec);
   }
 
-  const srcSec = document.createElement('div');
-  srcSec.className = 'dsection';
-  const srcH = document.createElement('h3');
-  srcH.textContent = 'Sources';
-  const chips = document.createElement('div');
-  chips.className = 'dsources';
-  for (const s of t.sources ?? []) {
-    const el = document.createElement('span');
-    el.textContent = s;
-    chips.append(el);
-  }
-  srcSec.append(srcH, chips);
-  body.append(srcSec);
+  const sources = el('div', 'dsection');
+  const chips = el('div', 'dsources');
+  for (const source of t.sources ?? []) chips.append(el('span', '', source));
+  sources.append(el('h3', '', 'Sources'), chips);
+  body.append(sources);
 
-  const actions = document.createElement('div');
-  actions.className = 'dactions';
-  const markBtn = document.createElement('button');
-  markBtn.type = 'button';
-  markBtn.className = 'primary';
-  const earned = state.earned.has(t.id);
-  markBtn.textContent = earned ? 'Mark as not earned' : 'Mark as earned';
-  markBtn.addEventListener('click', () => {
+  const actions = el('div', 'dactions');
+  const mark = el('button', 'primary', state.earned.has(t.id) ? 'Mark as not earned' : 'Mark as earned');
+  mark.type = 'button';
+  mark.addEventListener('click', () => {
     toggleEarned(t.id);
     closeDetail();
     openDetail(t.id);
   });
-  actions.append(markBtn);
+  actions.append(mark);
   body.append(actions);
 
-  lastFocus = document.activeElement;
+  returnFocus = document.activeElement;
   $('#detailSheet').hidden = false;
   $('#closeDetail').focus();
 }
@@ -435,64 +393,65 @@ function closeDetail() {
   const sheet = $('#detailSheet');
   if (sheet.hidden) return;
   sheet.hidden = true;
-  if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
-  lastFocus = null;
+  if (returnFocus && typeof returnFocus.focus === 'function') returnFocus.focus();
+  returnFocus = null;
 }
 
-/* ── wiring ──────────────────────────────────────────────────────────── */
+/* ── wiring ─────────────────────────────────────────────────────────── */
 
 function wire() {
   for (const chip of document.querySelectorAll('.kind-chip')) {
     chip.addEventListener('click', () => {
       state.kind = chip.dataset.kind;
-      // A stage picked from the roadmap is a narrower view of one kind; letting it survive a kind switch is how
-      // a filter ends up showing an empty list with nothing on screen explaining why.
+      // a stage picked from the roadmap is a narrower view of one kind; letting it survive a kind switch
+      // is how a filter ends up showing an empty list with nothing on screen explaining why
       state.activeStage = null;
       renderAll();
     });
   }
+
   $('#filters').addEventListener('click', (ev) => {
     const chip = ev.target.closest('.flag-chip');
     if (!chip) return;
     const flag = chip.dataset.flag;
-    if (flag === 'missable') {
-      state.missableOnly = !state.missableOnly;
-    } else if (flag === 'earned') {
-      state.hideEarned = !state.hideEarned;
-    } else if (flag === 'unearned-only') {
-      state.unearnedOnly = !state.unearnedOnly;
-    } else {
-      return;
-    }
+    if (flag === 'missable') state.missableOnly = !state.missableOnly;
+    else if (flag === 'earned') state.hideEarned = !state.hideEarned;
+    else if (flag === 'unearned-only') state.unearnedOnly = !state.unearnedOnly;
+    else return;
     syncChips();
     renderList();
   });
+
   $('#search').addEventListener('input', (ev) => {
     state.query = ev.target.value.trim();
     renderList();
   });
+
   $('#spoilerMode').addEventListener('change', (ev) => {
     state.spoiler = ev.target.checked;
     saveProgress();
     renderAll();
   });
+
   $('#exportBtn').addEventListener('click', exportProgress);
   $('#importBtn').addEventListener('click', () => $('#importFile').click());
   $('#importFile').addEventListener('change', (ev) => {
-    const f = ev.target.files && ev.target.files[0];
-    if (f) importProgress(f);
+    const file = ev.target.files && ev.target.files[0];
+    if (file) importProgress(file);
     ev.target.value = '';
   });
+
   $('#closeDetail').addEventListener('click', closeDetail);
   $('#detailSheet').addEventListener('click', (ev) => {
     if (ev.target === $('#detailSheet')) closeDetail();
   });
+
   document.addEventListener('keydown', (ev) => {
     if (ev.key !== 'Escape') return;
-    // Escape unwinds one layer at a time, narrowest first. A non-empty search box is the narrower layer: it
-    // is cleared, the list is re-rendered, and the sheet stays open — the reader came from a search result
-    // and dropping them out of the trophy as well would undo two actions with one key. Only a second
-    // Escape, with the box already empty, closes the detail sheet.
+    // Escape unwinds one layer at a time, narrowest first. A non-empty search box is the narrower
+    // layer: clear it, re-render the list, leave the sheet open — the reader arrived from a search
+    // result and should not lose both the search and the trophy to one key. Only with the box already
+    // empty does Escape close the detail sheet.
     const search = $('#search');
     if (state.query !== '' || (search && search.value !== '')) {
       if (search) search.value = '';

@@ -72,21 +72,21 @@
 
 <footer id="foot">
   <p>Trophy names and descriptions are shown exactly as PlayStation publishes them. Guides are original
-  text for this entry; each trophy's sources are listed beside it. Progress is saved in your browser
-  (localStorage) and never leaves your machine.</p>
-  <p class="updated">Data verified <span id="verifiedAt">2026-11-21</span> — checked trophy by trophy
-  against the official PlayStation list. Print the page (Ctrl/Cmd+P) for a paper checklist: the print
-  stylesheet drops the dark theme and the roadmap and keeps the trophy list legible in black on white.</p>
+  text written for this entry, and each trophy lists its sources beside it. Progress is saved in your
+  browser (localStorage) and never leaves your machine.</p>
+  <p class="updated">Data verified <span id="verifiedAt">2026-11-21</span> — every trophy checked against
+  the official PlayStation list. Press Ctrl/Cmd+P for a paper checklist: the print stylesheet drops the
+  dark theme and every control, and keeps the trophy list black on white, one trophy per bordered row.</p>
 </footer>
 
 <script type="module" src="app.js"></script>
 <script type="module">
-  // The footer's date comes from the data, not from this file, so a stale page cannot claim a fresher
-  // check than the data it ships. The span above already holds the raw ISO date as a no-script fallback.
+  // The verified date is read from the data, not typed into this page, so the footer cannot claim a
+  // fresher check than the trophy list it ships. The span holds the raw ISO date as a no-script fallback.
   import { VERIFIED_AT } from './data/trophies.js';
-  const el = document.getElementById('verifiedAt');
-  if (el && /^\d{4}-\d{2}-\d{2}$/.test(VERIFIED_AT)) {
-    el.textContent = 'on ' + new Date(VERIFIED_AT + 'T00:00:00Z').toLocaleDateString(undefined, {
+  const slot = document.getElementById('verifiedAt');
+  if (slot && /^\d{4}-\d{2}-\d{2}$/.test(VERIFIED_AT)) {
+    slot.textContent = new Date(VERIFIED_AT + 'T00:00:00Z').toLocaleDateString(undefined, {
       year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC',
     });
   }
