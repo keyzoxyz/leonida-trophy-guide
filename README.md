@@ -8,7 +8,8 @@ An offline, single-page guide and tracker for all 55 Grand Theft Auto VI PlaySta
 the official names, descriptions and grades as PlayStation publishes them, an original guide for
 every trophy with its sources named, a ten-stage roadmap to the platinum, missable flags, a
 missable-trophy callout that counts what is still winnable and points at the stages it sits in,
-kind filters, a spoiler-safe mode, and progress that saves in the browser and exports to a file.
+kind filters and grade filters with per-grade earned counters, a spoiler-safe mode, and progress
+that saves in the browser and exports to a file.
 
 ## What is inside
 
