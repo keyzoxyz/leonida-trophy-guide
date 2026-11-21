@@ -1,122 +1,209 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Leonida Trophy Guide — GTA VI Platinum Tracker</title>
-<meta name="description" content="An offline GTA VI trophy guide and tracker for PlayStation 5: all 55 trophies, a missable-first roadmap, and progress that never leaves your browser.">
-<meta name="color-scheme" content="dark">
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leonida Ledger — GTA VI Trophy Guide</title>
+  <meta name="description" content="An offline, spoiler-aware trophy guide for Grand Theft Auto VI." />
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-<a class="skip" href="#list">Skip to the trophy list</a>
+  <a class="skip-link" href="#trophies">Skip to trophy list</a>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <div class="brand">
-      <p class="eyebrow">Grand Theft Auto VI · PlayStation 5</p>
-      <h1>Leonida Trophy Guide</h1>
-      <p class="tagline">All 55 trophies, ten stages, one page. Route the platinum without a second screen.</p>
+  <header class="site-header">
+    <div class="header-copy">
+      <h1 class="site-title">Leonida Ledger</h1>
+      <p class="site-tagline">An offline trophy guide for Grand Theft Auto VI — no signal required.</p>
     </div>
-    <div class="score" id="score" role="status" aria-live="polite">
-      <p class="score-line"><strong id="earned">0</strong><span id="earned-total">/ 55 earned</span></p>
-      <div class="meter" role="progressbar" aria-labelledby="earned" aria-valuemin="0" aria-valuemax="55" aria-valuenow="0" id="meter">
-        <span id="meter-fill"></span>
+
+    <div class="progress-card" aria-label="Completion progress">
+      <p class="earned-line">
+        <span id="earned-count" class="earned-count">0 / 0</span>
+        <span class="earned-label">trophies earned</span>
+      </p>
+      <div
+        id="progress-bar"
+        class="progress-bar"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        aria-label="Trophy completion"
+      >
+        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
       </div>
-      <p class="score-sub" id="score-sub">Platinum locked</p>
     </div>
-  </div>
-</header>
+  </header>
 
-<nav class="grades" id="grade-bar" aria-label="Filter by trophy grade">
-  <button class="grade is-on" type="button" data-grade="all">All grades <b>55</b></button>
-  <button class="grade grade-platinum" type="button" data-grade="platinum">Platinum <b>1</b></button>
-  <button class="grade grade-gold" type="button" data-grade="gold">Gold <b>2</b></button>
-  <button class="grade grade-silver" type="button" data-grade="silver">Silver <b>6</b></button>
-  <button class="grade grade-bronze" type="button" data-grade="bronze">Bronze <b>46</b></button>
-</nav>
-
-<section class="controls" aria-label="Progress controls">
-  <button class="toggle is-on" id="spoiler" type="button" aria-pressed="true">
-    <span class="dot" aria-hidden="true"></span>Spoiler-safe <b id="spoiler-state">on</b>
-  </button>
-  <button class="ghost" id="export" type="button">Export progress</button>
-  <label class="ghost filelabel" for="import">Import progress</label>
-  <input id="import" type="file" accept="application/json,.json" hidden>
-  <span class="control-note" id="control-note">Saved in this browser only</span>
-</section>
-
-<section class="filters" aria-label="Filter and search trophies">
-  <div class="chiprow" id="kind-bar">
-    <button class="chip is-on" type="button" data-kind="all">All kinds</button>
-    <button class="chip" type="button" data-kind="story">Story</button>
-    <button class="chip" type="button" data-kind="side">Side</button>
-    <button class="chip" type="button" data-kind="activity">Activity</button>
-    <button class="chip" type="button" data-kind="collectible">Collectible</button>
-    <button class="chip" type="button" data-kind="heist">Heist</button>
-    <button class="chip" type="button" data-kind="economy">Economy</button>
-    <button class="chip" type="button" data-kind="meta">Meta</button>
-  </div>
-  <div class="chiprow" id="show-bar">
-    <button class="chip is-on" type="button" data-show="all">Everything</button>
-    <button class="chip" type="button" data-show="missable">Missable</button>
-    <button class="chip" type="button" data-show="unearned">Unearned</button>
-    <button class="chip" type="button" data-show="earned">Earned</button>
-  </div>
-  <label class="search">
-    <span class="sr-only">Search trophies</span>
-    <input id="search" type="search" placeholder="Search names, guides, sources…" autocomplete="off" spellcheck="false">
-  </label>
-</section>
-
-<main class="layout">
-  <aside class="roadmap" aria-labelledby="roadmap-title">
-    <h2 id="roadmap-title">Roadmap</h2>
-    <p class="roadmap-sub">Ten stages, in the order the platinum wants them.</p>
-    <div class="callout">
-      <p class="callout-tag">Read this first</p>
-      <p><strong id="missable-count">16 missable trophies.</strong> Every one of them closes with its chapter. Clear a strand before the story moves on, and save before the finale.</p>
+  <section class="grade-filters" aria-labelledby="grade-heading">
+    <h2 id="grade-heading" class="visually-hidden">Filter by difficulty grade</h2>
+    <div class="chip-row" id="grade-chips" role="group" aria-label="Difficulty grade">
+      <button type="button" class="chip is-active" data-grade="all" aria-pressed="true">All grades</button>
+      <button type="button" class="chip" data-grade="S" aria-pressed="false">S — Trivial</button>
+      <button type="button" class="chip" data-grade="A" aria-pressed="false">A — Easy</button>
+      <button type="button" class="chip" data-grade="B" aria-pressed="false">B — Moderate</button>
+      <button type="button" class="chip" data-grade="C" aria-pressed="false">C — Demanding</button>
+      <button type="button" class="chip" data-grade="D" aria-pressed="false">D — Brutal</button>
     </div>
-    <ol class="stages" id="roadmap-list"></ol>
-    <p class="roadmap-foot">Stage progress counts only what you have marked. Nothing here is uploaded.</p>
-  </aside>
-
-  <section class="list" id="list" aria-labelledby="list-title">
-    <div class="list-head">
-      <h2 id="list-title">Trophies</h2>
-      <p id="result-count" class="result-count">55 of 55 shown</p>
-    </div>
-    <div class="trophies" id="trophies"></div>
-    <p class="empty" id="empty" hidden>No trophies match those filters. <button class="linkish" id="reset" type="button">Reset them</button></p>
   </section>
-</main>
 
-<footer>
-  <p>Verified <time id="verified" datetime="2026-11-21">2026-11-21</time> · 55 trophies · 10 stages · offline, no account.</p>
-  <p>Progress lives in this browser's localStorage. Export the JSON if you want a copy.</p>
-</footer>
+  <section class="controls" aria-label="Guide controls">
+    <label class="toggle" for="spoiler-toggle">
+      <input type="checkbox" id="spoiler-toggle" role="switch" aria-describedby="spoiler-hint" />
+      <span class="toggle-track" aria-hidden="true"></span>
+      <span class="toggle-text">Spoiler mode</span>
+    </label>
+    <span id="spoiler-hint" class="visually-hidden">Reveals story-sensitive trophy names and descriptions.</span>
 
-<div class="sheet" id="sheet" hidden>
-  <div class="scrim" data-close></div>
-  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="sheet-name" tabindex="-1">
-    <button class="close" id="sheet-close" type="button" aria-label="Close details" data-close>×</button>
-    <div id="sheet-body"></div>
-  </div>
-</div>
+    <div class="control-actions">
+      <button type="button" id="export-btn" class="btn btn-ghost">Export progress</button>
+      <label class="btn btn-ghost file-btn" for="import-input">
+        Import progress
+        <input type="file" id="import-input" accept="application/json,.json" hidden />
+      </label>
+    </div>
+    <p id="import-status" class="import-status" role="status" aria-live="polite"></p>
+  </section>
 
-<script type="module" src="app.js"></script>
-<script type="module">
-  // The footer date comes from the data module; the ISO string already in the HTML is the fallback.
-  import { VERIFIED_AT } from './data/trophies.js';
-  const el = document.getElementById('verified');
-  try {
-    const when = new Date(`${VERIFIED_AT}T12:00:00Z`);
-    if (Number.isNaN(when.getTime())) throw new Error('bad date');
-    el.textContent = when.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    el.title = `Guide data verified ${VERIFIED_AT}`;
-  } catch {
-    el.textContent = VERIFIED_AT;
-  }
-</script>
+  <section class="filter-bar" aria-label="Trophy filters">
+    <div class="filter-group" role="group" aria-label="Trophy kind">
+      <span class="filter-label">Kind</span>
+      <div class="chip-row" id="kind-chips">
+        <button type="button" class="chip is-active" data-kind="all" aria-pressed="true">All</button>
+        <button type="button" class="chip" data-kind="story" aria-pressed="false">Story</button>
+        <button type="button" class="chip" data-kind="side" aria-pressed="false">Side</button>
+        <button type="button" class="chip" data-kind="collectible" aria-pressed="false">Collectible</button>
+        <button type="button" class="chip" data-kind="challenge" aria-pressed="false">Challenge</button>
+        <button type="button" class="chip" data-kind="online" aria-pressed="false">Online</button>
+      </div>
+    </div>
+
+    <div class="filter-group" role="group" aria-label="Completion status">
+      <span class="filter-label">Show</span>
+      <div class="chip-row" id="show-chips">
+        <button type="button" class="chip is-active" data-show="all" aria-pressed="true">All</button>
+        <button type="button" class="chip" data-show="unearned" aria-pressed="false">Unearned</button>
+        <button type="button" class="chip" data-show="earned" aria-pressed="false">Earned</button>
+        <button type="button" class="chip" data-show="missable" aria-pressed="false">Missable</button>
+      </div>
+    </div>
+
+    <div class="filter-group filter-search">
+      <label class="filter-label" for="search-input">Search</label>
+      <input
+        type="search"
+        id="search-input"
+        class="search-input"
+        placeholder="Search trophies…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
+  </section>
+
+  <main class="layout-grid">
+    <aside class="roadmap-panel" aria-labelledby="roadmap-heading">
+      <h2 id="roadmap-heading" class="panel-heading">Roadmap</h2>
+      <p class="panel-intro">Work top to bottom. Chapters unlock in order, so clearing each block before moving on keeps missables reachable.</p>
+
+      <div id="roadmap-list" class="roadmap-list">
+        <ol class="roadmap-steps">
+          <li class="roadmap-step">
+            <span class="step-index">01</span>
+            <div class="step-body">
+              <h3 class="step-title">Prologue &amp; Chapter 1</h3>
+              <p class="step-note">Sweep Leonida Keys before the marina job locks the docks area.</p>
+            </div>
+          </li>
+          <li class="roadmap-step">
+            <span class="step-index">02</span>
+            <div class="step-body">
+              <h3 class="step-title">Chapter 2 — Ambrosia</h3>
+              <p class="step-note">Finish the three favor missions before the heist prep begins.</p>
+            </div>
+          </li>
+          <li class="roadmap-step">
+            <span class="step-index">03</span>
+            <div class="step-body">
+              <h3 class="step-title">Chapter 3 — Port Vice</h3>
+              <p class="step-note">Grab the crane collectible during the daylight approach window.</p>
+            </div>
+          </li>
+          <li class="roadmap-step">
+            <span class="step-index">04</span>
+            <div class="step-body">
+              <h3 class="step-title">Endgame &amp; free roam</h3>
+              <p class="step-note">Clean up side content, races, and online events after the credits.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="missable-callout" role="note">
+        <span class="missable-badge">Missable</span>
+        <div class="missable-body">
+          <h3 class="missable-title">Three trophies expire with the story</h3>
+          <p class="missable-text">
+            <strong>Dock Day</strong>, <strong>Quiet Neighbour</strong>, and <strong>Last Call</strong> vanish once
+            their chapters close. They are flagged throughout the list — clear them the first time you pass through.
+          </p>
+          <button type="button" id="missable-jump" class="btn btn-link">Show only missables</button>
+        </div>
+      </div>
+    </aside>
+
+    <section class="trophy-column" id="trophies" aria-labelledby="trophies-heading">
+      <div class="trophy-header">
+        <h2 id="trophies-heading" class="panel-heading">Trophies</h2>
+        <p id="result-count" class="result-count" role="status" aria-live="polite">Showing 0 of 0</p>
+      </div>
+      <div id="trophy-list" class="trophy-list" aria-busy="true">
+        <!-- Trophy cards are rendered here by ./app.js -->
+        <p class="empty-state">Loading trophies…</p>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="detail-sheet" class="detail-sheet" aria-labelledby="detail-title">
+    <form method="dialog" class="sheet-close-form">
+      <button type="submit" class="sheet-close" aria-label="Close trophy details" value="close">×</button>
+    </form>
+    <div id="detail-content" class="detail-content">
+      <p class="detail-eyebrow" id="detail-eyebrow">Trophy</p>
+      <h2 id="detail-title" class="detail-title">Trophy details</h2>
+      <p id="detail-description" class="detail-description"></p>
+      <div id="detail-meta" class="detail-meta"></div>
+      <div id="detail-steps" class="detail-steps"></div>
+      <div class="detail-footer">
+        <button type="button" id="detail-earned-toggle" class="btn btn-primary">Mark as earned</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <p class="footer-note">Offline guide · Trophy data hand-verified</p>
+    <p class="footer-verified">
+      Verified
+      <time id="verified-date" datetime="2026-11-21" data-verified-at="2026-11-21">2026-11-21</time>
+    </p>
+  </footer>
+
+  <script type="module">
+    // Resolve a verification date: prefer a runtime VERIFIED_AT, otherwise the
+    // plain ISO string in the markup / fallback constant below.
+    const ISO_FALLBACK = "2026-11-21";
+    const timeEl = document.getElementById("verified-date");
+    const raw = (typeof window !== "undefined" && window.VERIFIED_AT) || timeEl?.dataset.verifiedAt || ISO_FALLBACK;
+
+    const parsed = new Date(`${raw}T00:00:00`);
+    const valid = !Number.isNaN(parsed.getTime());
+    if (timeEl) {
+      timeEl.dateTime = valid ? raw : ISO_FALLBACK;
+      timeEl.textContent = valid
+        ? new Intl.DateTimeFormat(undefined, { dateStyle: "long" }).format(parsed)
+        : ISO_FALLBACK;
+    }
+  </script>
+  <script src="./app.js" defer></script>
 </body>
 </html>

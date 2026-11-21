@@ -2,57 +2,52 @@
 [![rank](https://make.fun/badge/gta6-trophy-guide-01/keyzoxyz/leonida-trophy-guide/rank.svg)](https://make.fun/bounty/gta6-trophy-guide-01/leaderboard)
 [![reward](https://make.fun/badge/gta6-trophy-guide-01/keyzoxyz/leonida-trophy-guide/reward.svg)](https://make.fun/bounty/gta6-trophy-guide-01)
 
-# Leonida Trophy Guide
+# Leonida Ledger — GTA VI trophy guide and tracker
 
-An offline, single-page GTA VI trophy guide and tracker for PlayStation 5. All 55 trophies, ten
-roadmap stages, a missable-first warning system, spoiler-safe browsing, and progress that lives in
-your browser — no account, no network, no build step.
-
-Open `app/index.html` and the whole thing runs. Mark trophies as you earn them; the header progress
-bar, grade counts and roadmap all update live. Everything is saved to `localStorage`, and the
-Export/Import buttons move your progress between machines as a small JSON file.
-
-## What makes it a guide, not just a list
-
-- **Missable-first roadmap.** The sidebar orders all ten stages the way the platinum wants them, with
-  a callout counting the 16 missable trophies and a warning that every one of them closes with its
-  chapter. The finale is flagged as a one-way door.
-- **A written route for every trophy.** Each of the 55 entries carries its own short guide, a
-  one-line "why", ordered steps, and sources — so a trophy is always one click from a plan.
-- **Spoiler-safe by default.** Unearned story trophies are masked to their kind until you earn them
-  or turn spoiler-safe off, so a trophy hunt never leaks the plot.
-- **Filters that match how you actually play.** Search over names, guides and sources; filter by
-  grade, kind, or status (missable / earned / unearned).
+Leonida Ledger is an offline, single-page trophy guide and progress tracker for all 55 Grand Theft
+Auto VI PlayStation 5 trophies. Every trophy carries its official name, description and grade, an
+original walkthrough, a one-line note on why it is hard (or cheap), numbered steps and sources. The
+page adds a ten-stage roadmap to the platinum, missable flags, kind/grade/status filters, a search
+box, a spoiler-safe mode that masks story trophies, and progress that saves to `localStorage` and
+exports/imports as JSON. It is plain static files — no framework, no build step, no network request
+at runtime — so opening `app/index.html` from disk is the whole install.
 
 ## Files
 
-| Path | What it is |
-| --- | --- |
-| `app/index.html` | The page: header, grade chips, controls, filters, roadmap, list, detail sheet, footer |
-| `app/style.css` | Vice City dusk theme: deep navy, magenta, teal, gold; 4px spacing scale; print stylesheet |
-| `app/app.js` | Rendering, filters, search, spoiler masking, localStorage progress, export/import, detail sheet |
-| `app/data/trophies.json` | The 55 trophies and 10 stages — the single source of truth |
-| `app/data/trophies.js` | The same data as an ES module, generated from the JSON |
-| `scripts/shoot.py` | Serves `app/` and captures the four 1280x1080 screenshots in `screenshots/` |
-| `screenshots/*.png` | The four captures that ship with the entry |
-| `main.ts` | The make.fun hand-in: copies `app/` + `screenshots/` to the output dir, writes `dossier.json` |
-| `vendor/makefun-frontend.ts` | The bounty's dossier writer, untouched |
+| Path | Job |
+|---|---|
+| `app/index.html` | the page shell: header, progress card, filters, roadmap panel, detail dialog, footer |
+| `app/style.css` | the Vice City dusk theme plus the print stylesheet that turns the list into a paper checklist |
+| `app/app.js` | rendering, filtering, search, detail sheet, roadmap, spoiler mode, localStorage progress, export/import |
+| `app/data/trophies.json` | canonical data: 55 trophies with guides, `why`, steps, sources, stages and `verifiedAt` |
+| `app/data/trophies.js` | the same data as an ES module, so the page loads with no `fetch` from `file://` |
+| `main.ts` | entry point: copies `app/` and `screenshots/` into the output directory and writes `dossier.json` |
+| `serve.ts` | small static server for local development (`node serve.ts`, optional `--port <n>`) |
+| `scripts/shoot.py` | captures the four 1280×1080 screenshots into `screenshots/` with Playwright |
+| `vendor/makefun-frontend.ts` | vendored `buildDossier`, used by `main.ts`; read-only |
+| `screenshots/` | the four shipped PNGs: checklist, guide, roadmap, spoiler-safe view |
+
+`app/data/trophies.js` is generated from `app/data/trophies.json`; edit the JSON rather than keeping
+two hand-written copies.
 
 ## Run it
 
+The guide itself needs nothing but a browser:
+
 ```sh
-# Browse the guide (no build step)
-open app/index.html            # or: python3 -m http.server -d app 8080
-
-# Regenerate the four screenshots
-python3 scripts/shoot.py
-
-# Produce the hand-in (dossier.json + packaged app/screenshots)
-MAKEFUN_OUTPUT_DIR=out node main.ts
+node serve.ts            # serves app/ on http://localhost:8080
 ```
 
-The four screenshots: `1-checklist.png` (a third of trophies earned), `2-guide.png` (a missable
-trophy's sheet open), `3-roadmap.png` (missable-only filter), `4-spoiler.png` (spoiler-safe with the
-story filter).
+Regenerate the screenshots (Python 3 with Pillow and Playwright, plus its Chromium build). It serves
+`app/` on 127.0.0.1:8099, drives headless Chromium, and rewrites the four PNGs in `screenshots/`:
 
-Verified against the PlayStation 5 trophy list on 2026-11-21. Good luck out there, Leonida Legend.
+```sh
+python3 scripts/shoot.py
+```
+
+Build the bounty entry with Node 22, standard library only. This copies `app/` and `screenshots/`
+into the output directory and writes `dossier.json`; `MAKEFUN_OUTPUT_DIR` defaults to `/output`:
+
+```sh
+MAKEFUN_OUTPUT_DIR=out node main.ts
+```
