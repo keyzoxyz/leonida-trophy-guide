@@ -1,217 +1,192 @@
 #!/usr/bin/env python3
-"""Capture the four screenshots that ship with the Leonida Ledger trophy guide.
+"""Capture the four guide screenshots with Playwright and a local static server.
 
-The page is static, so this only has to: serve app/ over loopback on
-127.0.0.1:8099, drive headless Chromium through Playwright's sync API, and write
-four 1280x1080 PNGs into screenshots/. Every shot gets a fresh browser context,
-so progress seeded for the checklist never leaks into the other three.
-
-    python3 scripts/shoot.py
-
-The quartet:
-    1-checklist.png   about a third of the trophies marked earned
-    2-guide.png       a missable trophy's detail sheet, steps and sources visible
-    3-roadmap.png     the missable-only filter engaged
-    4-spoiler.png     spoiler-safe view (spoilers off) with the story filter on
-
-Each PNG must stay under 256 KiB for the bounty gate; oversized frames are
-palette-quantised to 256 colours (and further down only if still over budget).
-Every file written has its final byte size printed.
+Serves app/ on 127.0.0.1:8099 in a background thread, then drives headless
+Chromium at 1280x1080 and writes four PNGs into screenshots/. Any shot over
+256 KiB is re-saved quantised to at most 256 colours.
 """
 
 from __future__ import annotations
 
-import contextlib
 import http.server
-import json
+import socket
 import threading
 from functools import partial
 from pathlib import Path
 
 from PIL import Image
-from playwright.sync_api import Page, ViewportSize, sync_playwright
+from playwright.sync_api import BrowserContext, Page, sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
-SHOT_DIR = ROOT / "screenshots"
+OUT_DIR = ROOT / "screenshots"
+
 HOST = "127.0.0.1"
 PORT = 8099
-URL = f"http://{HOST}:{PORT}/index.html"
-VIEWPORT: ViewportSize = {"width": 1280, "height": 1080}
-STORAGE_KEY = "leonida-ledger.progress.v1"
+BASE_URL = f"http://{HOST}:{PORT}/"
+VIEWPORT = {"width": 1280, "height": 1080}
 MAX_BYTES = 256 * 1024
-# Quantise a little before the hard gate so the saved file clears it comfortably.
-QUANTISE_AT = int(MAX_BYTES * 0.97)
-
-# 18 of 55 trophies: the opening story block plus the activities that unlock
-# alongside it. Roughly a third of the list, and a believable playthrough state.
-EARNED_IDS = list(range(2, 20))
-
-# A missable side trophy, so its sheet can show steps and sources without the
-# story-spoiler mask (story trophies stay masked while spoiler mode is off).
-GUIDE_TROPHY_ID = 20
-GUIDE_TROPHY_NAME = "Baited My Tackle"
+STORAGE_KEY = "gta6-trophy-progress-v1"
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
-    """SimpleHTTPRequestHandler with the per-request stderr noise removed."""
+    """Static handler that keeps the capture output clean."""
 
-    def log_message(self, format, *args):  # noqa: A002 - base signature
+    def log_message(self, format: str, *args: object) -> None:  # noqa: A002
         pass
 
 
-@contextlib.contextmanager
-def served_app():
-    """Serve app/ on 127.0.0.1:8099 for the duration of the block."""
+def start_server() -> http.server.ThreadingHTTPServer:
     handler = partial(QuietHandler, directory=str(APP_DIR))
-    try:
-        server = http.server.ThreadingHTTPServer((HOST, PORT), handler)
-    except OSError as exc:
-        raise SystemExit(f"cannot serve app/ on {HOST}:{PORT}: {exc}") from exc
-    server.daemon_threads = True
-    worker = threading.Thread(target=server.serve_forever, daemon=True)
-    worker.start()
-    try:
-        yield
-    finally:
-        server.shutdown()
-        server.server_close()
-        worker.join(timeout=5)
+    server = http.server.ThreadingHTTPServer((HOST, PORT), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+
+    # Wait until the socket actually accepts connections before launching Chromium.
+    for _ in range(100):
+        try:
+            with socket.create_connection((HOST, PORT), timeout=0.1):
+                return server
+        except OSError:
+            threading.Event().wait(0.05)
+    server.shutdown()
+    raise RuntimeError(f"static server did not start on {BASE_URL}")
 
 
-def wait_ready(page: Page) -> None:
-    """Wait until app.js has rendered the trophy list."""
-    try:
-        page.wait_for_function(
-            "() => document.querySelectorAll('.trophy-card').length > 0",
-            timeout=20_000,
-        )
-        page.wait_for_function(
-            "() => document.getElementById('trophy-list')?.getAttribute('aria-busy') === 'false'",
-            timeout=20_000,
-        )
-    except Exception as exc:  # Playwright's TimeoutError, kept dependency-free
-        raise RuntimeError(
-            "app.js never rendered the trophy list; check the browser console for script errors"
-        ) from exc
-    page.evaluate("() => document.fonts.ready")
-
-
-def open_page(context) -> Page:
+def open_page(context: BrowserContext) -> Page:
     page = context.new_page()
-    page.goto(URL, wait_until="load")
-    wait_ready(page)
+    page.goto(BASE_URL, wait_until="networkidle")
+    page.wait_for_selector(".card")
+    page.wait_for_function("document.fonts.status === 'loaded'")
+    page.evaluate("window.scrollTo(0, 0)")
     return page
 
 
-def seed_progress(page: Page, earned_ids: list[int]) -> None:
-    """Write progress into localStorage, then reload so the app boots with it."""
-    page.evaluate(
-        "([key, value]) => localStorage.setItem(key, value)",
-        [STORAGE_KEY, json.dumps({"earned": sorted(earned_ids)})],
-    )
-    page.reload(wait_until="load")
-    wait_ready(page)
+def capture(page: Page, filename: str) -> None:
+    out = OUT_DIR / filename
+    page.screenshot(path=str(out), type="png", animations="disabled", caret="hide")
 
-
-def quantise(path: Path) -> None:
-    """Palette-quantise an over-budget PNG until it clears the gate."""
-    with Image.open(path) as image:
-        rgb = image.convert("RGB")
-        colours = 256
-        while colours >= 16:
-            palette = rgb.quantize(
-                colors=colours,
-                method=Image.Quantize.MEDIANCUT,
-                dither=Image.Dither.FLOYDSTEINBERG,
+    if out.stat().st_size > MAX_BYTES:
+        with Image.open(out) as img:
+            rgb = img.convert("RGB")
+        # Quantise, stepping down further only if 256 colours still exceeds the cap.
+        for colours in (256, 192, 128, 96, 64):
+            rgb.quantize(colors=colours, method=Image.Quantize.MEDIANCUT).save(
+                out, format="PNG", optimize=True
             )
-            palette.save(path, format="PNG", optimize=True)
-            if path.stat().st_size < QUANTISE_AT:
-                print(f"  quantised {path.name} to {colours} colours")
-                return
-            colours //= 2
-    raise RuntimeError(f"{path.name} still exceeds the {MAX_BYTES}-byte budget")
+            if out.stat().st_size <= MAX_BYTES:
+                break
+
+    size = out.stat().st_size
+    if size > MAX_BYTES:
+        raise RuntimeError(f"{filename} is {size} bytes, over the 262144-byte cap")
+    print(f"{filename}: {size} bytes")
 
 
-def save_shot(page: Page, name: str) -> Path:
-    """Capture the 1280x1080 viewport as a PNG, then report its final size."""
-    path = SHOT_DIR / name
-    page.screenshot(
-        path=str(path),
-        type="png",
-        animations="disabled",
-        caret="hide",
-    )
-    size = path.stat().st_size
-    if size >= QUANTISE_AT:
-        quantise(path)
-        size = path.stat().st_size
-        if size >= MAX_BYTES:
-            raise RuntimeError(f"{path.name} is {size} bytes, over the {MAX_BYTES}-byte gate")
-    with Image.open(path) as image:
-        width, height = image.size
-    if (width, height) != (VIEWPORT["width"], VIEWPORT["height"]):
-        raise RuntimeError(f"{path.name} is {width}x{height}, expected 1280x1080")
-    print(f"{path} — {size} bytes ({width}x{height})")
-    return path
+def shot_checklist(browser) -> None:
+    """About a third of the trophy list marked earned."""
+    context = browser.new_context(viewport=VIEWPORT)
+    try:
+        page = open_page(context)
+        ids = page.eval_on_selector_all(".card", "els => els.map(el => el.dataset.id)")
+        target = round(len(ids) / 3)
+        earned_ids = ids[::3][:target]
+        page.evaluate(
+            "([key, ids]) => localStorage.setItem(key, JSON.stringify({earned: ids}))",
+            [STORAGE_KEY, earned_ids],
+        )
+        page.reload(wait_until="networkidle")
+        page.wait_for_selector(".card")
+        page.wait_for_function(
+            "(want) => document.querySelectorAll('.card__icon').length && "
+            "document.querySelectorAll('.card__icon').length === "
+            "document.querySelectorAll('.card').length && "
+            "[...document.querySelectorAll('.card__icon')]"
+            ".filter(el => el.textContent.trim() === '✓').length === want",
+            arg=len(earned_ids),
+        )
+        count_text = page.inner_text("#earned-count")
+        if count_text.split("/")[0].strip() != str(len(earned_ids)):
+            raise RuntimeError(f"unexpected earned counter: {count_text!r}")
+        page.evaluate("window.scrollTo(0, 0)")
+        capture(page, "1-checklist.png")
+    finally:
+        context.close()
+
+
+def shot_guide(browser) -> None:
+    """A missable trophy's detail sheet, with steps and sources visible."""
+    context = browser.new_context(viewport=VIEWPORT)
+    try:
+        page = open_page(context)
+        page.click('.card[data-id="local-hero"] .card__title')
+        page.wait_for_selector("#detail-sheet[open]")
+        page.wait_for_selector("#detail-hint ol li")
+        hint = page.inner_text("#detail-hint")
+        if "Sources:" not in hint or "How to earn it:" not in hint:
+            raise RuntimeError("detail sheet is missing steps or sources")
+        if page.is_checked("#spoiler-toggle"):
+            raise RuntimeError("spoiler toggle should be off for the detail sheet")
+        capture(page, "2-guide.png")
+    finally:
+        context.close()
+
+
+def shot_roadmap(browser) -> None:
+    """Roadmap/list view with the missable-only filter applied."""
+    context = browser.new_context(viewport=VIEWPORT)
+    try:
+        page = open_page(context)
+        page.click('.chip-show[data-show="missable"]')
+        page.wait_for_function(
+            "() => document.querySelector('.chip-show[data-show=\"missable\"]')"
+            ".getAttribute('aria-pressed') === 'true' && "
+            "document.querySelectorAll('.card').length > 0 && "
+            "document.querySelectorAll('.card__flag').length === "
+            "document.querySelectorAll('.card').length"
+        )
+        page.evaluate("window.scrollTo(0, 0)")
+        capture(page, "3-roadmap.png")
+    finally:
+        context.close()
+
+
+def shot_spoiler(browser) -> None:
+    """Spoiler-safe view: story filter on, story trophies masked."""
+    context = browser.new_context(viewport=VIEWPORT)
+    try:
+        page = open_page(context)
+        if page.is_checked("#spoiler-toggle"):
+            page.click("#spoiler-toggle")
+        page.click('.chip-kind[data-kind="story"]')
+        page.wait_for_function(
+            "() => document.querySelector('.chip-kind[data-kind=\"story\"]')"
+            ".getAttribute('aria-pressed') === 'true' && "
+            "document.querySelectorAll('.card').length > 0 && "
+            "[...document.querySelectorAll('.card__title')]"
+            ".every(el => el.textContent.trim() === 'Hidden story trophy')"
+        )
+        page.evaluate("window.scrollTo(0, 0)")
+        capture(page, "4-spoiler.png")
+    finally:
+        context.close()
 
 
 def main() -> None:
-    SHOT_DIR.mkdir(parents=True, exist_ok=True)
-
-    with served_app(), sync_playwright() as play:
-        browser = play.chromium.launch(headless=True)
-        try:
-            # 1 — checklist: 18 of 55 earned, progress card and cards in view.
-            with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as context:
-                page = open_page(context)
-                seed_progress(page, EARNED_IDS)
-                earned = page.locator(".trophy-card.is-earned").count()
-                total = page.locator(".trophy-card").count()
-                print(f"  checklist: {earned} of {total} trophies marked earned")
-                page.evaluate("() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })")
-                save_shot(page, "1-checklist.png")
-
-            # 2 — guide: a missable trophy's sheet, open on steps and sources.
-            with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as context:
-                page = open_page(context)
-                page.locator(f'.trophy-card[data-id="{GUIDE_TROPHY_ID}"]').click()
-                page.wait_for_selector("#detail-sheet[open]", state="visible")
-                page.wait_for_selector("#detail-steps section.detail-block", state="visible")
-                detail = page.inner_text("#detail-content")
-                for heading in ("Steps", "Sources"):
-                    if heading not in detail:
-                        raise RuntimeError(f"detail sheet for {GUIDE_TROPHY_NAME} has no {heading} block")
-                page.wait_for_timeout(350)  # let the sheet-in animation settle
-                save_shot(page, "2-guide.png")
-
-            # 3 — roadmap: the missable-only filter engaged.
-            with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as context:
-                page = open_page(context)
-                page.locator('#show-chips [data-show="missable"]').click()
-                page.wait_for_selector(".trophy-card .trophy-flag", state="visible")
-                page.wait_for_timeout(150)
-                count = page.locator(".trophy-card").count()
-                print(f"  missable filter: {count} trophies listed")
-                page.evaluate("() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })")
-                save_shot(page, "3-roadmap.png")
-
-            # 4 — spoiler: story filter on, spoiler mode off, names masked.
-            with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as context:
-                page = open_page(context)
-                toggle = page.locator("#spoiler-toggle")
-                if toggle.is_checked():
-                    toggle.uncheck()
-                page.locator('#kind-chips [data-kind="story"]').click()
-                page.wait_for_selector(".trophy-card.is-masked", state="visible")
-                masked = page.locator(".trophy-card.is-masked").count()
-                print(f"  spoiler-safe story view: {masked} masked trophies")
-                page.evaluate("() => window.scrollTo({ top: 0, left: 0, behavior: 'instant' })")
-                save_shot(page, "4-spoiler.png")
-        finally:
-            browser.close()
-
-    print(f"screenshots written to {SHOT_DIR}")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    server = start_server()
+    try:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch(headless=True)
+            try:
+                shot_checklist(browser)
+                shot_guide(browser)
+                shot_roadmap(browser)
+                shot_spoiler(browser)
+            finally:
+                browser.close()
+    finally:
+        server.shutdown()
+        server.server_close()
 
 
 if __name__ == "__main__":
