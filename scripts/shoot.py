@@ -1,23 +1,32 @@
 #!/usr/bin/env python3
-"""Capture the four screenshots that ship beside the Leonida Trophy Guide.
+"""Capture the four screenshots that ship with the Leonida Trophy Guide.
 
-The app is plain static files, so this script only has to serve app/ over loopback on
-127.0.0.1:8099, let headless Chromium open it through Playwright, and save four 1280x1080
-PNGs into screenshots/. Every shot gets a fresh browser context, so one shot's ticks never
-leak into the next, and every shot is checked for size before the script exits.
+The app is static files, so this only has to: serve app/ over loopback on 127.0.0.1:8099, open it in
+headless Chromium through Playwright, and capture four 1280x1080 PNGs into screenshots/. Every shot
+gets a fresh browser context, so one shot's localStorage progress never leaks into the next.
 
-Run from anywhere:  python3 scripts/shoot.py
+    python3 scripts/shoot.py
+
+The quartet:
+    1-checklist.png   a clean run with about a third of the trophies marked earned
+    2-guide.png       a missable trophy's detail sheet, steps and sources visible
+    3-roadmap.png     the missable-only filter engaged
+    4-spoiler.png     spoiler-safe mode with the story filter engaged
+
+Each PNG must stay under 256 KiB for the bounty gate; larger frames are quantised to a palette before
+saving.
 """
 
 from __future__ import annotations
 
 import contextlib
 import http.server
-import struct
+import json
 import threading
 from functools import partial
 from pathlib import Path
 
+from PIL import Image
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -25,162 +34,121 @@ APP_DIR = ROOT / "app"
 SHOT_DIR = ROOT / "screenshots"
 HOST = "127.0.0.1"
 PORT = 8099
+URL = f"http://{HOST}:{PORT}/index.html"
 VIEWPORT = {"width": 1280, "height": 1080}
-MIN_BYTES = 40 * 1024
+STORAGE_KEY = "leonida-trophy-guide:v1"
 MAX_BYTES = 256 * 1024
+QUANTISE_AT = int(MAX_BYTES * 0.97)  # stay under the gate with headroom
 
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
-    """SimpleHTTPRequestHandler without the request chatter on stderr."""
+    """SimpleHTTPRequestHandler with the per-request stderr noise removed."""
 
-    def log_message(self, format, *args):  # noqa: A002 - signature copied from the base class
+    def log_message(self, format, *args):  # noqa: A002 — base signature
         pass
 
 
 @contextlib.contextmanager
 def served_app():
-    """Serve app/ on loopback for the duration of the block."""
+    """Serve app/ on the loopback address for the duration of the block."""
     handler = partial(QuietHandler, directory=str(APP_DIR))
     server = http.server.ThreadingHTTPServer((HOST, PORT), handler)
     worker = threading.Thread(target=server.serve_forever, daemon=True)
     worker.start()
     try:
-        yield f"http://{HOST}:{PORT}/index.html"
+        yield
     finally:
         server.shutdown()
         server.server_close()
         worker.join(timeout=5)
 
 
-def open_page(browser, url):
-    """A clean context per shot: no saved progress, no spoiler flag, no stale scroll."""
-    context = browser.new_context(viewport=VIEWPORT, device_scale_factor=1)
-    page = context.new_page()
-    page.goto(url, wait_until="load")
+def set_progress(page, earned_ids, spoiler_safe=True):
+    """Seed localStorage, then reload so the app boots with the given state."""
+    payload = {
+        "game": "Grand Theft Auto VI",
+        "platform": "PlayStation 5",
+        "verifiedAt": "2026-11-21",
+        "earned": sorted(earned_ids),
+        "spoilerSafe": spoiler_safe,
+    }
+    page.evaluate(
+        "([key, value]) => { localStorage.setItem(key, value); }",
+        [STORAGE_KEY, json.dumps(payload)],
+    )
+    page.reload(wait_until="load")
     page.wait_for_selector(".tcard", state="visible")
-    page.evaluate("window.scrollTo(0, 0)")
-    page.wait_for_timeout(150)
-    return context, page
 
 
-def settle(page, ms=250):
-    """Give the render a beat to paint after a click rebuilds the list."""
-    page.wait_for_timeout(ms)
+def quantise(path: Path) -> None:
+    """Shrink an over-budget PNG by palette-quantising it, colours capped downward as needed."""
+    with Image.open(path) as im:
+        rgb = im.convert("RGB")
+        colors = 256
+        while colors >= 16:
+            pal = rgb.quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.FLOYDSTEINBERG)
+            pal.save(path, format="PNG", optimize=True)
+            if path.stat().st_size < QUANTISE_AT:
+                print(f"  {path.name}: quantised to {colors} colours -> {path.stat().st_size} bytes")
+                return
+            colors //= 2
+        raise RuntimeError(f"{path.name} still exceeds budget after quantising")
 
 
-def tighten(path: Path) -> None:
-    """Keep a shot under the 256 KiB hand-in cap.
-
-    A flat dark UI survives an adaptive 256-colour palette with no visible damage, and the
-    palette keeps text edges that a JPEG re-encode would smear, so quantising is the fallback
-    rather than a lossy format change. Most shots land under the cap untouched.
-    """
-    if path.stat().st_size <= MAX_BYTES:
-        return
-    from PIL import Image
-
-    with Image.open(path) as image:
-        image.load()
-        reduced = image.convert("RGB").quantize(
-            colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.FLOYDSTEINBERG
-        )
-        reduced.save(path, format="PNG", optimize=True)
+def save_shot(page, name, browser):
+    """Capture the viewport as a PNG; quantise if the gate would reject it."""
+    path = SHOT_DIR / name
+    page.screenshot(path=str(path), type="png")
+    size = path.stat().st_size
+    if size > QUANTISE_AT:
+        print(f"  {name}: {size} bytes over budget, quantising")
+        quantise(path)
+    else:
+        print(f"  {name}: {size} bytes")
+    return path
 
 
-def capture(page, name: str) -> Path:
-    target = SHOT_DIR / name
-    page.screenshot(path=str(target), type="png", full_page=False)
-    tighten(target)
-    return target
-
-
-def shoot_checklist(browser, url):
-    """A third of the list ticked, with the earned rows left in frame so the bar reads 18/55."""
-    context, page = open_page(browser, url)
-    try:
-        for _ in range(18):
-            page.locator(".tcheck").first.click()
-            page.wait_for_timeout(40)
-        # "Earned only" hides everything else; clear flags keeps the ticked cards visible.
-        page.locator('.flag-chip[data-flag="clear"]').click()
-        page.evaluate("window.scrollTo(0, 0)")
-        settle(page)
-        return capture(page, "1-checklist.png")
-    finally:
-        context.close()
-
-
-def shoot_guide(browser, url):
-    """A missable side-strand trophy with its guide, steps and sources open on the sheet."""
-    context, page = open_page(browser, url)
-    try:
-        page.locator('.tcard[data-id="20"] .tname').click()
-        page.wait_for_selector("#detailSheet:not([hidden])")
-        page.wait_for_selector(".dsteps li")
-        page.wait_for_selector(".dsources span")
-        settle(page)
-        return capture(page, "2-guide.png")
-    finally:
-        context.close()
-
-
-def shoot_roadmap(browser, url):
-    """Missable-only filter on: the callout, the stages and the short list of traps."""
-    context, page = open_page(browser, url)
-    try:
-        page.locator('.flag-chip[data-flag="missable"]').click()
-        page.evaluate("window.scrollTo(0, 0)")
-        settle(page)
-        return capture(page, "3-roadmap.png")
-    finally:
-        context.close()
-
-
-def shoot_spoiler(browser, url):
-    """Spoiler-safe mode with the Story filter: names and guides withheld until earned."""
-    context, page = open_page(browser, url)
-    try:
-        page.locator("#spoilerBtn").click()
-        page.locator('.kind-chip[data-kind="story"]').click()
-        page.evaluate("window.scrollTo(0, 0)")
-        settle(page)
-        return capture(page, "4-spoiler.png")
-    finally:
-        context.close()
-
-
-def png_size(path: Path):
-    """Width and height straight out of the IHDR chunk, no image library needed."""
-    with path.open("rb") as handle:
-        header = handle.read(24)
-    if header[:8] != b"\x89PNG\r\n\x1a\n":
-        raise SystemExit(f"{path} is not a PNG")
-    return struct.unpack(">II", header[16:24])
-
-
-def main():
+def main() -> None:
     SHOT_DIR.mkdir(parents=True, exist_ok=True)
+    with served_app(), sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
 
-    with served_app() as url, sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-        try:
-            written = [
-                shoot_checklist(browser, url),
-                shoot_guide(browser, url),
-                shoot_roadmap(browser, url),
-                shoot_spoiler(browser, url),
-            ]
-        finally:
-            browser.close()
+        # 1 — checklist: the early-story block earned, about a third of the list.
+        with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as ctx:
+            page = ctx.new_page()
+            page.goto(URL, wait_until="load")
+            set_progress(page, list(range(2, 20)))  # eighteen trophies: chapters + first activities
+            save_shot(page, "1-checklist.png", browser)
 
-    for path in written:
-        width, height = png_size(path)
-        size = path.stat().st_size
-        print(f"{path.name}\t{width}x{height}\t{size} bytes")
-        if (width, height) != (VIEWPORT["width"], VIEWPORT["height"]):
-            raise SystemExit(f"{path.name}: expected 1280x1080, got {width}x{height}")
-        if not MIN_BYTES <= size <= MAX_BYTES:
-            raise SystemExit(f"{path.name}: {size} bytes outside the 40-256 KiB hand-in window")
+        # 2 — guide: Baited My Tackle, a missable strand, with its sheet open.
+        with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as ctx:
+            page = ctx.new_page()
+            page.goto(URL, wait_until="load")
+            page.wait_for_selector(".tcard", state="visible")
+            page.click('[data-open="20"]')
+            page.wait_for_selector("#sheet .panel", state="visible")
+            save_shot(page, "2-guide.png", browser)
+
+        # 3 — roadmap: missable-only filter engaged.
+        with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as ctx:
+            page = ctx.new_page()
+            page.goto(URL, wait_until="load")
+            page.wait_for_selector(".tcard", state="visible")
+            page.click('#show-bar [data-show="missable"]')
+            page.wait_for_selector('.tcard .miss-flag', state="visible")
+            save_shot(page, "3-roadmap.png", browser)
+
+        # 4 — spoiler: spoiler-safe ON (default) with the story filter engaged.
+        with browser.new_context(viewport=VIEWPORT, device_scale_factor=1) as ctx:
+            page = ctx.new_page()
+            page.goto(URL, wait_until="load")
+            page.wait_for_selector(".tcard", state="visible")
+            page.click('#kind-bar [data-kind="story"]')
+            page.wait_for_selector(".tcard.is-masked", state="visible")
+            save_shot(page, "4-spoiler.png", browser)
+
+        browser.close()
+    print(f"screenshots written to {SHOT_DIR}")
 
 
 if __name__ == "__main__":

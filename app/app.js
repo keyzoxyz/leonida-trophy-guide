@@ -1,352 +1,348 @@
-// Leonida Trophy Guide — the whole application, a plain ES module with no framework and no
-// build step. It imports the generated data module, renders the roadmap and the trophy cards
-// once, and then keeps ticking, filtering, searching, the spoiler switch, the detail sheet and
-// export/import working against that render with targeted DOM updates.
-//
-// Earned state lives in localStorage under EARN_KEY as an array of trophy ids, so progress
-// survives a reload without the page ever making a network request.
-
+// Leonida Trophy Guide — all client-side, no network. Data comes from ./data/trophies.js,
+// progress from localStorage, and every view is a re-render of one small state object.
 import { GAME, PLATFORM, VERIFIED_AT, STAGES, TROPHIES } from './data/trophies.js';
 
-const EARN_KEY = 'leonida-trophies-earned-v1';
-const SPOILER_KEY = 'leonida-trophies-spoiler-v1';
-const GRADES = ['platinum', 'gold', 'silver', 'bronze'];
-
+const KEY = 'leonida-trophy-guide:v1';
+const TOTAL = TROPHIES.length;
 const byId = new Map(TROPHIES.map((t) => [t.id, t]));
-const stageById = new Map(STAGES.map((s) => [s.id, s]));
-const $ = (sel, root = document) => root.querySelector(sel);
-const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const stageTitle = new Map(STAGES.map((s) => [s.id, s.title]));
 
 const state = {
-  earned: loadEarned(),
-  spoiler: localStorage.getItem(SPOILER_KEY) === '1',
+  earned: new Set(),
+  grade: 'all',
   kind: 'all',
-  grade: null,
-  flags: { missable: false, unearned: false, earned: false },
-  query: '',
+  show: 'all',
+  q: '',
+  spoilerSafe: true,
   openId: null,
+  lastFocus: null,
 };
 
-function loadEarned() {
+const $ = (id) => document.getElementById(id);
+const els = {
+  list: $('trophies'),
+  roadmap: $('roadmap-list'),
+  earned: $('earned'),
+  meter: $('meter'),
+  meterFill: $('meter-fill'),
+  scoreSub: $('score-sub'),
+  gradeBar: $('grade-bar'),
+  kindBar: $('kind-bar'),
+  showBar: $('show-bar'),
+  search: $('search'),
+  result: $('result-count'),
+  empty: $('empty'),
+  sheet: $('sheet'),
+  sheetBody: $('sheet-body'),
+  panel: document.querySelector('#sheet .panel'),
+  spoiler: $('spoiler'),
+  spoilerState: $('spoiler-state'),
+  missableCount: $('missable-count'),
+  note: $('control-note'),
+};
+
+// ---------------------------------------------------------------- persistence
+function load() {
   try {
-    const raw = JSON.parse(localStorage.getItem(EARN_KEY) ?? '[]');
-    return new Set(Array.isArray(raw) ? raw.filter((n) => byId.has(n)) : []);
+    const raw = localStorage.getItem(KEY);
+    if (raw) apply(JSON.parse(raw), false);
   } catch {
-    return new Set();
+    // A corrupt or unavailable store just means starting from zero.
   }
 }
 
-const saveEarned = () => localStorage.setItem(EARN_KEY, JSON.stringify([...state.earned].sort((a, b) => a - b)));
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(snapshot()));
+  } catch {
+    note('Could not save in this browser');
+  }
+}
 
-function renderHeader() {
-  const total = TROPHIES.length;
-  const done = state.earned.size;
-  const pct = Math.round((done / total) * 100);
-  $('#earnedCount').textContent = done;
-  $('#totalCount').textContent = total;
-  $('#barFill').style.width = pct + '%';
-  $('#progressBar').setAttribute('aria-valuenow', String(done));
-  const idle = 'Nothing banked yet. Tick a trophy when the notification lands.';
-  const legend = 'Leonida Legend. The platinum is in the post.';
-  $('#scoreNote').textContent = done === 0 ? idle : pct === 100 ? legend : `${pct}% of the set · ${total - done} to go.`;
+function snapshot() {
+  return {
+    game: GAME, platform: PLATFORM, verifiedAt: VERIFIED_AT,
+    earned: [...state.earned].sort((a, b) => a - b),
+    spoilerSafe: state.spoilerSafe,
+  };
+}
+
+function apply(data, announce = true) {
+  if (!data || typeof data !== 'object') throw new Error('not an object');
+  const next = new Set();
+  for (const id of Array.isArray(data.earned) ? data.earned : []) {
+    const n = Number(id);
+    if (byId.has(n)) next.add(n);
+  }
+  state.earned = next;
+  if (typeof data.spoilerSafe === 'boolean') state.spoilerSafe = data.spoilerSafe;
+  save();
+  render();
+  if (announce) note(`Imported ${next.size} earned of ${TOTAL}`);
+}
+
+function note(text) {
+  els.note.textContent = text;
+  clearTimeout(note.timer);
+  note.timer = setTimeout(() => {
+    els.note.textContent = 'Saved in this browser only';
+  }, 4000);
+}
+
+// ---------------------------------------------------------------- filtering
+const isEarned = (t) => state.earned.has(t.id);
+const isMasked = (t) => state.spoilerSafe && t.kind === 'story' && !isEarned(t);
+
+function matches(t) {
+  if (state.grade !== 'all' && t.grade !== state.grade) return false;
+  if (state.kind !== 'all' && t.kind !== state.kind) return false;
+  if (state.show === 'missable' && !t.missable) return false;
+  if (state.show === 'earned' && !isEarned(t)) return false;
+  if (state.show === 'unearned' && isEarned(t)) return false;
+  if (state.q) {
+    const hay = `${t.name}\n${t.guide}\n${t.sources.join('\n')}`.toLowerCase();
+    if (!hay.includes(state.q)) return false;
+  }
+  return true;
+}
+
+const esc = (s) =>
+  String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// ---------------------------------------------------------------- render
+function render() {
+  const shown = TROPHIES.filter(matches);
+  renderProgress();
+  renderGrades();
+  renderRoadmap();
+  renderList(shown);
+  renderSpoiler();
+}
+
+function renderProgress() {
+  const n = state.earned.size;
+  const pct = Math.round((n / TOTAL) * 100);
+  els.earned.textContent = String(n);
+  els.meterFill.style.width = `${pct}%`;
+  els.meter.setAttribute('aria-valuenow', String(n));
+  if (n === TOTAL) {
+    els.scoreSub.textContent = 'Platinum earned — Leonida Legend';
+    els.scoreSub.classList.add('is-done');
+  } else {
+    els.scoreSub.textContent = n ? `${TOTAL - n} to go · ${pct}% complete` : 'Platinum locked';
+    els.scoreSub.classList.remove('is-done');
+  }
 }
 
 function renderGrades() {
-  const host = $('#gradeChips');
-  host.replaceChildren(el('p', { class: 'grades-label', text: 'Grades' }));
-  for (const grade of GRADES) {
-    const all = TROPHIES.filter((t) => t.grade === grade);
-    const done = all.filter((t) => state.earned.has(t.id)).length;
-    const chip = el('button', {
-      class: `grade-chip${state.grade === grade ? ' is-on' : ''}`,
-      type: 'button',
-      'aria-pressed': state.grade === grade ? 'true' : 'false',
-      'aria-label': `${grade}: ${done} of ${all.length} earned`,
-      dataset: { grade },
-    }, el('span', { class: 'grade-dot', 'aria-hidden': 'true' }), `${grade} `,
-      el('span', { class: 'grade-count', text: `${done}/${all.length}` }));
-    chip.addEventListener('click', () => {
-      state.grade = state.grade === grade ? null : grade;
-      renderGrades();
-      renderList();
-    });
-    host.append(chip);
+  for (const btn of els.gradeBar.querySelectorAll('[data-grade]')) {
+    const g = btn.dataset.grade;
+    const count = g === 'all' ? TOTAL : TROPHIES.filter((t) => t.grade === g).length;
+    btn.querySelector('b').textContent = String(count);
+    btn.classList.toggle('is-on', state.grade === g);
   }
+  for (const btn of els.kindBar.querySelectorAll('[data-kind]')) btn.classList.toggle('is-on', state.kind === btn.dataset.kind);
+  for (const btn of els.showBar.querySelectorAll('[data-show]')) btn.classList.toggle('is-on', state.show === btn.dataset.show);
+  els.missableCount.textContent = `${TROPHIES.filter((t) => t.missable).length} missable trophies.`;
 }
 
 function renderRoadmap() {
-  $('#stageList').replaceChildren(...STAGES.map((stage) => {
-    const inStage = TROPHIES.filter((t) => t.stage === stage.id);
-    const done = inStage.filter((t) => state.earned.has(t.id)).length;
-    const tally = inStage.length ? `${done}/${inStage.length} in this stage` : '';
-    return el('li', {}, el('h3', { text: stage.title }), el('p', { text: stage.note }),
-      tally ? el('p', { class: 'stage-tally', text: tally }) : null);
-  }));
-  const left = TROPHIES.filter((t) => t.missable && !state.earned.has(t.id)).length;
-  $('#missableCount').textContent = left;
+  els.roadmap.innerHTML = STAGES.map((s) => {
+    const all = TROPHIES.filter((t) => t.stage === s.id);
+    const got = all.filter(isEarned).length;
+    const done = all.length > 0 && got === all.length;
+    return `<li class="stage${done ? ' is-done' : ''}">
+      <span class="stage-n">${String(s.id).padStart(2, '0')}</span>
+      <span>
+        <span class="stage-title">${esc(s.title)}</span>
+        <span class="stage-note">${esc(s.note)}</span>
+        <span class="stage-count">${got}/${all.length} earned</span>
+      </span>
+    </li>`;
+  }).join('');
 }
 
-function matches(t) {
-  if (state.kind !== 'all' && t.kind !== state.kind) return false;
-  if (state.grade && t.grade !== state.grade) return false;
-  if (state.flags.missable && !t.missable) return false;
-  if (state.flags.unearned && state.earned.has(t.id)) return false;
-  if (state.flags.earned && !state.earned.has(t.id)) return false;
-  if (!state.query) return true;
-  const hay = [t.name, t.description, t.guide, t.kind, ...t.steps, ...t.sources].join(' ').toLowerCase();
-  return hay.includes(state.query.toLowerCase());
+function renderList(shown) {
+  els.list.innerHTML = shown.map((t) => {
+    const masked = isMasked(t);
+    const earned = isEarned(t);
+    const name = masked ? 'Hidden story trophy' : t.name;
+    const desc = masked ? 'Earn it to reveal the name. Turn spoiler-safe off to read ahead.' : t.description;
+    const flags = [
+      `<span class="g-badge">${t.grade}</span>`,
+      `<span class="kind-label">${t.kind}</span>`,
+      t.missable ? '<span class="miss-flag">Missable</span>' : '',
+      `<span class="idx">#${String(t.id).padStart(2, '0')}</span>`,
+    ].join('');
+    return `<article class="tcard g-${t.grade}${earned ? ' is-earned' : ''}${masked ? ' is-masked' : ''}" data-id="${t.id}">
+      <button class="check" type="button" aria-pressed="${earned}" aria-label="${earned ? 'Unmark' : 'Mark'} ${esc(name)}" data-check="${t.id}">${earned ? '✓' : '○'}</button>
+      <button class="card-main" type="button" data-open="${t.id}">
+        <span class="card-top">${flags}</span>
+        <span class="tname">${esc(name)}</span>
+        <span class="tdesc">${esc(desc)}</span>
+      </button>
+    </article>`;
+  }).join('');
+  els.empty.hidden = shown.length > 0;
+  els.result.textContent = `${shown.length} of ${TOTAL} shown`;
 }
-
-function renderList() {
-  const visible = TROPHIES.filter(matches);
-  $('#cardList').replaceChildren(...visible.map(cardFor));
-  $('#emptyState').hidden = visible.length > 0;
-  const bits = [`${visible.length} of ${TROPHIES.length} shown`];
-  bits.push(`${visible.filter((t) => state.earned.has(t.id)).length} earned here`);
-  if (state.flags.missable) bits.push('missable only');
-  if (state.grade) bits.push(`${state.grade} only`);
-  if (state.kind !== 'all') bits.push(state.kind);
-  if (state.query) bits.push(`matching “${state.query}”`);
-  $('#listMeta').textContent = bits.join(' · ');
-  renderGrades();
-  renderRoadmap();
-}
-
-const spoilerHides = (t) => state.spoiler && t.kind === 'story' && !state.earned.has(t.id);
-const maskedName = (t) => (spoilerHides(t) ? 'Spoilers — earn it first' : t.name);
-const maskedDescription = (t) => (spoilerHides(t)
-  ? 'Hidden until earned. Spoiler-safe mode withholds story trophies you have not banked yet.'
-  : t.description);
 
 function renderSpoiler() {
-  document.body.classList.toggle('spoiler', state.spoiler);
-  const btn = $('#spoilerBtn');
-  btn.classList.toggle('is-on', state.spoiler);
-  btn.setAttribute('aria-pressed', state.spoiler ? 'true' : 'false');
-  btn.replaceChildren(el('span', { class: 'ctrl-dot', 'aria-hidden': 'true' }),
-    state.spoiler ? 'Spoiler-safe: on' : 'Spoiler-safe: off');
+  els.spoiler.classList.toggle('is-on', state.spoilerSafe);
+  els.spoiler.classList.toggle('is-off', !state.spoilerSafe);
+  els.spoiler.setAttribute('aria-pressed', String(state.spoilerSafe));
+  els.spoilerState.textContent = state.spoilerSafe ? 'on' : 'off';
 }
 
-function cardFor(t) {
-  const li = el('li', { class: 'tcard', dataset: { id: String(t.id), grade: t.grade } });
-  const name = el('button', { class: 'tname', type: 'button', text: maskedName(t) });
-  const toggle = el('button', { class: 'tcheck', type: 'button' });
-  const desc = el('p', { class: 'tdesc' });
-  const meta = el('div', { class: 'tmeta' });
-  const open = el('button', { class: 'topen', type: 'button', text: 'Guide +' });
-
-  meta.append(
-    el('span', { class: 'pill pill-grade', text: t.grade }),
-    el('span', { class: 'pill', text: t.kind }),
-    el('span', { class: 'pill pill-stage', text: stageById.get(t.stage)?.title ?? 'stage ?' }),
-  );
-  if (t.missable) meta.append(el('span', { class: 'pill pill-miss', text: 'missable' }));
-  if (t.hidden) meta.append(el('span', { class: 'pill pill-hidden', text: 'hidden' }));
-  meta.append(open);
-  li.append(el('div', { class: 'thead' }, name, toggle), desc, meta);
-
-  const sync = () => {
-    const earned = state.earned.has(t.id);
-    li.classList.toggle('is-earned', earned);
-    toggle.textContent = earned ? 'Earned ✓' : 'Mark earned';
-    toggle.setAttribute('aria-pressed', earned ? 'true' : 'false');
-    name.textContent = maskedName(t);
-    desc.textContent = maskedDescription(t);
-    desc.classList.toggle('is-masked', spoilerHides(t));
-  };
-  sync();
-
-  const flip = () => {
-    if (state.earned.has(t.id)) state.earned.delete(t.id);
-    else state.earned.add(t.id);
-    saveEarned();
-    sync();
-    renderHeader();
-    renderRoadmap();
-    renderList();
-    if (state.openId === t.id) fillSheet(t);
-  };
-  toggle.addEventListener('click', flip);
-  open.addEventListener('click', () => openSheet(t.id));
-  name.addEventListener('click', () => openSheet(t.id));
-  return li;
-}
-
-const sheet = () => $('#detailSheet');
-
-function fillSheet(t) {
-  const stage = stageById.get(t.stage);
-  $('#sheetGrade').textContent = `${t.grade} · ${stage ? stage.title : 'unfiled'}`;
-  $('#sheetName').textContent = maskedName(t);
-  $('#sheetDesc').textContent = maskedDescription(t);
-  const flags = $('#sheetFlags');
-  flags.replaceChildren(el('span', { class: 'pill pill-grade', text: t.grade }),
-    el('span', { class: 'pill', text: t.kind }));
-  if (t.missable) flags.append(el('span', { class: 'pill pill-miss', text: 'missable' }));
-  if (t.hidden) flags.append(el('span', { class: 'pill pill-hidden', text: 'hidden' }));
-  $('#sheetGuide').textContent = spoilerHides(t)
-    ? 'The guide is withheld in spoiler-safe mode until this trophy is earned, or the switch is turned off.'
-    : t.guide;
-  $('#sheetWhy').textContent = t.why;
-  $('#sheetSteps').replaceChildren(...t.steps.map((s) => el('li', { text: s })));
-  $('#sheetSources').replaceChildren(...t.sources.map((s) => el('span', { text: s })));
-  const btn = $('#sheetToggle');
-  btn.textContent = state.earned.has(t.id) ? 'Mark unearned' : 'Mark earned';
-  btn.onclick = () => {
-    if (state.earned.has(t.id)) state.earned.delete(t.id);
-    else state.earned.add(t.id);
-    saveEarned();
-    fillSheet(t);
-    renderHeader();
-    renderList();
-  };
-}
-
+// ---------------------------------------------------------------- detail sheet
 function openSheet(id) {
   const t = byId.get(id);
   if (!t) return;
+  state.lastFocus = document.activeElement;
   state.openId = id;
-  fillSheet(t);
-  sheet().hidden = false;
-  $('#sheetBackdrop').hidden = false;
+  const masked = isMasked(t);
+  const earned = isEarned(t);
+  const flag = t.missable ? '<span class="miss-flag">Missable</span>' : '';
+  const body = masked
+    ? `<p class="body">Spoiler-safe is on, and this story trophy is still unearned. Its name, description and
+       route are hidden so browsing the list cannot spoil the plot. Mark it earned when it pops, or turn
+       spoiler-safe off in the toolbar to read the guide anyway.</p>`
+    : `<h4>How to earn it</h4>
+       <p class="body">${esc(t.guide)}</p>
+       <p class="why">${esc(t.why)}</p>
+       <h4>Steps</h4>
+       <ol class="steps-list">${t.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
+       <h4>Sources</h4>
+       <ul class="sources-list">${t.sources.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>`;
+  els.sheetBody.innerHTML = `
+    <div class="sheet-top g-${t.grade}">
+      <span class="g-badge">${t.grade}</span>
+      <span class="kind-label">${t.kind}</span>${flag}
+      <span class="idx">#${String(t.id).padStart(2, '0')} / ${TOTAL}</span>
+    </div>
+    <h3 id="sheet-name">${esc(masked ? 'Hidden story trophy' : t.name)}</h3>
+    <p class="sheet-desc">${esc(masked ? 'Spoiler-safe is on.' : t.description)}</p>
+    <div class="sheet-meta">
+      <div>Stage<b>${t.stage} · ${esc(stageTitle.get(t.stage) ?? 'Roadmap')}</b></div>
+      <div>Grade<b>${t.grade}</b></div>
+      <div>Missable<b>${t.missable ? 'Yes — do not delay' : 'No'}</b></div>
+      <div>Status<b>${earned ? 'Earned' : 'Not yet'}</b></div>
+    </div>
+    ${body}
+    <div class="sheet-actions">
+      <button class="primary${earned ? ' is-on' : ''}" type="button" data-toggle-earned="${t.id}">
+        ${earned ? 'Mark as unearned' : 'Mark as earned'}
+      </button>
+    </div>`;
+  els.sheet.hidden = false;
+  document.body.classList.add('sheet-open');
+  els.panel.focus();
 }
 
 function closeSheet() {
+  if (els.sheet.hidden) return;
   state.openId = null;
-  sheet().hidden = true;
-  $('#sheetBackdrop').hidden = true;
+  els.sheet.hidden = true;
+  document.body.classList.remove('sheet-open');
+  const back = state.lastFocus;
+  state.lastFocus = null;
+  if (back && typeof back.focus === 'function') back.focus();
+}
+
+// ---------------------------------------------------------------- actions
+function toggleEarned(id) {
+  if (state.earned.has(id)) state.earned.delete(id);
+  else state.earned.add(id);
+  save();
+  render();
+  if (state.openId === id) openSheet(id);
 }
 
 function exportProgress() {
-  const payload = {
-    game: GAME, platform: PLATFORM, verifiedAt: VERIFIED_AT,
-    exportedAt: new Date().toISOString(),
-    earned: [...state.earned].sort((a, b) => a - b),
-  };
-  const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
-  const a = el('a', { href: url, download: 'leonida-trophy-progress.json' });
+  const blob = new Blob([JSON.stringify({ ...snapshot(), exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'leonida-trophy-progress.json';
   document.body.append(a);
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  setStatus(`Exported ${state.earned.size} earned trophies.`);
+  note(`Exported ${state.earned.size} earned`);
 }
 
-function importProgress(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const parsed = JSON.parse(String(reader.result));
-      const ids = Array.isArray(parsed) ? parsed : parsed.earned;
-      if (!Array.isArray(ids)) throw new Error('no earned array in that file');
-      const clean = ids.filter((n) => byId.has(n));
-      state.earned = new Set(clean);
-      saveEarned();
-      renderAll();
-      setStatus(`Imported ${clean.length} earned trophies from ${file.name}.`);
-    } catch (err) {
-      setStatus(`Import failed: ${err.message}`, true);
-    }
-  };
-  reader.readAsText(file);
+function resetFilters() {
+  state.grade = 'all';
+  state.kind = 'all';
+  state.show = 'all';
+  state.q = '';
+  els.search.value = '';
+  render();
 }
 
-let statusTimer;
-function setStatus(text, isError = false) {
-  const status = $('#ctrlStatus');
-  status.textContent = text;
-  status.style.color = isError ? 'var(--coral)' : '';
-  clearTimeout(statusTimer);
-  statusTimer = setTimeout(() => { status.textContent = ''; }, 6000);
+// ---------------------------------------------------------------- events
+els.list.addEventListener('click', (event) => {
+  const check = event.target.closest('[data-check]');
+  if (check) return toggleEarned(Number(check.dataset.check));
+  const open = event.target.closest('[data-open]');
+  if (open) openSheet(Number(open.dataset.open));
+});
+
+els.sheetBody.addEventListener('click', (event) => {
+  const btn = event.target.closest('[data-toggle-earned]');
+  if (btn) toggleEarned(Number(btn.dataset.toggleEarned));
+});
+
+els.sheet.addEventListener('click', (event) => {
+  if (event.target.closest('[data-close]')) closeSheet();
+});
+
+for (const [bar, key, attr] of [
+  [els.gradeBar, 'grade', 'data-grade'],
+  [els.kindBar, 'kind', 'data-kind'],
+  [els.showBar, 'show', 'data-show'],
+]) {
+  bar.addEventListener('click', (event) => {
+    const btn = event.target.closest(`[${attr}]`);
+    if (!btn) return;
+    state[key] = btn.dataset[key];
+    render();
+  });
 }
 
-function el(tag, attrs = {}, ...children) {
-  const node = document.createElement(tag);
-  for (const [key, value] of Object.entries(attrs)) {
-    if (value === undefined || value === null) continue;
-    if (key === 'class') node.className = value;
-    else if (key === 'text') node.textContent = value;
-    else if (key === 'dataset') Object.assign(node.dataset, value);
-    else node.setAttribute(key, value);
+els.spoiler.addEventListener('click', () => {
+  state.spoilerSafe = !state.spoilerSafe;
+  save();
+  render();
+});
+
+$('export').addEventListener('click', exportProgress);
+
+$('import').addEventListener('change', async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  try {
+    apply(JSON.parse(await file.text()));
+  } catch {
+    note('That file was not valid progress JSON');
   }
-  for (const child of children.flat()) if (child != null) node.append(child);
-  return node;
-}
+  event.target.value = '';
+});
 
-function renderAll() {
-  renderHeader();
-  renderSpoiler();
-  renderGrades();
-  renderRoadmap();
-  renderList();
-}
+$('reset').addEventListener('click', resetFilters);
 
-function wire() {
-  $('#spoilerBtn').addEventListener('click', () => {
-    state.spoiler = !state.spoiler;
-    localStorage.setItem(SPOILER_KEY, state.spoiler ? '1' : '0');
-    renderSpoiler();
-    renderList();
-    if (state.openId) fillSheet(byId.get(state.openId));
-  });
-
-  $('#exportBtn').addEventListener('click', exportProgress);
-  $('#importBtn').addEventListener('click', () => $('#importFile').click());
-  $('#importFile').addEventListener('change', (ev) => {
-    const file = ev.target.files?.[0];
-    if (file) importProgress(file);
-    ev.target.value = '';
-  });
-  $('#printBtn').addEventListener('click', () => window.print());
-
-  for (const chip of $$('.kind-chip')) {
-    chip.addEventListener('click', () => {
-      state.kind = chip.dataset.kind;
-      for (const other of $$('.kind-chip')) {
-        const on = other === chip;
-        other.classList.toggle('is-on', on);
-        other.setAttribute('aria-pressed', on ? 'true' : 'false');
-      }
-      renderList();
-    });
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  // Search first: Escape empties a live query, and only then closes the sheet.
+  if (state.q) {
+    state.q = '';
+    els.search.value = '';
+    render();
+    els.search.focus();
+    return;
   }
+  if (!els.sheet.hidden) closeSheet();
+});
 
-  for (const chip of $$('.flag-chip')) {
-    chip.addEventListener('click', () => {
-      const flag = chip.dataset.flag;
-      if (flag === 'clear') state.flags = { missable: false, unearned: false, earned: false };
-      else state.flags[flag] = !state.flags[flag];
-      for (const other of $$('.flag-chip[data-flag]:not([data-flag="clear"])')) {
-        const on = Boolean(state.flags[other.dataset.flag]);
-        other.classList.toggle('is-on', on);
-        other.setAttribute('aria-pressed', on ? 'true' : 'false');
-      }
-      renderList();
-    });
-  }
-
-  $('#searchInput').addEventListener('input', (ev) => {
-    state.query = ev.target.value.trim();
-    renderList();
-  });
-
-  $('#sheetClose').addEventListener('click', closeSheet);
-  $('#sheetBackdrop').addEventListener('click', closeSheet);
-
-  document.addEventListener('keydown', (ev) => {
-    if (ev.key !== 'Escape') return;
-    const search = $('#searchInput');
-    // A non-empty search is the nearer thing to escape: clear it first, close the sheet second.
-    if (search.value !== '') {
-      search.value = '';
-      state.query = '';
-      search.focus();
-      renderList();
-    } else if (!sheet().hidden) {
-      closeSheet();
-    }
-  });
-}
-
-renderAll();
-wire();
+load();
+render();

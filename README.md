@@ -4,67 +4,55 @@
 
 # Leonida Trophy Guide
 
-An offline, single-page trophy guide and tracker for **Grand Theft Auto VI** on **PlayStation 5** —
-all **55 trophies**, every one with a hand-written guide, a why, concrete steps and the sources
-checked against the list verified on **2026-11-21**. No frameworks, no build step, no network
-calls: plain HTML, CSS and one ES module of data, so the page works straight off disk and keeps
-your progress in the browser.
+An offline, single-page GTA VI trophy guide and tracker for PlayStation 5. All 55 trophies, ten
+roadmap stages, a missable-first warning system, spoiler-safe browsing, and progress that lives in
+your browser — no account, no network, no build step.
 
-## What it does
+Open `app/index.html` and the whole thing runs. Mark trophies as you earn them; the header progress
+bar, grade counts and roadmap all update live. Everything is saved to `localStorage`, and the
+Export/Import buttons move your progress between machines as a small JSON file.
 
-- **Checklist** — tick trophies as the PlayStation notifications land; the count, the progress
-  bar and the per-grade chips update everywhere at once, and the state survives reloads in
-  localStorage.
-- **Guides** — every trophy opens a detail sheet with the full guide, why the trophy exists,
-  numbered steps and its sources. Nothing here is farmed from a wiki dump.
-- **Roadmap** — ten stages in the order that keeps the platinum reachable, with a callout for
-  the 16 missable trophies that close when the story advances past them.
-- **Filters** — by kind (story, strangers, heists, activities, collectibles, economy, meta),
-  by grade, by missable / earned / unearned, and a search that reads names, guide text and
-  sources.
-- **Spoiler-safe mode** — masks the names and descriptions of unearned story trophies until
-  they are banked, so the guide can sit open on a second screen.
-- **Export / import** — progress as a small JSON file, for moving between machines.
-- **Print** — a print stylesheet strips the chrome and lays the guide out on paper.
+## What makes it a guide, not just a list
+
+- **Missable-first roadmap.** The sidebar orders all ten stages the way the platinum wants them, with
+  a callout counting the 16 missable trophies and a warning that every one of them closes with its
+  chapter. The finale is flagged as a one-way door.
+- **A written route for every trophy.** Each of the 55 entries carries its own short guide, a
+  one-line "why", ordered steps, and sources — so a trophy is always one click from a plan.
+- **Spoiler-safe by default.** Unearned story trophies are masked to their kind until you earn them
+  or turn spoiler-safe off, so a trophy hunt never leaks the plot.
+- **Filters that match how you actually play.** Search over names, guides and sources; filter by
+  grade, kind, or status (missable / earned / unearned).
 
 ## Files
 
 | Path | What it is |
 | --- | --- |
-| `app/index.html` | The page: top bar, grade chips, controls, filters, roadmap, trophy list, detail sheet, footer |
-| `app/style.css` | Vice City dusk theme — deep navy, coral, teal, gold; sticky bars, cards, modal sheet, print block |
-| `app/app.js` | Rendering, filters, search, spoiler masking, earned state, export/import, the sheet |
-| `app/data/trophies.json` | The 55 trophies and 10 roadmap stages, compact, one trophy per line |
-| `app/data/trophies.js` | The same data as an ES module, generated from the JSON (the page imports this) |
-| `main.ts` | The hand-in: copies `app/` and `screenshots/` into the output dir and writes `dossier.json` |
-| `scripts/shoot.py` | Serves `app/` on 127.0.0.1:8099 and captures the four screenshots with Playwright |
-| `screenshots/` | The four 1280×1080 captures the judge sees first |
-| `vendor/makefun-frontend.ts` | make.fun's dossier library, vendored untouched |
-| `serve.ts` | Optional local server (`node serve.ts` → http://localhost:8080) |
+| `app/index.html` | The page: header, grade chips, controls, filters, roadmap, list, detail sheet, footer |
+| `app/style.css` | Vice City dusk theme: deep navy, magenta, teal, gold; 4px spacing scale; print stylesheet |
+| `app/app.js` | Rendering, filters, search, spoiler masking, localStorage progress, export/import, detail sheet |
+| `app/data/trophies.json` | The 55 trophies and 10 stages — the single source of truth |
+| `app/data/trophies.js` | The same data as an ES module, generated from the JSON |
+| `scripts/shoot.py` | Serves `app/` and captures the four 1280x1080 screenshots in `screenshots/` |
+| `screenshots/*.png` | The four captures that ship with the entry |
+| `main.ts` | The make.fun hand-in: copies `app/` + `screenshots/` to the output dir, writes `dossier.json` |
+| `vendor/makefun-frontend.ts` | The bounty's dossier writer, untouched |
 
 ## Run it
 
 ```sh
-# open the app directly, or serve it
-node serve.ts                # http://localhost:8080
+# Browse the guide (no build step)
+open app/index.html            # or: python3 -m http.server -d app 8080
 
-# reshoot the four screenshots (needs Playwright's Chromium and Pillow)
+# Regenerate the four screenshots
 python3 scripts/shoot.py
 
-# hand the entry in: copies app/ + screenshots/ to out/ and writes out/dossier.json
-rm -rf out && mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
+# Produce the hand-in (dossier.json + packaged app/screenshots)
+MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
-`MAKEFUN_OUTPUT_DIR` defaults to `/output`, which is where the grader expects the hand-in.
+The four screenshots: `1-checklist.png` (a third of trophies earned), `2-guide.png` (a missable
+trophy's sheet open), `3-roadmap.png` (missable-only filter), `4-spoiler.png` (spoiler-safe with the
+story filter).
 
-## Data
-
-Trophy facts — ids, names, official descriptions, grades, kinds, stages, missable and hidden
-flags — are verified against the PlayStation 5 list as of **2026-11-21**. The guides, whys and
-steps are original writing for this entry. `app/data/trophies.js` is generated from
-`app/data/trophies.json`; edit the JSON, then regenerate the module rather than editing both.
-
-## Unofficial
-
-Fan-made and unaffiliated with Rockstar Games or Sony Interactive Entertainment. All trophy
-names and descriptions belong to their owners; the words around them are ours.
+Verified against the PlayStation 5 trophy list on 2026-11-21. Good luck out there, Leonida Legend.
